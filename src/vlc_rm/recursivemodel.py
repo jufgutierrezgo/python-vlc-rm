@@ -161,7 +161,7 @@ class Recursivemodel:
         
 
         tx_power = (self.led.mlambert+1)/(2*np.pi)*np.multiply(np.divide(1,dis2[tx_index_point,:],out=np.zeros((self.room.no_points)), where=dis2[tx_index_point,:]!=0),np.power(cos_phi,self.led.mlambert))
-        rx_wall_factor = pd1.area*self.room.wall_parameters[1,int(rx_index_point),:]
+        rx_wall_factor = self.photodector.area*self.room.wall_parameters[1,int(rx_index_point),:]
 
         #Differential power between all grid points without reflectance
         dP_ij = np.zeros((self.room.no_points,self.room.no_points),np.float32)
@@ -421,7 +421,7 @@ class Recursivemodel:
         #Computing the xyz coordinates from SPD-RGBY estimated spectrum
         xyz = lx.spd_to_xyz([self.wavelenght,self.r_data + self.g_data + self.b_data + self.y_data])
         #Computing the CRI coordinates from SPD-RGBY estimated spectrum
-        self._cri = lx.cri.spd_to_cri(np.vstack([self.wavelenght,(self.r_data + self.g_data + self.b_data + self.y_data)/pd1.area]))
+        self._cri = lx.cri.spd_to_cri(np.vstack([self.wavelenght,(self.r_data + self.g_data + self.b_data + self.y_data)/self.photodector.area]))
         #Computing the CCT coordinates from SPD-RGBY estimated spectrum
         self._cct = lx.xyz_to_cct_ohno2014(xyz)       
         
@@ -429,13 +429,13 @@ class Recursivemodel:
     #This function calculates the irradiance.
     def _compute_irradiance(self) -> None:                
         
-        self._irradiance = lx.spd_to_power(np.vstack([self.wavelenght,(self.r_data + self.g_data + self.b_data + self.y_data)/pd1.area]),ptype = 'ru')        
+        self._irradiance = lx.spd_to_power(np.vstack([self.wavelenght,(self.r_data + self.g_data + self.b_data + self.y_data)/self.photodector.area]),ptype = 'ru')        
 
 
     #This function calculates the illuminance.
     def _compute_illuminance(self) -> None:
         
-        self._illuminance = lx.spd_to_power(np.vstack([self.wavelenght,(self.r_data + self.g_data + self.b_data + self.y_data)/pd1.area]),ptype = 'pu')         
+        self._illuminance = lx.spd_to_power(np.vstack([self.wavelenght,(self.r_data + self.g_data + self.b_data + self.y_data)/self.photodector.area]),ptype = 'pu')         
 
 
     #This function computes channel matrix
