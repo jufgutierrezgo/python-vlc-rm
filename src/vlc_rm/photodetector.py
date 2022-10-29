@@ -5,10 +5,10 @@ import numpy as np
 #Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 #Import Constants Modules
-import constants
+from vlc_rm.constants import Constants
 
 #Created a class objects 
-Constants = constants.Constants()
+Constants = Constants()
 
 #Class for the photodetector
 class Photodetector:    
