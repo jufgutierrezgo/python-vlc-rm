@@ -6,9 +6,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import the required library
 import torch
-#Import Constants Modules
+#Import Constants Module
 from vlc_rm.constants import Constants
+#Import Constants Transmitter
 from vlc_rm.transmitter import Transmitter
+#Import Constants Photodetector
 from vlc_rm.photodetector import Photodetector
 
 
