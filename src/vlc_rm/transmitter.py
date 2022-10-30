@@ -12,10 +12,10 @@ class Transmitter:
     def __init__(
         self,
         name: str,
-        position: np.ndarray[float, float, float],
-        normal: np.ndarray[float, float, float],
-        wavelengths: np.ndarray[float, float, float],
-        fwhm: np.ndarray[float, float, float],
+        position: np.ndarray,
+        normal: np.ndarray,
+        wavelengths: np.ndarray,
+        fwhm: np.ndarray,
         mlambert: float = 1,
         power: float = 1
                 ) -> None:
@@ -41,7 +41,7 @@ class Transmitter:
 
     # Position Property
     @property
-    def position(self) -> np.ndarray[float, float, float]:
+    def position(self) -> np.ndarray:
         """The position property"""
         return self._position
 
@@ -51,7 +51,7 @@ class Transmitter:
 
     # Normal Property
     @property
-    def normal(self) -> np.ndarray[float, float, float]:
+    def normal(self) -> np.ndarray:
         """The normal property"""
         return self._normal
 
@@ -81,7 +81,7 @@ class Transmitter:
 
     # Wavelengths Property
     @property
-    def wavelengths(self) -> np.ndarray[float, float, float, float]:
+    def wavelengths(self) -> np.ndarray:
         """The Wavelengths property"""
         return self._wavelengths
 
@@ -91,7 +91,7 @@ class Transmitter:
 
     # FWHM Property
     @property
-    def fwhm(self) -> np.ndarray[float, float, float, float]:
+    def fwhm(self) -> np.ndarray:
         """The FWHM property"""
         return self._power
 

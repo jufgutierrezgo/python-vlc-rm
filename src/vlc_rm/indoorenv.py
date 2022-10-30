@@ -28,7 +28,7 @@ class Indoorenv:
     def __init__(
         self,
         name: str,
-        size: np.ndarray[float, float, float],
+        size: np.ndarray,
         resolution: float,
         no_reflections: int = 3
             ) -> None:
@@ -51,7 +51,7 @@ class Indoorenv:
 
     # Size Property
     @property
-    def size(self) -> np.ndarray[float, float, float]:
+    def size(self) -> np.ndarray:
         """The size property"""
         return self._size
 
@@ -124,10 +124,10 @@ class Indoorenv:
     # Create 3D coordinates of all points in the model
     def create_grid(
         self,
-        tx_position: np.ndarray[float, float, float],
-        rx_position: np.ndarray[float, float, float],
-        tx_normal: np.ndarray[float, float, float],
-        rx_normal: np.ndarray[float, float, float]
+        tx_position: np.ndarray,
+        rx_position: np.ndarray,
+        tx_normal: np.ndarray,
+        rx_normal: np.ndarray
                 ) -> None:
 
         # Number of ticks in each axis, based on spatial resolution.

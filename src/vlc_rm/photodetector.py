@@ -16,9 +16,9 @@ class Photodetector:
     def __init__(
         self,
         name: str,
-        position: np.ndarray[float, float, float],
-        normal: np.ndarray[float, float, float],
-        area: np.ndarray[float, float, float],
+        position: np.ndarray,
+        normal: np.ndarray,
+        area: np.ndarray,
         sensor: str = " ",
         fov: float = 90
                 ) -> None:
@@ -58,7 +58,7 @@ class Photodetector:
 
     # Position Property
     @property
-    def position(self) -> np.ndarray[float, float, float]:
+    def position(self) -> np.ndarray:
         """The position property"""
         return self._position
 
@@ -68,7 +68,7 @@ class Photodetector:
 
     # Normal Property
     @property
-    def normal(self) -> np.ndarray[float, float, float]:
+    def normal(self) -> np.ndarray:
         """The normal property"""
         return self._normal
 
