@@ -1,17 +1,14 @@
 import numpy as np
 
-import matplotlib.pyplot as plt
 
 import torch
 
-from vlc_rm.constants import Constants
+from vlc_rm.constants import Constants as Kt
 
 from vlc_rm.transmitter import Transmitter
 
 from vlc_rm.photodetector import Photodetector
 
-
-Constants = Constants()
 
 
 class Indoorenv:
@@ -128,17 +125,17 @@ class Indoorenv:
         floor_points = np.zeros((no_xtick*no_ytick, 3), dtype=np.float16)
 
         ceiling_normal = np.repeat(
-            [Constants.NORMAL_VECTOR_WALL[0]], no_xtick*no_ytick, axis=0)
+            [Kt.NORMAL_VECTOR_WALL[0]], no_xtick*no_ytick, axis=0)
         east_normal = np.repeat(
-            [Constants.NORMAL_VECTOR_WALL[1]], no_ztick*no_xtick, axis=0)
+            [Kt.NORMAL_VECTOR_WALL[1]], no_ztick*no_xtick, axis=0)
         south_normal = np.repeat(
-            [Constants.NORMAL_VECTOR_WALL[2]], no_ztick*no_ytick, axis=0)
+            [Kt.NORMAL_VECTOR_WALL[2]], no_ztick*no_ytick, axis=0)
         west_normal = np.repeat(
-            [Constants.NORMAL_VECTOR_WALL[3]], no_ztick*no_xtick, axis=0)
+            [Kt.NORMAL_VECTOR_WALL[3]], no_ztick*no_xtick, axis=0)
         north_normal = np.repeat(
-            [Constants.NORMAL_VECTOR_WALL[4]], no_ztick*no_ytick, axis=0)
+            [Kt.NORMAL_VECTOR_WALL[4]], no_ztick*no_ytick, axis=0)
         floor_normal = np.repeat(
-            [Constants.NORMAL_VECTOR_WALL[5]], no_xtick*no_ytick, axis=0)
+            [Kt.NORMAL_VECTOR_WALL[5]], no_xtick*no_ytick, axis=0)
 
         # Creates reflectance vector for each point
         ceiling_reflectance = np.repeat(
