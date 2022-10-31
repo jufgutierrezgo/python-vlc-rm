@@ -18,7 +18,7 @@ class Transmitter:
         fwhm: np.ndarray,
         mlambert: float = 1,
         power: float = 1
-                ) -> None:
+            ) -> None:
 
         # Instance Variable
         self._name = name
