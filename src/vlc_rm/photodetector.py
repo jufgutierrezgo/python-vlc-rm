@@ -18,7 +18,7 @@ class Photodetector:
         area: np.ndarray,
         sensor: str = " ",
         fov: float = 90
-                ) -> None:
+    ) -> None:
 
         self._name = name
         self._position = np.array(position)
@@ -30,7 +30,7 @@ class Photodetector:
         if self.sensor == 'TCS3103-04':
             # read text file into NumPy array
             self.responsivity = np.loadtxt(
-                Constants.SENSOR_PATH+"ResponsivityTCS3103-04.txt") #TODO: these files should be on a data directory
+                Constants.SENSOR_PATH+"ResponsivityTCS3103-04.txt")  # TODO: these files should be on a data directory
             print("Responsivity loaded succesfully")
         elif self.sensor == 'S10917-35GT':
             self.responsivity = np.loadtxt(
@@ -115,19 +115,19 @@ class Photodetector:
             self.responsivity[:, 1],
             color='r',
             linestyle='dashed'
-            )
+        )
         plt.plot(
             self.responsivity[:, 0],
             self.responsivity[:, 2],
             color='g',
             linestyle='dashed'
-            )
+        )
         plt.plot(
             self.responsivity[:, 0],
             self.responsivity[:, 3],
             color='b',
             linestyle='dashed'
-            )
+        )
         plt.title("Spectral Responsiity of Photodetector")
         plt.xlabel("Wavelength [nm]")
         plt.ylabel("Responsivity [A/W]")

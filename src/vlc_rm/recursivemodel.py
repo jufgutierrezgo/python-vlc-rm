@@ -184,8 +184,7 @@ class Recursivemodel:
         tDelay_ij = self.room.wall_parameters[0, :, :]/Constants.SPEED_OF_LIGHT
         # print(np.shape(tDelay_ij))
 
-
-        #TODO: check whether you can replace this for by vectorized operations or comprehension operations
+        # TODO: check whether you can replace this for by vectorized operations or comprehension operations
         for i in range(self.room.no_reflections+1):
 
             # Creates the array to save h_k reflections response

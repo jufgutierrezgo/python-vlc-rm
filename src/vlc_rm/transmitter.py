@@ -19,7 +19,7 @@ class Transmitter:
         fwhm: np.ndarray,
         mlambert: float = 1,
         power: float = 1
-                ) -> None:
+    ) -> None:
 
         self._name = name
         self._position = np.array(position)

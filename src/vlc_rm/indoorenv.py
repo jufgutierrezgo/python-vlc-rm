@@ -25,7 +25,7 @@ class Indoorenv:
         size: np.ndarray,
         resolution: float,
         no_reflections: int = 3
-            ) -> None:
+    ) -> None:
 
         self._name = name
         self._size = np.array(size)
@@ -75,7 +75,7 @@ class Indoorenv:
             f'Size [x y z] -> [m]: {self._size} \n'
             f'Order reflection: {self._no_reflections} \n'
             f'Resolution points [cm]: {self._resolution}'
-            )
+        )
 
     def set_reflectance(self, wall_name, reflectance_wall):
         self._wall_name = wall_name
@@ -103,7 +103,7 @@ class Indoorenv:
         tx_normal: Photodetector,
         rx_normal: Photodetector,
         fov: Photodetector
-                        ) -> None:
+    ) -> None:
 
         self.create_grid(tx_position, rx_position, tx_normal, rx_normal)
         self.compute_parameters(fov)
@@ -114,7 +114,7 @@ class Indoorenv:
         rx_position: np.ndarray,
         tx_normal: np.ndarray,
         rx_normal: np.ndarray
-                ) -> None:
+    ) -> None:
 
         no_xtick = int(self._size[0]/self._resolution)
         no_ytick = int(self._size[1]/self._resolution)
@@ -196,7 +196,7 @@ class Indoorenv:
             [tx_position],
             [rx_position]),
             axis=0
-            ))
+        ))
 
         self.normal_vectors = torch.from_numpy(np.concatenate((
             ceiling_normal,
@@ -223,8 +223,7 @@ class Indoorenv:
             2*self._size[0]*self._size[1] +
             2*self._size[0]*self._size[2] +
             2*self._size[1]*self._size[2]
-                    )/(self.no_points-2)
-
+        )/(self.no_points-2)
 
     def compute_parameters(self, fov: float) -> None:
         """This function creates an 3d-array with cross-parametes between
@@ -260,7 +259,7 @@ class Indoorenv:
             (2, self.no_points, self.no_points), dtype=np.float16)
 
         # Computes pairwise-element distance using tensor
-        #TODO: consider using Numpy only if possible
+        # TODO: consider using Numpy only if possible
         dist = torch.cdist(self.gridpoints, self.gridpoints)
 
         # Computes the pairwise-difference (vector) using tensor
@@ -281,7 +280,6 @@ class Indoorenv:
         array_tx = np.asarray(cos_phi[-2, :])
         low_values_flags = array_tx < np.cos(90*np.pi/180)
         array_tx[low_values_flags] = 0
-
 
         # Save in numpy array the results of tensor calculations
         self.wall_parameters[0, :, :] = dist.numpy()
