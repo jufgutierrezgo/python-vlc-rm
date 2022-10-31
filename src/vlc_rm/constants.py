@@ -1,17 +1,20 @@
+from dataclasses import dataclass
 import os
 
 
-#Class constants
+@dataclass(frozen=True)
 class Constants:
-    # global variables
-
+    """
+    Global constants.
+    """
     #Array with normal vectors for each wall.
+    #TODO: consider using a named tuple
     NORMAL_VECTOR_WALL = [[0,0,-1],[0,1,0],[1,0,0],[0,-1,0],[-1,0,0],[0,0,1]]
     #directory root of the project
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
     #directory to save channel impulse response raw data
     SENSOR_PATH = ROOT_DIR + "/sensors/"
-    #directory to save histograms and graphs  
+    #directory to save histograms and graphs
     REPORT_PATH = ROOT_DIR + "/report/"
     #Numbers of LED (Transmission channels)
     NO_LEDS = 4

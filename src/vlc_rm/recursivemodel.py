@@ -1,35 +1,24 @@
-# Numeric Numpy library
 import numpy as np
 from numpy.core.function_base import linspace
-# Library for gaussian shape SPD
 from scipy import stats
-# Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
-# import Luxpy library for colorimetric parameters
 import luxpy as lx
 
-# Import Constants Module
 from vlc_rm.constants import Constants
-# Import Constants Transmitter
 from vlc_rm.transmitter import Transmitter
-# Import Constants Photodetector
 from vlc_rm.photodetector import Photodetector
-# Import Constants Photodetector
 from vlc_rm.indoorenv import Indoorenv
 
 
-# Created a class objects
 Constants = Constants()
 
 
-# Class for Recursive Model computations
 class Recursivemodel:
     """
         This class contains the function to calculates the CIR and
         DC-gain in the optical channel.
     """
 
-    # The init method or constructor
     def __init__(
         self,
         name: str,
@@ -38,7 +27,6 @@ class Recursivemodel:
         room: Indoorenv
             ) -> None:
 
-        # Instance Variable
         self.name = name
         self.led = led
         self.photodector = photodetector
@@ -51,50 +39,40 @@ class Recursivemodel:
         self._cri = 0
         self._cct = 0
 
-    # RGBY DC-Gain Property
     @property
     def rgby_dcgain(self):
-        """The RGBY DC-Gain property"""
         return self._rgby_dcgain
 
     @rgby_dcgain.setter
     def rgby_dcgain(self, value):
         self._rgby_dcgain = value
 
-    # Channel Matrix Property
     @property
     def channelmatrix(self):
-        """The Channel Matrix property"""
         return self._channelmatrix
 
     @channelmatrix.setter
     def channelmatrix(self, value):
         self._channelmatrix = value
 
-    # Illuminance Property
     @property
     def illuminance(self):
-        """The Channel Matrix property"""
         return self._illuminance
 
     @illuminance.setter
     def illuminance(self, value):
         self._illuminance = value
 
-    # CRI Property
     @property
     def cri(self):
-        """The Channel Matrix property"""
         return self._cri
 
     @cri.setter
     def cri(self, value):
         self._cri = value
 
-    # CCT Property
     @property
     def cct(self):
-        """The Channel Matrix property"""
         return self._cct
 
     @cct.setter
@@ -111,8 +89,9 @@ class Recursivemodel:
             f'CRI: {self._cri} \n'
         )
 
-    # This method simulates the indoor enviornment
     def simulate_channel(self) -> None:
+        """ This method simulates the indoor enviornment
+        """
 
         self._compute_cir()
         self._compute_dcgain()
@@ -124,7 +103,6 @@ class Recursivemodel:
 
         print("|>>------- Indoor channel simulated ------<<|")
 
-    # Function to compute the CIR
     def _compute_cir(self) -> None:
         """ Function to compute the channel impulse response
             for each reflection.
@@ -161,7 +139,6 @@ class Recursivemodel:
         # define distance^2 and cos_phi arrays
         dis2 = np.power(self.room.wall_parameters[0, :, :], 2)
         cos_phi = self.room.wall_parameters[1, int(tx_index_point), :]
-        # print("COS_PHI for Tx->",cos_phi)
 
         # computing the received power by each smaller area from light sooure
         tx_power = (
@@ -192,7 +169,6 @@ class Recursivemodel:
                 where=dis2 != 0
                 )
             )
-        # print("Differential Power of Points->",dP_ij)
 
         # Array creation for dc_gain and previuos dc_gain
         self.h_k = []
@@ -208,6 +184,8 @@ class Recursivemodel:
         tDelay_ij = self.room.wall_parameters[0, :, :]/Constants.SPEED_OF_LIGHT
         # print(np.shape(tDelay_ij))
 
+
+        #TODO: check whether you can replace this for by vectorized operations or comprehension operations
         for i in range(self.room.no_reflections+1):
 
             # Creates the array to save h_k reflections response
@@ -234,17 +212,8 @@ class Recursivemodel:
                 self.delay_hk[i][0, 0] = tDelay_ij[
                     int(tx_index_point), int(rx_index_point)
                         ]
-                # print("self.delay_hk->",self.delay_hk[i][0,0])
-
-                print(
-                    "|>>--------------h{}-computed--------------<<|"
-                    .format(i)
-                    )
-                # numpy.savetxt(CIR_PATH+"h0.csv", h_k[i], delimiter=",")
-                # print(self.h_k[i])
 
             elif i == 1:
-
                 # Impulse response between source and each cells without
                 # reflectance. The reflectance is added in the h_k computing.
                 h0_se = np.multiply(
@@ -284,10 +253,6 @@ class Recursivemodel:
                 self.delay_hk[i] = tDelay_ij[
                     int(tx_index_point), :] + delay_hlast_er[i]
 
-                print(
-                    "|>>--------------h{}-computed--------------<<|"
-                    .format(i)
-                    )
                 # np.savetxt(CIR_PATH+"h1.csv", h_k[i], delimiter=","
 
             elif i >= 2:
@@ -311,33 +276,24 @@ class Recursivemodel:
                             ),
                         axis=1
                         )
-                    # print("hlast->",np.shape(hlast_er[i]))
 
                     self.h_k[i][:, color] = np.multiply(
                         h0_se[:, 0], hlast_er[i][:, color])
                     # print("h_k->",np.shape(self.h_k[i]))
 
-                print(
-                    "|>>--------------h{}-computed--------------<<|"
-                    .format(i)
-                    )
 
-    # This function calculates the total power received
-    # from LoS and h_k reflections
-    def _compute_dcgain(self) -> None:
+   def _compute_dcgain(self) -> None:
+    """
+    This function calculates the total power received
+    from LoS and h_k reflections
+    """
 
-        # print("\n Results DC Gain [R G B Y]:")
         self.h_dcgain = np.zeros((self.room.no_reflections+1, 4), np.float32)
 
         for i in range(0, self.room.no_reflections+1):
             self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:4], axis=0)
-            # print(" H"+str(i)+" RGBY DC Gain Power [W]:")
-            # print(self.h_dcgain[i,:])
 
         self._rgby_dcgain = np.sum(self.h_dcgain, axis=0)
-        # print("DC-gain channel computted")
-        # print("Total RGBY DC Gain Power [W]")
-        # print(self.rgby_dcgain)
 
     # Function to create histograms from channel impulse response raw data.
     def _create_histograms(self) -> None:
@@ -367,12 +323,12 @@ class Recursivemodel:
         self.hist_power_time = []
         delay_aux = np.zeros((self.room.no_points, 1))
 
+        #TODO: required?
         print("//------------- Data report ------------------//")
         print("Time resolution [s]:"+str(self.time_resolution))
         print("Number of Bins:"+str(self.bins_hist))
 
         delay_los = self.delay_hk[0][0, 0]
-        # print(np.shape(delay_los))
 
         print("Optical power reported in histograms:")
 
@@ -417,11 +373,13 @@ class Recursivemodel:
         elif self.channel == 'yellow':
             color_number = 3
         else:
+            #TODO: better throw an exception
             print(
                 "Invalid color name ('red' or 'green' or 'blue' or 'yellow').")
             color_number = -1
 
         if color_number == -1:
+            #TODO: remove, refactor
             print("Graphs were not generated.")
         else:
             for k_reflec in range(0, self.room.no_reflections+1):
