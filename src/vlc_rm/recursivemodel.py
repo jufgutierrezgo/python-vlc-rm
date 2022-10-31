@@ -13,7 +13,7 @@ from vlc_rm.indoorenv import Indoorenv
 class Recursivemodel:
     """
         This class contains the function to calculates the CIR and
-        DC-gain in the optical channel.
+        DC-gain in the optical channel and lighting parameters
     """
 
     def __init__(

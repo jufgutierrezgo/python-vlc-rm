@@ -5,7 +5,7 @@ from vlc_rm.constants import Constants as Kt
 
 class Photodetector:
     """
-    TODO: Add doc string
+    This class defines the photodetector features
     """
 
     def __init__(

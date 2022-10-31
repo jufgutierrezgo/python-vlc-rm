@@ -13,7 +13,9 @@ from vlc_rm.photodetector import Photodetector
 
 class Indoorenv:
     """
-    #TODO: Add class doc string
+    This class defines the indoor environment features, and computes
+    the points grid and the cosine and distance pair-waise.
+
     """
 
     def __init__(
