@@ -5,10 +5,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# Class for the TRansmitter
 class Transmitter:
+    """
+    #TODO: add documentation for the class
+    """
 
-    # The init method or constructor
     def __init__(
         self,
         name: str,
@@ -18,9 +19,8 @@ class Transmitter:
         fwhm: np.ndarray,
         mlambert: float = 1,
         power: float = 1
-                ) -> None:
+    ) -> None:
 
-        # Instance Variable
         self._name = name
         self._position = np.array(position)
         self._normal = np.array([normal])
@@ -29,70 +29,56 @@ class Transmitter:
         self._wavelengths = np.array(wavelengths)
         self._fwhm = np.array(fwhm)
 
-    # Name Property
     @property
     def name(self) -> str:
-        """The name property"""
         return self._name
 
     @name.setter
     def name(self, value):
         self._name = value
 
-    # Position Property
     @property
     def position(self) -> np.ndarray:
-        """The position property"""
         return self._position
 
     @position.setter
     def position(self, position):
         self._position = position
 
-    # Normal Property
     @property
     def normal(self) -> np.ndarray:
-        """The normal property"""
         return self._normal
 
     @normal.setter
     def position(self, normal):
         self._normal = np.array(normal)
 
-    # mLambert Property
     @property
     def mlambert(self) -> float:
-        """The Lambert number property"""
         return self._mlambert
 
     @mlambert.setter
     def mlambert(self, mlabert):
         self._mlambert = mlabert
 
-    # Power Property
     @property
     def power(self) -> float:
-        """The Power property"""
         return self._power
 
     @power.setter
     def power(self, power):
         self._power = power
 
-    # Wavelengths Property
     @property
     def wavelengths(self) -> np.ndarray:
-        """The Wavelengths property"""
         return self._wavelengths
 
     @wavelengths.setter
     def wavelengths(self, wavelengths):
         self._wavelengths = np.array(wavelengths)
 
-    # FWHM Property
     @property
     def fwhm(self) -> np.ndarray:
-        """The FWHM property"""
         return self._power
 
     @fwhm.setter
