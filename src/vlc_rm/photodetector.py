@@ -1,18 +1,13 @@
-# Numeric Numpy library
 import numpy as np
-# Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
-# Import Constants Modules
-from vlc_rm.constants import Constants
-
-# Created a class objects
-Constants = Constants()
+from vlc_rm.constants import Constants as Kt
 
 
-# Class for the photodetector
 class Photodetector:
+    """
+    TODO: Add doc string
+    """
 
-    # The init method or constructor
     def __init__(
         self,
         name: str,
@@ -21,9 +16,8 @@ class Photodetector:
         area: np.ndarray,
         sensor: str = " ",
         fov: float = 90
-                ) -> None:
+    ) -> None:
 
-        # Instance Variable
         self._name = name
         self._position = np.array(position)
         self._normal = np.array([normal])
@@ -34,72 +28,59 @@ class Photodetector:
         if self.sensor == 'TCS3103-04':
             # read text file into NumPy array
             self.responsivity = np.loadtxt(
-                Constants.SENSOR_PATH+"ResponsivityTCS3103-04.txt")
+                Kt.SENSOR_PATH+"ResponsivityTCS3103-04.txt")  # TODO: these files should be on a data directory
             print("Responsivity loaded succesfully")
         elif self.sensor == 'S10917-35GT':
-            # read text file into NumPy array
             self.responsivity = np.loadtxt(
-                Constants.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
+                Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
             print("Responsivity loaded succesfully")
         elif self.sensor == ' ':
             print("Specify sensor reference")
         else:
             print("Sensor reference not valid")
 
-    # Name Property
     @property
     def name(self) -> str:
-        """The name property"""
         return self._name
 
     @name.setter
     def name(self, value):
         self._name = value
 
-    # Position Property
     @property
     def position(self) -> np.ndarray:
-        """The position property"""
         return self._position
 
     @position.setter
     def position(self, position):
         self._position = position
 
-    # Normal Property
     @property
     def normal(self) -> np.ndarray:
-        """The normal property"""
         return self._normal
 
     @normal.setter
     def position(self, normal):
         self._normal = np.array(normal)
 
-    # Area Property
     @property
     def area(self) -> float:
-        """The position property"""
         return self._area
 
     @area.setter
     def area(self, area):
         self._area = area
 
-    # FOV Property
     @property
     def fov(self) -> float:
-        """The position property"""
         return self._fov
 
     @fov.setter
     def fov(self, fov):
         self._fov = fov
 
-    # Sensor Property
     @property
     def sensor(self) -> str:
-        """The position property"""
         return self._sensor
 
     @sensor.setter
@@ -107,19 +88,14 @@ class Photodetector:
         self._sensor = sensor
 
         if self.sensor == 'TCS3103-04':
-            # read text file into NumPy array
             self.responsivity = np.loadtxt(
-                Constants.SENSOR_PATH+"ResponsivityTCS3103-04.txt")
+                Kt.SENSOR_PATH+"ResponsivityTCS3103-04.txt")
             print("Responsivity loaded succesfully")
         elif self.sensor == 'S10917-35GT':
-            # read text file into NumPy array
             self.responsivity = np.loadtxt(
-                Constants.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
-            print("Responsivity loaded succesfully")
-        elif self.sensor == '':
-            print("Specify sensor reference")
+                Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
         else:
-            print("Sensor reference not valid")
+            raise ValueError(f"Unknown value {sensor}")
 
     def __str__(self) -> str:
         return (
@@ -131,26 +107,25 @@ class Photodetector:
             f'Sensor: {self._sensor}'
         )
 
-    # Plot the spectral responsivity of the photodetector.
     def plot_responsivity(self) -> None:
         plt.plot(
             self.responsivity[:, 0],
             self.responsivity[:, 1],
             color='r',
             linestyle='dashed'
-            )
+        )
         plt.plot(
             self.responsivity[:, 0],
             self.responsivity[:, 2],
             color='g',
             linestyle='dashed'
-            )
+        )
         plt.plot(
             self.responsivity[:, 0],
             self.responsivity[:, 3],
             color='b',
             linestyle='dashed'
-            )
+        )
         plt.title("Spectral Responsiity of Photodetector")
         plt.xlabel("Wavelength [nm]")
         plt.ylabel("Responsivity [A/W]")
