@@ -9,7 +9,7 @@ class Constants:
     """
     # Array with normal vectors for each wall.
     # TODO: consider using a named tuple
-    NORMAL_VECTOR_WALL = [[0, 0, -1], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 0, 0], [0, 0, 1]]
+    NORMAL_VECTOR_WALLcode  = [[0, 0, -1], [0, 1, 0], [1, 0, 0], [0, -1, 0], [-1, 0, 0], [0, 0, 1]]
     # directory root of the project
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
     # directory to save channel impulse response raw data
@@ -22,4 +22,3 @@ class Constants:
     NO_DETECTORS = 3
     # Speed of light
     SPEED_OF_LIGHT = 299792458
-

@@ -1,6 +1,5 @@
 import numpy as np
 
-
 import torch
 
 from vlc_rm.constants import Constants as Kt
