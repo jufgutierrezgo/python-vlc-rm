@@ -86,8 +86,8 @@ class Recursivemodel:
 
     def __str__(self) -> str:
         return (
-            f'\n |--------- Simulations results --------|\n'
-            f'DC-Gain [w]: {self._rgby_dcgain} \n'
+            f'\n *-------------- Simulations results ---------------*\n'
+            f'DC-Gain [w]: \n {self._rgby_dcgain} \n'
             f'Crosstalk Matrix: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CCT: {self._cct} \n'
