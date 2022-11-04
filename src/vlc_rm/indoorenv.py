@@ -8,6 +8,7 @@ from vlc_rm.transmitter import Transmitter
 
 from vlc_rm.photodetector import Photodetector
 
+from vlc_rm.loader import Loader
 
 
 class Indoorenv:
@@ -103,8 +104,15 @@ class Indoorenv:
         fov: Photodetector
     ) -> None:
 
+        loader = Loader(
+            "Creating parameters of indoor environment ...",
+            "Parameters created!", 0.05
+            ).start()
+
         self.create_grid(tx_position, rx_position, tx_normal, rx_normal)
         self.compute_parameters(fov)
+
+        loader.stop()
 
     def create_grid(
         self,
@@ -222,6 +230,7 @@ class Indoorenv:
             2*self._size[0]*self._size[2] +
             2*self._size[1]*self._size[2]
         )/(self.no_points-2)
+
 
     def compute_parameters(self, fov: float) -> None:
         """This function creates an 3d-array with cross-parametes between

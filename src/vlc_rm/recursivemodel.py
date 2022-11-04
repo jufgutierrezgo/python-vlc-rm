@@ -1,13 +1,21 @@
 import numpy as np
 from numpy.core.function_base import linspace
+
 from scipy import stats
+
 import matplotlib.pyplot as plt
+
 import luxpy as lx
 
 from vlc_rm.constants import Constants as Kt
+
 from vlc_rm.transmitter import Transmitter
+
 from vlc_rm.photodetector import Photodetector
+
 from vlc_rm.indoorenv import Indoorenv
+
+from vlc_rm.loader import Loader
 
 
 class Recursivemodel:
@@ -78,7 +86,7 @@ class Recursivemodel:
 
     def __str__(self) -> str:
         return (
-            f'Recursive model characteristics metrics: \n'
+            f'\n |--------- Simulations results --------|\n'
             f'DC-Gain [w]: {self._rgby_dcgain} \n'
             f'Crosstalk Matrix: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
@@ -90,6 +98,10 @@ class Recursivemodel:
         """ This method simulates the indoor enviornment
         """
 
+        loader = Loader(
+            "Simulating indoor environment ...", "Simulation done!", 0.05
+            ).start()
+
         self._compute_cir()
         self._compute_dcgain()
         self._create_spd()
@@ -98,7 +110,7 @@ class Recursivemodel:
         self._compute_illuminance()
         self._compute_channelmatrix()
 
-        print("|>>------- Indoor channel simulated ------<<|")
+        loader.stop()        
 
     def _compute_cir(self) -> None:
         """ Function to compute the channel impulse response
