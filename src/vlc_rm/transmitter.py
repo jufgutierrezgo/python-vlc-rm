@@ -4,6 +4,11 @@ import numpy as np
 # Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 
+# Library for logging
+import logging
+
+from vlc_rm.constants import Constants as Kt
+
 
 class Transmitter:
     """
@@ -11,12 +16,12 @@ class Transmitter:
     """
 
     def __init__(
-        self,
-        name: str,
+        self,        
         position: np.ndarray,
         normal: np.ndarray,
         wavelengths: np.ndarray,
         fwhm: np.ndarray,
+        name: str = "LED",
         mlambert: float = 1,
         power: float = 1
             ) -> None:
@@ -34,8 +39,8 @@ class Transmitter:
         return self._name
 
     @name.setter
-    def name(self, value):
-        self._name = value
+    def name(self, name):
+        self._name = name
 
     @property
     def position(self) -> np.ndarray:
@@ -44,6 +49,8 @@ class Transmitter:
     @position.setter
     def position(self, position):
         self._position = position
+        if self._position.size != 3:
+            raise ValueError("Position must be a 3d-numpy array.")
 
     @property
     def normal(self) -> np.ndarray:
@@ -52,6 +59,8 @@ class Transmitter:
     @normal.setter
     def position(self, normal):
         self._normal = np.array(normal)
+        if self._normal.size != 3:
+            raise ValueError("Normal must be a 3d-numpy array.")
 
     @property
     def mlambert(self) -> float:
@@ -59,6 +68,8 @@ class Transmitter:
 
     @mlambert.setter
     def mlambert(self, mlabert):
+        if mlabert <= 0:
+            raise ValueError("Lambert number must be greater than zero.")                
         self._mlambert = mlabert
 
     @property
@@ -67,6 +78,8 @@ class Transmitter:
 
     @power.setter
     def power(self, power):
+        if power < 0:
+            raise ValueError("The power must be non-negative.")        
         self._power = power
 
     @property
@@ -76,6 +89,9 @@ class Transmitter:
     @wavelengths.setter
     def wavelengths(self, wavelengths):
         self._wavelengths = np.array(wavelengths)
+        if self._wavelengths.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of wavelengths array must be equal to the number of LEDs.")
 
     @property
     def fwhm(self) -> np.ndarray:
@@ -84,6 +100,9 @@ class Transmitter:
     @fwhm.setter
     def fwhm(self, fwhm):
         self._fwhm = np.array(fwhm)
+        if self._fwhm.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of FWHM array must be equal to the number of LEDs.")
 
     def __str__(self) -> str:
         return (

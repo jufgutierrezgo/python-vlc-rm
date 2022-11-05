@@ -231,7 +231,6 @@ class Indoorenv:
             2*self._size[1]*self._size[2]
         )/(self.no_points-2)
 
-
     def compute_parameters(self, fov: float) -> None:
         """This function creates an 3d-array with cross-parametes between
             points.

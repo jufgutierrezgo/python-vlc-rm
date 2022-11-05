@@ -86,7 +86,7 @@ class Recursivemodel:
 
     def __str__(self) -> str:
         return (
-            f'\n *-------------- Simulations results ---------------*\n'
+            f'\n |=============== Simulation results ================|\n'
             f'DC-Gain [w]: \n {self._rgby_dcgain} \n'
             f'Crosstalk Matrix: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
@@ -110,7 +110,7 @@ class Recursivemodel:
         self._compute_illuminance()
         self._compute_channelmatrix()
 
-        loader.stop()        
+        loader.stop()
 
     def _compute_cir(self) -> None:
         """ Function to compute the channel impulse response
