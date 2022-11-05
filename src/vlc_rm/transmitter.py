@@ -16,7 +16,7 @@ class Transmitter:
     """
 
     def __init__(
-        self,        
+        self,
         position: np.ndarray,
         normal: np.ndarray,
         wavelengths: np.ndarray,
@@ -48,7 +48,7 @@ class Transmitter:
 
     @position.setter
     def position(self, position):
-        self._position = position
+        self._position = np.array(position)
         if self._position.size != 3:
             raise ValueError("Position must be a 3d-numpy array.")
 
@@ -69,7 +69,7 @@ class Transmitter:
     @mlambert.setter
     def mlambert(self, mlabert):
         if mlabert <= 0:
-            raise ValueError("Lambert number must be greater than zero.")                
+            raise ValueError("Lambert number must be greater than zero.")
         self._mlambert = mlabert
 
     @property
@@ -79,7 +79,7 @@ class Transmitter:
     @power.setter
     def power(self, power):
         if power < 0:
-            raise ValueError("The power must be non-negative.")        
+            raise ValueError("The power must be non-negative.")
         self._power = power
 
     @property
