@@ -17,11 +17,11 @@ class Transmitter:
 
     def __init__(
         self,
+        name: str,
         position: np.ndarray,
         normal: np.ndarray,
         wavelengths: np.ndarray,
         fwhm: np.ndarray,
-        name: str = "LED",
         mlambert: float = 1,
         power: float = 1
             ) -> None:
@@ -49,15 +49,15 @@ class Transmitter:
     @position.setter
     def position(self, position):
         self._position = np.array(position)
-        if self._position.size != 3:
-            raise ValueError("Position must be a 3d-numpy array.")
+        # if self._position.size != 3:
+        #    raise ValueError("Position must be a 3d-numpy array.")
 
     @property
     def normal(self) -> np.ndarray:
         return self._normal
 
     @normal.setter
-    def position(self, normal):
+    def normal(self, normal):
         self._normal = np.array(normal)
         if self._normal.size != 3:
             raise ValueError("Normal must be a 3d-numpy array.")
