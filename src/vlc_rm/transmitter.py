@@ -27,12 +27,32 @@ class Transmitter:
             ) -> None:
 
         self._name = name
+
         self._position = np.array(position)
+        if self._position.size != 3:
+            raise ValueError("Position must be a 3d-numpy array.")
+
         self._normal = np.array([normal])
+        if self._normal.size != 3:
+            raise ValueError("Normal must be a 3d-numpy array.")
+        
         self._mlambert = mlambert
+        if mlambert <= 0:
+            raise ValueError("Lambert number must be greater than zero.")
+
         self._power = power
+        if power < 0:
+            raise ValueError("The power must be non-negative.")
+            
         self._wavelengths = np.array(wavelengths)
+        if self._wavelengths.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of wavelengths array must be equal to the number of LEDs.")
+                
         self._fwhm = np.array(fwhm)
+        if self._fwhm.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of FWHM array must be equal to the number of LEDs.")
 
     @property
     def name(self) -> str:
@@ -49,8 +69,8 @@ class Transmitter:
     @position.setter
     def position(self, position):
         self._position = np.array(position)
-        # if self._position.size != 3:
-        #    raise ValueError("Position must be a 3d-numpy array.")
+        if self._position.size != 3:
+            raise ValueError("Position must be a 3d-numpy array.")
 
     @property
     def normal(self) -> np.ndarray:
