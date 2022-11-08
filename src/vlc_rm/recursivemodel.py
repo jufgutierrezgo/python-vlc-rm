@@ -68,7 +68,7 @@ class Recursivemodel:
 
     def __str__(self) -> str:
         return (
-            f'\n |=============== Simulation results ================|\n'
+            f'\n|=============== Simulation results ================|\n'
             f'DC-Gain [w]: \n {self._rgby_dcgain} \n'
             f'Crosstalk Matrix: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
@@ -285,6 +285,15 @@ class Recursivemodel:
 
         self._rgby_dcgain = np.sum(self.h_dcgain, axis=0)
 
+    # This fuction print the DC-gain for each reflection
+    def print_Hk(self) -> None:
+        """
+        This function calculates the DC-Gain for each reflection.
+        """
+        for i in range(0, self.room.no_reflections+1):
+            print("\n DC-gain for H{} response [W]:\n {}".format(i,self.h_dcgain[i, :]))
+            
+
     # Function to create histograms from channel impulse response raw data.
     def _create_histograms(self) -> None:
         """Function to create histograms from channel impulse
@@ -447,7 +456,7 @@ class Recursivemodel:
         self.y_data = self.rgby_dcgain[3]*stats.norm.pdf(
             self.wavelenght, self.led._wavelengths[3], self.led._fwhm[3]/2)
         self.spd_data = [self.r_data, self.g_data, self.b_data, self.y_data]
-
+   
     # This function plots the SPD of QLED
     def _plot_spd(self) -> None:
 
