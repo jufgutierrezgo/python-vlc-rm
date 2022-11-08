@@ -38,51 +38,33 @@ class Recursivemodel:
         self.room = room
 
         self._rgby_dcgain = np.zeros((1, Kt.NO_LEDS))
-        self.channelmatrix = np.zeros(
-            (Kt.NO_DETECTORS, Kt.NO_LEDS), dtype=np.float32)
+        self._channelmatrix = np.zeros(
+            (Kt.NO_DETECTORS, Kt.NO_LEDS),
+            dtype=np.float32
+            )
         self._illuminance = 0
         self._cri = 0
         self._cct = 0
 
     @property
     def rgby_dcgain(self):
-        return self._rgby_dcgain
-
-    @rgby_dcgain.setter
-    def rgby_dcgain(self, value):
-        self._rgby_dcgain = value
-
+        return self._rgby_dcgai
+    
     @property
     def channelmatrix(self):
         return self._channelmatrix
-
-    @channelmatrix.setter
-    def channelmatrix(self, value):
-        self._channelmatrix = value
 
     @property
     def illuminance(self):
         return self._illuminance
 
-    @illuminance.setter
-    def illuminance(self, value):
-        self._illuminance = value
-
     @property
     def cri(self):
         return self._cri
 
-    @cri.setter
-    def cri(self, value):
-        self._cri = value
-
     @property
     def cct(self):
         return self._cct
-
-    @cct.setter
-    def cct(self, value):
-        self._cct = value
 
     def __str__(self) -> str:
         return (
