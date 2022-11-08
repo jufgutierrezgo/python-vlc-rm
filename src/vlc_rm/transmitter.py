@@ -30,11 +30,11 @@ class Transmitter:
 
         self._position = np.array(position)
         if self._position.size != 3:
-            raise ValueError("Position must be a 3d-numpy array.")
+            raise ValueError("Position must be an 1d-numpy array [x y z].")
 
         self._normal = np.array([normal])
         if self._normal.size != 3:
-            raise ValueError("Normal must be a 3d-numpy array.")
+            raise ValueError("Normal must be an 1d-numpy array [x y z].")
         
         self._mlambert = mlambert
         if mlambert <= 0:

@@ -27,9 +27,21 @@ class Indoorenv:
     ) -> None:
 
         self._name = name
+
         self._size = np.array(size)
+        if self._size != 3:
+            raise ValueError(
+                "Size of the indoor environment must be an 1d-numpy array [x y z]")
+
         self._resolution = resolution
+        if self._resolution <= 0:
+            raise ValueError(
+                "Resolution of points must be a real number greater than zero.")
+
         self._no_reflections = no_reflections
+        if self._no_reflections <= 0:
+            raise ValueError(
+                "Resolution of points must be a real integer between 0 and 10.")
 
     @property
     def name(self):
@@ -47,8 +59,10 @@ class Indoorenv:
 
     @size.setter
     def size(self, size):
-        print("Set size")
-        self._size = size
+        self._size = np.array(size)
+        if self._size != 3:
+            raise ValueError(
+                "Size of the indoor environment must be an 1d-numpy array [x y z]")
 
     @property
     def no_reflections(self) -> int:
@@ -58,6 +72,9 @@ class Indoorenv:
     @no_reflections.setter
     def no_reflections(self, no_reflections):
         self._no_reflections = no_reflections
+        if self._no_reflections <= 0:
+            raise ValueError(
+                "Resolution of points must be a real integer between 0 and 10.")
 
     @property
     def resolution(self) -> float:
@@ -67,6 +84,9 @@ class Indoorenv:
     @resolution.setter
     def resolution(self, resolution):
         self._resolution = resolution
+        if self._resolution <= 0:
+            raise ValueError(
+                "Resolution of points must be a real number greater than zero.")
 
     def __str__(self) -> str:
         return (
@@ -93,12 +113,12 @@ class Indoorenv:
         elif self._wall_name == 'floor':
             self._floor = self._reflectance_wall
         else:
-            print('Invalid wall name.')
+            ValueError('Invalid wall name.')
 
     def create_envirorment(
         self,
         tx: Transmitter,
-        rx: Photodetector        
+        rx: Photodetector
     ) -> None:
 
         self._tx = tx

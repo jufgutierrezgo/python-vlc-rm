@@ -23,11 +23,11 @@ class Photodetector:
 
         self._position = np.array(position)
         if self._position.size != 3:
-            raise ValueError("Position must be a 3d-numpy array.")
+            raise ValueError("Position must be an 1d-numpy array [x y z].")
         
         self._normal = np.array([normal])
         if self._normal.size != 3:
-            raise ValueError("Normal must be a 3d-numpy array.")
+            raise ValueError("Normal must be an 1d-numpy array [x y z].")
 
         self._area = np.array(area)
         if self._area <= 0:
@@ -103,7 +103,8 @@ class Photodetector:
         self._fov = fov
         if self._fov <= 0 or self._fov >= 90:
             raise ValueError(
-                "Field-of-View of the detector must be between 0 and 90 degrees.")
+                "Field-of-View of the detector must be between 0 and 90 degrees."
+                )
 
     @property
     def sensor(self) -> str:
@@ -121,7 +122,7 @@ class Photodetector:
             self.responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
         else:
-            raise ValueError(f"Unknown value {sensor}")
+            raise ValueError(f"Unknown value for sensor reference{sensor}.")
 
     def __str__(self) -> str:
         return (
