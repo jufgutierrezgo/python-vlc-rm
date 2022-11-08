@@ -29,7 +29,7 @@ class Indoorenv:
         self._name = name
 
         self._size = np.array(size)
-        if self._size != 3:
+        if self._size.size != 3:
             raise ValueError(
                 "Size of the indoor environment must be an 1d-numpy array [x y z]")
 
@@ -60,7 +60,7 @@ class Indoorenv:
     @size.setter
     def size(self, size):
         self._size = np.array(size)
-        if self._size != 3:
+        if self._size.size != 3:
             raise ValueError(
                 "Size of the indoor environment must be an 1d-numpy array [x y z]")
 
@@ -113,7 +113,7 @@ class Indoorenv:
         elif self._wall_name == 'floor':
             self._floor = self._reflectance_wall
         else:
-            ValueError('Invalid wall name.')
+            raise ValueError("Invalid wall name.")
 
     def create_envirorment(
         self,
