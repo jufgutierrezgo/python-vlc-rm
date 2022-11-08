@@ -37,8 +37,8 @@ class Indoorenv:
         return self._name
 
     @name.setter
-    def name(self, value):
-        self._name = value
+    def name(self, name):
+        self._name = name
 
     @property
     def size(self) -> np.ndarray:
@@ -46,9 +46,9 @@ class Indoorenv:
         return self._size
 
     @size.setter
-    def size(self, value):
+    def size(self, size):
         print("Set size")
-        self._size = value
+        self._size = size
 
     @property
     def no_reflections(self) -> int:
@@ -56,8 +56,8 @@ class Indoorenv:
         return self._no_reflections
 
     @no_reflections.setter
-    def no_reflections(self, value):
-        self._no_reflections = value
+    def no_reflections(self, no_reflections):
+        self._no_reflections = no_reflections
 
     @property
     def resolution(self) -> float:
@@ -65,12 +65,12 @@ class Indoorenv:
         return self._resolution
 
     @resolution.setter
-    def resolution(self, value):
-        self._resolution = value
+    def resolution(self, resolution):
+        self._resolution = resolution
 
     def __str__(self) -> str:
         return (
-            f'\n List of parameters for indoor envirionment: \n'
+            f'\n List of parameters for indoor envirionment {self._name}: \n'
             f'Size [x y z] -> [m]: {self._size} \n'
             f'Order reflection: {self._no_reflections} \n'
             f'Resolution points [cm]: {self._resolution}'
