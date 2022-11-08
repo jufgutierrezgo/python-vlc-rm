@@ -48,7 +48,7 @@ class Recursivemodel:
 
     @property
     def rgby_dcgain(self):
-        return self._rgby_dcgai
+        return self._rgby_dcgain
     
     @property
     def channelmatrix(self):

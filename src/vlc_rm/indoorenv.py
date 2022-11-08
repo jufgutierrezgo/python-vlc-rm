@@ -97,20 +97,25 @@ class Indoorenv:
 
     def create_envirorment(
         self,
-        tx_position: Transmitter,
-        rx_position: Photodetector,
-        tx_normal: Photodetector,
-        rx_normal: Photodetector,
-        fov: Photodetector
+        tx: Transmitter,
+        rx: Photodetector        
     ) -> None:
+
+        self._tx = tx
+        self._rx = rx
 
         loader = Loader(
             "Creating parameters of indoor environment ...",
             "Parameters created!", 0.05
             ).start()
 
-        self.create_grid(tx_position, rx_position, tx_normal, rx_normal)
-        self.compute_parameters(fov)
+        self.create_grid(
+            self._tx._position,
+            self._rx._position,
+            self._tx._normal,
+            self._rx._normal
+            )
+        self.compute_parameters(self._rx._fov)
 
         loader.stop()
 
