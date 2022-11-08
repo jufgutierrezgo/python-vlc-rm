@@ -124,6 +124,14 @@ class Indoorenv:
         self._tx = tx
         self._rx = rx
 
+        if type(self._tx) is Transmitter:
+            raise ValueError(
+                "Tranmistter attribute must be an object type Transmitter.")
+
+        if type(self._rx) is Photodetector:
+            raise ValueError(
+                "Receiver attribute must be an object type Photodetector.")
+
         loader = Loader(
             "Creating parameters of indoor environment ...",
             "Parameters created!", 0.05

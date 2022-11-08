@@ -33,9 +33,21 @@ class Recursivemodel:
             ) -> None:
 
         self.name = name
+        
         self.led = led
+        if type(self.led) is Transmitter:
+            raise ValueError(
+                "Tranmistter attribute must be an object type Transmitter.")
+
         self.photodector = photodetector
+        if type(self.photodector) is Photodetector:
+            raise ValueError(
+                "Receiver attribute must be an object type Photodetector.")
+
         self.room = room
+        if type(self.room) is Indoorenv:
+            raise ValueError(
+                "Receiver attribute must be an object type Photodetector.")
 
         self._rgby_dcgain = np.zeros((1, Kt.NO_LEDS))
         self._channelmatrix = np.zeros(
