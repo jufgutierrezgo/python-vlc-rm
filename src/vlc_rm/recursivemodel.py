@@ -33,21 +33,24 @@ class Recursivemodel:
             ) -> None:
 
         self.name = name
-        
-        self.led = led
-        if type(self.led) is Transmitter:
+       
+        if type(led) is Transmitter:
+            self._led = led
+        else:
             raise ValueError(
                 "Tranmistter attribute must be an object type Transmitter.")
 
-        self.photodector = photodetector
-        if type(self.photodector) is Photodetector:
+        if type(photodetector) is Photodetector:
+            self._photodetector = photodetector
+        else:
             raise ValueError(
-                "Receiver attribute must be an object type Photodetector.")
+                "Receiver attribute must be an object type Photodetector.")        
 
-        self.room = room
-        if type(self.room) is Indoorenv:
+        if type(room) is Indoorenv:
+            self._room = room
+        else:
             raise ValueError(
-                "Receiver attribute must be an object type Photodetector.")
+                "Indoor environment attribute must be an object type Photodetector.")
 
         self._rgby_dcgain = np.zeros((1, Kt.NO_LEDS))
         self._channelmatrix = np.zeros(
@@ -123,16 +126,16 @@ class Recursivemodel:
         """
 
         # defing variables and arrays
-        tx_index_point = self.room.no_points-2
-        rx_index_point = self.room.no_points-1
+        tx_index_point = self._room.no_points-2
+        rx_index_point = self._room.no_points-1
 
         cos_phi = np.zeros(
-            (self.room.no_points), dtype=np.float16)
+            (self._room.no_points), dtype=np.float16)
         dis2 = np.zeros((
-            self.room.no_points, self.room.no_points), dtype=np.float16)
+            self._room.no_points, self._room.no_points), dtype=np.float16)
 
-        h0_se = np.zeros((self.room.no_points, 4), dtype=np.float64)
-        h0_er = np.zeros((self.room.no_points, 1), dtype=np.float64)
+        h0_se = np.zeros((self._room.no_points, 4), dtype=np.float64)
+        h0_er = np.zeros((self._room.no_points, 1), dtype=np.float64)
 
         # Time delay between source and each cells
         # h0_se[:,1] = room.wall_parameters[0,tx_index_point,:]/SPEED_OF_LIGHT
@@ -140,34 +143,34 @@ class Recursivemodel:
         # h0_er[:,1] = room.wall_parameters[0,rx_index_point,:]/SPEED_OF_LIGHT
 
         # define distance^2 and cos_phi arrays
-        dis2 = np.power(self.room.wall_parameters[0, :, :], 2)
-        cos_phi = self.room.wall_parameters[1, int(tx_index_point), :]
+        dis2 = np.power(self._room.wall_parameters[0, :, :], 2)
+        cos_phi = self._room.wall_parameters[1, int(tx_index_point), :]
 
         # computing the received power by each smaller area from light sooure
         tx_power = (
-            (self.led.mlambert+1)/(2*np.pi) *
+            (self._led.mlambert+1)/(2*np.pi) *
             np.multiply(
                 np.divide(
                     1,
                     dis2[tx_index_point, :],
-                    out=np.zeros((self.room.no_points)),
+                    out=np.zeros((self._room.no_points)),
                     where=dis2[tx_index_point, :] != 0),
-                np.power(cos_phi, self.led.mlambert)
+                np.power(cos_phi, self._led.mlambert)
                     )
                 )
 
         rx_wall_factor = (
-            self.photodector.area *
-            self.room.wall_parameters[1, int(rx_index_point), :]
+            self._photodetector.area *
+            self._room.wall_parameters[1, int(rx_index_point), :]
             )
 
         # Differential power between all grid points without reflectance
         dP_ij = np.zeros(
-            (self.room.no_points, self.room.no_points), np.float32)
+            (self._room.no_points, self._room.no_points), np.float32)
         dP_ij = (
             np.divide(
-                self.room.deltaA*self.room.wall_parameters[1, :, :] *
-                np.transpose(self.room.wall_parameters[1, :, :]),
+                self._room.deltaA*self._room.wall_parameters[1, :, :] *
+                np.transpose(self._room.wall_parameters[1, :, :]),
                 np.pi * dis2, out=np.zeros_like(dP_ij),
                 where=dis2 != 0
                 )
@@ -183,25 +186,25 @@ class Recursivemodel:
 
         # Time delay matrix
         tDelay_ij = np.zeros(
-            (self.room.no_points, self.room.no_points), dtype=np.float32)
-        tDelay_ij = self.room.wall_parameters[0, :, :]/Kt.SPEED_OF_LIGHT
+            (self._room.no_points, self._room.no_points), dtype=np.float32)
+        tDelay_ij = self._room.wall_parameters[0, :, :]/Kt.SPEED_OF_LIGHT
         # print(np.shape(tDelay_ij))
 
         # TODO: check whether you can replace this for by vectorized 
         # operations or comprehension operations
-        for i in range(self.room.no_reflections+1):
+        for i in range(self._room.no_reflections+1):
 
             # Creates the array to save h_k reflections response
             # and last h_er response
-            self.h_k.append(np.zeros((self.room.no_points, 4), np.float32))
-            hlast_er.append(np.zeros((self.room.no_points, 4), np.float32))
+            self.h_k.append(np.zeros((self._room.no_points, 4), np.float32))
+            hlast_er.append(np.zeros((self._room.no_points, 4), np.float32))
 
             # Creates the array to save time-delay reflections
             # response and last h_er
             self.delay_hk.append(np.zeros(
-                (self.room.no_points, 1), np.float32))
+                (self._room.no_points, 1), np.float32))
             delay_hlast_er.append(np.zeros(
-                (self.room.no_points, 1), np.float32))
+                (self._room.no_points, 1), np.float32))
 
             if i == 0:
 
@@ -222,22 +225,22 @@ class Recursivemodel:
                 h0_se = np.multiply(
                     np.reshape(
                         np.multiply(
-                            self.room.deltaA * tx_power,
-                            self.room.wall_parameters[
+                            self._room.deltaA * tx_power,
+                            self._room.wall_parameters[
                                 1, :, int(tx_index_point)]
                                 ),
                         (-1, 1)
                             ),
-                    self.room.reflectance_vectors
+                    self._room.reflectance_vectors
                     )
 
                 # Impulse response between receiver and each cells
                 h0_er[:, 0] = np.divide(
                     np.multiply(
-                        self.room.wall_parameters[1, :, int(rx_index_point)],
+                        self._room.wall_parameters[1, :, int(rx_index_point)],
                         rx_wall_factor),
                     np.pi*dis2[rx_index_point, :],
-                    out=np.zeros((self.room.no_points)),
+                    out=np.zeros((self._room.no_points)),
                     where=dis2[rx_index_point, :] != 0
                             )
 
@@ -263,7 +266,7 @@ class Recursivemodel:
                 # Time-Delay computing
                 delay_hlast_er[i] = np.sum(
                     np.reshape(delay_hlast_er[i-1], (1, -1)) + tDelay_ij,
-                    axis=1)/self.room.no_points
+                    axis=1)/self._room.no_points
 
                 self.delay_hk[i] = tDelay_ij[
                     int(tx_index_point), :] + delay_hlast_er[i]
@@ -275,7 +278,7 @@ class Recursivemodel:
                         np.multiply(
                             hlast_er[i-1][:, color],
                             np.multiply(
-                                self.room.reflectance_vectors[:, color], dP_ij)
+                                self._room.reflectance_vectors[:, color], dP_ij)
                             ),
                         axis=1
                         )
@@ -290,9 +293,9 @@ class Recursivemodel:
         from LoS and h_k reflections
         """
 
-        self.h_dcgain = np.zeros((self.room.no_reflections+1, 4), np.float32)
+        self.h_dcgain = np.zeros((self._room.no_reflections+1, 4), np.float32)
 
-        for i in range(0, self.room.no_reflections+1):
+        for i in range(0, self._room.no_reflections+1):
             self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:4], axis=0)
 
         self._rgby_dcgain = np.sum(self.h_dcgain, axis=0)
@@ -302,7 +305,7 @@ class Recursivemodel:
         """
         This function calculates the DC-Gain for each reflection.
         """
-        for i in range(0, self.room.no_reflections+1):
+        for i in range(0, self._room.no_reflections+1):
             print("\n DC-gain for H{} response [W]:\n {}".format(i,self.h_dcgain[i, :]))
             
 
@@ -332,7 +335,7 @@ class Recursivemodel:
 
         self.total_histogram = np.zeros((self.bins_hist, 4))
         self.hist_power_time = []
-        delay_aux = np.zeros((self.room.no_points, 1))
+        delay_aux = np.zeros((self._room.no_points, 1))
 
         #TODO: required?
         print("//------------- Data report ------------------//")
@@ -343,7 +346,7 @@ class Recursivemodel:
 
         print("Optical power reported in histograms:")
 
-        for k_reflec in range(self.room.no_reflections+1):
+        for k_reflec in range(self._room.no_reflections+1):
 
             self.hist_power_time.append(
                 np.zeros((self.bins_hist, 4), np.float32))
@@ -355,7 +358,7 @@ class Recursivemodel:
             delay_aux = np.floor(delay_aux/self.time_resolution)
             # print(np.shape(delay_aux))
 
-            for j in range(self.room.no_points):               
+            for j in range(self._room.no_points):               
                 self.hist_power_time[k_reflec][int(delay_aux[j, 0]), :] += self.h_k[k_reflec][j, :]
 
             self.time_scale = linspace(
@@ -393,7 +396,7 @@ class Recursivemodel:
             #TODO: remove, refactor
             print("Graphs were not generated.")
         else:
-            for k_reflec in range(0, self.room.no_reflections+1):
+            for k_reflec in range(0, self._room.no_reflections+1):
 
                 fig, (vax) = plt.subplots(1, 1, figsize=(12, 6))
 
@@ -460,13 +463,13 @@ class Recursivemodel:
 
         # Arrays to estimate the RGBY gain spectrum
         self.r_data = self.rgby_dcgain[0]*stats.norm.pdf(
-            self.wavelenght, self.led._wavelengths[0], self.led._fwhm[0]/2)
+            self.wavelenght, self._led._wavelengths[0], self._led._fwhm[0]/2)
         self.g_data = self.rgby_dcgain[1]*stats.norm.pdf(
-            self.wavelenght, self.led._wavelengths[1], self.led._fwhm[1]/2)
+            self.wavelenght, self._led._wavelengths[1], self._led._fwhm[1]/2)
         self.b_data = self.rgby_dcgain[2]*stats.norm.pdf(
-            self.wavelenght, self.led._wavelengths[2], self.led._fwhm[2]/2)
+            self.wavelenght, self._led._wavelengths[2], self._led._fwhm[2]/2)
         self.y_data = self.rgby_dcgain[3]*stats.norm.pdf(
-            self.wavelenght, self.led._wavelengths[3], self.led._fwhm[3]/2)
+            self.wavelenght, self._led._wavelengths[3], self._led._fwhm[3]/2)
         self.spd_data = [self.r_data, self.g_data, self.b_data, self.y_data]
    
     # This function plots the SPD of QLED
@@ -502,7 +505,7 @@ class Recursivemodel:
                             + self.g_data
                             + self.b_data
                             + self.y_data
-                            )/self.photodector.area
+                            )/self._photodetector.area
                     ]
                 )
             )
@@ -519,7 +522,7 @@ class Recursivemodel:
                         self.r_data
                         + self.g_data
                         + self.b_data
-                        + self.y_data)/self.photodector.area]
+                        + self.y_data)/self._photodetector.area]
                     ),
             ptype='ru'
             )
@@ -533,7 +536,7 @@ class Recursivemodel:
                     self.r_data
                     + self.g_data
                     + self.b_data
-                    + self.y_data)/self.photodector.area]
+                    + self.y_data)/self._photodetector.area]
                         ),
             ptype='pu'
             )
@@ -544,4 +547,4 @@ class Recursivemodel:
         for j in range(0, Kt.NO_LEDS):
             for i in range(1, Kt.NO_DETECTORS+1):
                 self._channelmatrix[i-1][j] = np.dot(
-                    self.spd_data[j], self.photodector.responsivity[:, i])
+                    self.spd_data[j], self._photodetector.responsivity[:, i])
