@@ -122,13 +122,12 @@ class Indoorenv:
     ) -> None:
 
         self._tx = tx
-        self._rx = rx
-
-        if type(self._tx) is Transmitter:
+        if not type(self._tx) is Transmitter:
             raise ValueError(
                 "Tranmistter attribute must be an object type Transmitter.")
 
-        if type(self._rx) is Photodetector:
+        self._rx = rx
+        if not type(self._rx) is Photodetector:
             raise ValueError(
                 "Receiver attribute must be an object type Photodetector.")
 
