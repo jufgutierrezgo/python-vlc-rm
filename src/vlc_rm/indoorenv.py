@@ -27,6 +27,7 @@ class Indoorenv:
     ) -> None:
 
         self._name = name
+        self.deltaA = 'Non defined, create grid.'
 
         self._size = np.array(size)
         if self._size.size != 3:
@@ -93,7 +94,8 @@ class Indoorenv:
             f'\n List of parameters for indoor envirionment {self._name}: \n'
             f'Size [x y z] -> [m]: {self._size} \n'
             f'Order reflection: {self._no_reflections} \n'
-            f'Resolution points [cm]: {self._resolution}'
+            f'Resolution points [m]: {self._resolution}'
+            f'Smalle Area [m^2]: {self.deltaA}'
         )
 
     def set_reflectance(self, wall_name, reflectance_wall):

@@ -33,7 +33,7 @@ class Recursivemodel:
             ) -> None:
 
         self.name = name
-       
+
         self._led = led
         if not type(self._led) is Transmitter:
             raise ValueError(
@@ -42,8 +42,8 @@ class Recursivemodel:
         self._photodetector = photodetector
         if not type(photodetector) is Photodetector:
             raise ValueError(
-                "Receiver attribute must be an object type Photodetector.")        
-        
+                "Receiver attribute must be an object type Photodetector.")
+
         self._room = room
         if not type(self._room) is Indoorenv:
             raise ValueError(
@@ -61,7 +61,7 @@ class Recursivemodel:
     @property
     def rgby_dcgain(self):
         return self._rgby_dcgain
-    
+
     @property
     def channelmatrix(self):
         return self._channelmatrix
@@ -187,7 +187,7 @@ class Recursivemodel:
         tDelay_ij = self._room.wall_parameters[0, :, :]/Kt.SPEED_OF_LIGHT
         # print(np.shape(tDelay_ij))
 
-        # TODO: check whether you can replace this for by vectorized 
+        # TODO: check whether you can replace this for by vectorized
         # operations or comprehension operations
         for i in range(self._room.no_reflections+1):
 
@@ -303,8 +303,7 @@ class Recursivemodel:
         This function calculates the DC-Gain for each reflection.
         """
         for i in range(0, self._room.no_reflections+1):
-            print("\n DC-gain for H{} response [W]:\n {}".format(i,self.h_dcgain[i, :]))
-            
+            print("\n DC-gain for H{} response [W]:\n {}".format(i, self.h_dcgain[i, :]))
 
     # Function to create histograms from channel impulse response raw data.
     def _create_histograms(self) -> None:
@@ -355,7 +354,7 @@ class Recursivemodel:
             delay_aux = np.floor(delay_aux/self.time_resolution)
             # print(np.shape(delay_aux))
 
-            for j in range(self._room.no_points):               
+            for j in range(self._room.no_points):
                 self.hist_power_time[k_reflec][int(delay_aux[j, 0]), :] += self.h_k[k_reflec][j, :]
 
             self.time_scale = linspace(
@@ -370,9 +369,11 @@ class Recursivemodel:
 
             self.total_histogram += self.hist_power_time[k_reflec]
 
-    # This function plots the channel impulse response for 4 colors
+    
     def _plot_cir(self, channel: str = "") -> None:
-
+        """
+        This function plots the channel impulse response for 4 colors  
+        """    
         self.channel = channel
 
         if self.channel == 'red':
@@ -468,7 +469,7 @@ class Recursivemodel:
         self.y_data = self.rgby_dcgain[3]*stats.norm.pdf(
             self.wavelenght, self._led._wavelengths[3], self._led._fwhm[3]/2)
         self.spd_data = [self.r_data, self.g_data, self.b_data, self.y_data]
-   
+
     # This function plots the SPD of QLED
     def _plot_spd(self) -> None:
 

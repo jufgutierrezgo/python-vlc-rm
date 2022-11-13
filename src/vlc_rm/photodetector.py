@@ -24,7 +24,7 @@ class Photodetector:
         self._position = np.array(position)
         if self._position.size != 3:
             raise ValueError("Position must be an 1d-numpy array [x y z].")
-        
+
         self._normal = np.array([normal])
         if self._normal.size != 3:
             raise ValueError("Normal must be an 1d-numpy array [x y z].")
@@ -61,7 +61,7 @@ class Photodetector:
 
     @name.setter
     def name(self, value):
-        self._name = value        
+        self._name = value
 
     @property
     def position(self) -> np.ndarray:
@@ -88,7 +88,7 @@ class Photodetector:
         return self._area
 
     @area.setter
-    def area(self, area):        
+    def area(self, area):
         self._area = area
         if self._area <= 0:
             raise ValueError(

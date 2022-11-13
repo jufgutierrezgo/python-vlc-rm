@@ -35,7 +35,7 @@ class Transmitter:
         self._normal = np.array([normal])
         if self._normal.size != 3:
             raise ValueError("Normal must be an 1d-numpy array [x y z].")
-        
+
         self._mlambert = mlambert
         if mlambert <= 0:
             raise ValueError("Lambert number must be greater than zero.")
@@ -43,12 +43,12 @@ class Transmitter:
         self._power = power
         if power < 0:
             raise ValueError("The power must be non-negative.")
-            
+
         self._wavelengths = np.array(wavelengths)
         if self._wavelengths.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of wavelengths array must be equal to the number of LEDs.")
-                
+
         self._fwhm = np.array(fwhm)
         if self._fwhm.size != Kt.NO_LEDS:
             raise ValueError(
