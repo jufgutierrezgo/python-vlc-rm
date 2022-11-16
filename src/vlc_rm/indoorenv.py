@@ -1,6 +1,6 @@
 import numpy as np
 
-import torch
+import scipy
 
 from vlc_rm.constants import Constants as Kt
 
@@ -9,6 +9,8 @@ from vlc_rm.transmitter import Transmitter
 from vlc_rm.photodetector import Photodetector
 
 from vlc_rm.loader import Loader
+
+import logging
 
 
 class Indoorenv:
@@ -94,8 +96,8 @@ class Indoorenv:
             f'\n List of parameters for indoor envirionment {self._name}: \n'
             f'Size [x y z] -> [m]: {self._size} \n'
             f'Order reflection: {self._no_reflections} \n'
-            f'Resolution points [m]: {self._resolution}'
-            f'Smalle Area [m^2]: {self.deltaA}'
+            f'Resolution points [m]: {self._resolution}\n'
+            f'Smaller Area [m^2]: {self.deltaA}'
         )
 
     def set_reflectance(self, wall_name, reflectance_wall):
@@ -226,7 +228,7 @@ class Indoorenv:
 
         # Creates tensors for gridpoints,
         # normal vectors and reflectance vectors.
-        self.gridpoints = torch.from_numpy(np.concatenate((
+        self.gridpoints = np.concatenate((
             ceiling_points,
             east_points,
             south_points,
@@ -236,9 +238,9 @@ class Indoorenv:
             [tx_position],
             [rx_position]),
             axis=0
-        ))
+        )
 
-        self.normal_vectors = torch.from_numpy(np.concatenate((
+        self.normal_vectors = np.concatenate((
             ceiling_normal,
             east_normal,
             south_normal,
@@ -247,7 +249,7 @@ class Indoorenv:
             floor_normal,
             tx_normal,
             rx_normal),
-            axis=0, dtype=np.float16)).reshape(self.no_points, 1, 3)
+            axis=0, dtype=np.float16)
 
         self.reflectance_vectors = np.concatenate((
             ceiling_reflectance,
@@ -300,27 +302,36 @@ class Indoorenv:
 
         # Computes pairwise-element distance using tensor
         # TODO: consider using Numpy only if possible
-        dist = torch.cdist(self.gridpoints, self.gridpoints)
+        dist = scipy.spatial.distance.cdist(self.gridpoints, self.gridpoints)
 
         # Computes the pairwise-difference (vector) using tensor
-        diff = -self.gridpoints.unsqueeze(1) + self.gridpoints
+        diff = -np.expand_dims(self.gridpoints, axis=1) + self.gridpoints
 
         # Computes the unit vector from pairwise-difference usiing tensor
-        unit_vector = torch.nan_to_num(torch.div(
-            diff, dist.reshape(self.no_points, self.no_points, 1)), nan=0.0)
+        unit_vector = np.divide(
+            diff,
+            np.reshape(dist, (self.no_points, self.no_points, 1)),
+            np.zeros_like(diff),
+            where=np.reshape(dist, (self.no_points, self.no_points, 1)) != 0
+            )
 
         # Computes the cosine of angle between unit vector and
         # normal vector using tensor.
-        cos_phi = torch.sum(unit_vector*self.normal_vectors, dim=2)
+        cos_phi = np.sum(
+            unit_vector*np.reshape(
+                self.normal_vectors,
+                (self.no_points, 1, 3)),
+            axis=2
+            )
 
-        array_rx = np.asarray(cos_phi[-1, :])
+        array_rx = cos_phi[-1, :]
         low_values_flags = array_rx < np.cos(fov*np.pi/180)
         array_rx[low_values_flags] = 0
 
-        array_tx = np.asarray(cos_phi[-2, :])
+        array_tx = cos_phi[-2, :]
         low_values_flags = array_tx < np.cos(90*np.pi/180)
         array_tx[low_values_flags] = 0
 
         # Save in numpy array the results of tensor calculations
-        self.wall_parameters[0, :, :] = dist.numpy()
-        self.wall_parameters[1, :, :] = cos_phi.numpy()
+        self.wall_parameters[0, :, :] = dist
+        self.wall_parameters[1, :, :] = cos_phi
