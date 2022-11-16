@@ -89,7 +89,8 @@ class Recursivemodel:
         )
 
     def simulate_channel(self) -> None:
-        """ This method simulates the indoor enviornment
+        """ 
+        This method simulates the indoor enviornment
         """
 
         loader = Loader(
@@ -297,7 +298,6 @@ class Recursivemodel:
 
         self._rgby_dcgain = np.sum(self.h_dcgain, axis=0)
 
-    # This fuction print the DC-gain for each reflection
     def print_Hk(self) -> None:
         """
         This function calculates the DC-Gain for each reflection.
@@ -305,7 +305,6 @@ class Recursivemodel:
         for i in range(0, self._room.no_reflections+1):
             print("\n DC-gain for H{} response [W]:\n {}".format(i, self.h_dcgain[i, :]))
 
-    # Function to create histograms from channel impulse response raw data.
     def _create_histograms(self) -> None:
         """Function to create histograms from channel impulse
         response raw data.
@@ -369,7 +368,6 @@ class Recursivemodel:
 
             self.total_histogram += self.hist_power_time[k_reflec]
 
-    
     def _plot_cir(self, channel: str = "") -> None:
         """
         This function plots the channel impulse response for 4 colors  
@@ -452,9 +450,11 @@ class Recursivemodel:
             fig.savefig(Kt.REPORT_PATH+self.channel+"-htotal.png")
             plt.show()
 
-    # This function creates a SPD of LED from central wavelengths,
-    # FWHM and DC gain of channel
     def _create_spd(self) -> None:
+        """
+        This function creates a SPD of LED from central wavelengths,
+        FWHM and DC gain of channel
+        """
 
         # Array for wavelenght points from 380nm to (782-2)nm with 2nm steps
         self.wavelenght = np.arange(380, 782, 2)
@@ -470,9 +470,8 @@ class Recursivemodel:
             self.wavelenght, self._led._wavelengths[3], self._led._fwhm[3]/2)
         self.spd_data = [self.r_data, self.g_data, self.b_data, self.y_data]
 
-    # This function plots the SPD of QLED
     def _plot_spd(self) -> None:
-
+        """ This function plots the SPD of QLED """
         # plot red spd data
         plt.plot(self.wavelenght, self.r_data, 'r')
         plt.plot(self.wavelenght, self.g_data, 'g')
@@ -484,8 +483,8 @@ class Recursivemodel:
         plt.grid()
         plt.show()
 
-    # This function calculates a CCT and CRI of the QLED SPD.
     def _compute_cct_cri(self) -> None:
+        """ This function calculates a CCT and CRI of the QLED SPD."""
 
         # Computing the xyz coordinates from SPD-RGBY estimated spectrum
         xyz = lx.spd_to_xyz(
@@ -510,9 +509,9 @@ class Recursivemodel:
         # Computing the CCT coordinates from SPD-RGBY estimated spectrum
         self._cct = lx.xyz_to_cct_ohno2014(xyz)
 
-    # This function calculates the irradiance.
     def _compute_irradiance(self) -> None:
-
+        """ This function calculates the irradiance."""
+        
         self._irradiance = lx.spd_to_power(
             np.vstack(
                 [self.wavelenght,
@@ -524,10 +523,9 @@ class Recursivemodel:
                     ),
             ptype='ru'
             )
-
-    # This function calculates the illuminance.
+    
     def _compute_illuminance(self) -> None:
-
+        """ This function calculates the illuminance."""
         self._illuminance = lx.spd_to_power(
             np.vstack(
                 [self.wavelenght, (
@@ -539,8 +537,8 @@ class Recursivemodel:
             ptype='pu'
             )
 
-    # This function computes channel matrix
     def _compute_channelmatrix(self) -> None:
+        """ This function computes channel matrix."""
 
         for j in range(0, Kt.NO_LEDS):
             for i in range(1, Kt.NO_DETECTORS+1):
