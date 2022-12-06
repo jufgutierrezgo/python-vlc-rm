@@ -11,7 +11,6 @@ from vlc_rm.indoorenv import Indoorenv
 from vlc_rm.recursivemodel import Recursivemodel
 
 # from vlc_rm.cli import main
-
 def test_main():
     # main([])
 
@@ -22,7 +21,7 @@ def test_main():
         mlambert=1,
         power=1,
         wavelengths=[650, 530, 430, 580],
-        fwhm=[20, 12, 20, 20]
+        fwhm=[15, 10, 20, 20]
                     )
     led1.led_pattern()
     print(led1)
@@ -55,6 +54,7 @@ def test_main():
     channel_model.simulate_channel()
     print(channel_model)
     channel_model.print_Hk()
+    channel_model._plot_spd()
 
     assert (
         channel_model.rgby_dcgain[0] > 2.44e-06 and channel_model.rgby_dcgain[0] < 2.46e-06

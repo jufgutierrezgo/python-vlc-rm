@@ -18,13 +18,13 @@ def transmitter():
         power=1,
         wavelengths=[650, 530, 430, 580],
         fwhm=[20, 12, 20, 20]
-                )    
+                )
 
 def test_position(transmitter):
     assert np.array_equal(transmitter.position, np.array([2, 4, 3.3]))
 
 def test_normal(transmitter):
-    assert np.array_equal(transmitter.normal, np.array([0, 0, -1]))
+    assert np.array_equal(transmitter.normal, np.array([[0, 0, -1]]))
 
 def test_mlambert(transmitter):
     assert transmitter.mlambert == 1

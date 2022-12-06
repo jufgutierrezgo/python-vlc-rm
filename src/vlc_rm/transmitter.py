@@ -119,7 +119,7 @@ class Transmitter:
 
     @property
     def fwhm(self) -> np.ndarray:
-        return self._power
+        return self._fwhm
 
     @fwhm.setter
     def fwhm(self, fwhm):
