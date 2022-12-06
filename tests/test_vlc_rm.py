@@ -38,15 +38,17 @@ def test_main():
     print(pd1)
 
     room = Indoorenv(
-        "Room", size=[5, 5, 3], no_reflections=3, resolution=1/4
-                )
-
-    room.set_reflectance('ceiling', [0.8, 0.8, 0.8, 0.8])
-    room.set_reflectance('west', [0.8, 0.8, 0.8, 0.8])
-    room.set_reflectance('north', [0.8, 0.8, 0.8, 0.8])
-    room.set_reflectance('east', [0.8, 0.8, 0.8, 0.8])
-    room.set_reflectance('south', [0.8, 0.8, 0.8, 0.8])
-    room.set_reflectance('floor', [0.3, 0.3, 0.3, 0.3])
+        "Room",
+        size=[5, 5, 3],
+        no_reflections=3,
+        resolution=1/4,
+        ceiling=[0.8, 0.8, 0.8, 0.8],
+        west=[0.8, 0.8, 0.8, 0.8],
+        north=[0.8, 0.8, 0.8, 0.8],
+        east=[0.8, 0.8, 0.8, 0.8],
+        south=[0.8, 0.8, 0.8, 0.8],
+        floor=[0.3, 0.3, 0.3, 0.3]
+            )    
     room.create_envirorment(led1, pd1)
     print(room)
 

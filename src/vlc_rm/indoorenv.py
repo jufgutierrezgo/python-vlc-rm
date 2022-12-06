@@ -27,7 +27,13 @@ class Indoorenv:
         name: str,
         size: np.ndarray,
         resolution: float,
-        no_reflections: int = 3
+        ceiling: np.ndarray,
+        west: np.ndarray,
+        north: np.ndarray,
+        east: np.ndarray,
+        south: np.ndarray,
+        floor: np.ndarray,
+        no_reflections: int = 3        
     ) -> None:
 
         self._name = name
@@ -48,6 +54,36 @@ class Indoorenv:
         if self._no_reflections <= 0:
             raise ValueError(
                 "Resolution of points must be a real integer between 0 and 10.")
+
+        self._ceiling = np.array(ceiling)
+        if self._ceiling.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of ceiling reflectance array must be equal to the number of LEDs.")
+
+        self._west = np.array(west)
+        if self._west.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of north reflectance array must be equal to the number of LEDs.")
+                        
+        self._north = np.array(north)
+        if self._north.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of north reflectance array must be equal to the number of LEDs.")
+        
+        self._east = np.array(east)
+        if self._east.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of east reflectance array must be equal to the number of LEDs.")
+
+        self._south = np.array(south)
+        if self._south.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of south reflectance array must be equal to the number of LEDs.")
+
+        self._floor = np.array(floor)
+        if self._floor.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of floor reflectance array must be equal to the number of LEDs.")
 
     @property
     def name(self):
@@ -94,6 +130,78 @@ class Indoorenv:
             raise ValueError(
                 "Resolution of points must be a real number greater than zero.")
 
+    @property
+    def ceiling(self) -> np.ndarray:
+        """The ceiling property"""
+        return self._ceiling
+
+    @ceiling.setter
+    def ceiling(self, ceiling):
+        self._ceiling = np.array(ceiling)
+        if self._ceiling.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of ceiling reflectance array must be equal to the number of LEDs.")
+
+    @property
+    def west(self) -> np.ndarray:
+        """The west property"""
+        return self._west
+
+    @west.setter
+    def west(self, west):
+        self._west = np.array(west)
+        if self._ceiling.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of west reflectance array must be equal to the number of LEDs.")
+
+    @property
+    def north(self) -> np.ndarray:
+        """The north property"""
+        return self._north
+
+    @north.setter
+    def north(self, north):
+        self._north = np.array(north)
+        if self._north.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of north reflectance array must be equal to the number of LEDs.")
+
+    @property
+    def east(self) -> np.ndarray:
+        """The east property"""
+        return self._east
+
+    @east.setter
+    def east(self, east):
+        self._east = np.array(east)
+        if self._east.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of east reflectance array must be equal to the number of LEDs.")
+
+    @property
+    def south(self) -> np.ndarray:
+        """The east property"""
+        return self._south
+
+    @east.setter
+    def south(self, south):
+        self._south = np.array(south)
+        if self._south.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of south reflectance array must be equal to the number of LEDs.")
+
+    @property
+    def floor(self) -> np.ndarray:
+        """The floor property"""
+        return self._floor
+
+    @floor.setter
+    def east(self, floor):
+        self._floor = np.array(floor)
+        if self._floor.size != Kt.NO_LEDS:
+            raise ValueError(
+                "Dimension of ceiling reflectance array must be equal to the number of LEDs.")
+
     def __str__(self) -> str:
         return (
             f'\n List of parameters for indoor envirionment {self._name}: \n'
@@ -102,32 +210,13 @@ class Indoorenv:
             f'Resolution points [m]: {self._resolution}\n'
             f'Smaller Area [m^2]: {self.deltaA}\n'
             f'Number of points: {self.no_points}\n'
-        )
-
-    def set_reflectance(self, wall_name, reflectance_wall):
-        self._wall_name = wall_name
-        self._reflectance_wall = np.array(reflectance_wall)
-
-        if self._wall_name == 'ceiling':
-            self._ceiling = self._reflectance_wall
-        elif self._wall_name == 'west':
-            self._west = self._reflectance_wall
-        elif self._wall_name == 'north':
-            self._north = self._reflectance_wall
-        elif self._wall_name == 'east':
-            self._east = self._reflectance_wall
-        elif self._wall_name == 'south':
-            self._south = self._reflectance_wall
-        elif self._wall_name == 'floor':
-            self._floor = self._reflectance_wall
-        else:
-            raise ValueError("Invalid wall name.")
+        )    
 
     def create_envirorment(
         self,
         tx: Transmitter,
         rx: Photodetector
-    ) -> None:
+            ) -> None:
 
         self._tx = tx
         if not type(self._tx) is Transmitter:
