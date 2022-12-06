@@ -98,8 +98,8 @@ class Indoorenv:
             f'Size [x y z] -> [m]: {self._size} \n'
             f'Order reflection: {self._no_reflections} \n'
             f'Resolution points [m]: {self._resolution}\n'
-            f'Smaller Area [m^2]: {self.deltaA}'
-            f'Number of points: {self.no_points}'
+            f'Smaller Area [m^2]: {self.deltaA}\n'
+            f'Number of points: {self.no_points}\n'
         )
 
     def set_reflectance(self, wall_name, reflectance_wall):
