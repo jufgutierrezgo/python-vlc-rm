@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 
 import luxpy as lx
 
+import sys
+sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
+
 from vlc_rm.constants import Constants as Kt
 
 from vlc_rm.transmitter import Transmitter

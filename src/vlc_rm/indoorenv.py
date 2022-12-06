@@ -2,6 +2,9 @@ import numpy as np
 
 import scipy
 
+import sys
+sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
+
 from vlc_rm.constants import Constants as Kt
 
 from vlc_rm.transmitter import Transmitter
@@ -10,8 +13,7 @@ from vlc_rm.photodetector import Photodetector
 
 from vlc_rm.loader import Loader
 
-import logging
-
+# import logging
 
 class Indoorenv:
     """

@@ -1,5 +1,8 @@
-# Import Module Transmitter
-from vlc_rm.transmitter import Transmitter
+import sys
+sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/vlc_rm')
+
+from transmitter import Transmitter
+
 # Import Numpy
 import numpy as np
 # Import Pytest
