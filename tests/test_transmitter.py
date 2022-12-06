@@ -2,7 +2,7 @@
 from vlc_rm.transmitter import Transmitter
 # Import Numpy
 import numpy as np
-
+# Import Pytest
 import pytest   
 
 @pytest.fixture
@@ -25,3 +25,12 @@ def test_normal(transmitter):
 
 def test_mlambert(transmitter):
     assert transmitter.mlambert == 1
+
+def test_power(transmitter):
+    assert transmitter.power == 1
+
+def test_wavelengths(transmitter):
+    assert np.array_equal(transmitter.wavelengths, np.array([650, 530, 430, 580]))
+
+def test_fwhm(transmitter):
+    assert np.array_equal(transmitter.fwhm, np.array([20, 12, 20, 20]))
