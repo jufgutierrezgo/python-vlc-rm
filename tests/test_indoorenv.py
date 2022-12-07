@@ -18,12 +18,21 @@ import pytest
 @pytest.fixture
 def indoorenv():
     return Indoorenv(
-        "Room", size=[7.5, 5.5, 3.5], no_reflections=3, resolution=1/8
+        "Room",
+        size=[5, 5, 3],
+        no_reflections=3,
+        resolution=1/8,
+        ceiling=[0.8, 0.8, 0.8, 0.8],
+        west=[0.8, 0.8, 0.8, 0.8],
+        north=[0.8, 0.8, 0.8, 0.8],
+        east=[0.8, 0.8, 0.8, 0.8],
+        south=[0.8, 0.8, 0.8, 0.8],
+        floor=[0.3, 0.3, 0.3, 0.3]
             )
 
 
 def test_size(indoorenv):
-    assert np.array_equal(indoorenv.size, np.array([7.5, 5.5, 3.5]))
+    assert np.array_equal(indoorenv.size, np.array([5, 5, 3]))
 
 
 def test_no_reflections(indoorenv):
