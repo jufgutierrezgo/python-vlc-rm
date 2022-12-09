@@ -41,3 +41,27 @@ def test_no_reflections(indoorenv):
 
 def test_resolution(indoorenv):
     assert indoorenv.resolution == 1/8
+
+
+def test_ceiling(indoorenv):
+    assert np.array_equal(indoorenv.ceiling, np.array([0.8, 0.8, 0.8, 0.8]))
+
+
+def test_west(indoorenv):
+    assert np.array_equal(indoorenv.west, np.array([0.8, 0.8, 0.8, 0.8]))
+
+
+def test_north(indoorenv):
+    assert np.array_equal(indoorenv.north, np.array([0.8, 0.8, 0.8, 0.8]))
+
+
+def test_east(indoorenv):
+    assert np.array_equal(indoorenv.east, np.array([0.8, 0.8, 0.8, 0.8]))
+
+
+def test_south(indoorenv):
+    assert np.array_equal(indoorenv.south, np.array([0.8, 0.8, 0.8, 0.8]))
+
+
+def test_floor(indoorenv):
+    assert np.array_equal(indoorenv.floor, np.array([0.3, 0.3, 0.3, 0.3]))
