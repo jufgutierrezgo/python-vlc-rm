@@ -135,7 +135,7 @@ class Recursivemodel:
         dis2 = np.zeros((
             self._room.no_points, self._room.no_points), dtype=np.float16)
 
-        h0_se = np.zeros((self._room.no_points, 4), dtype=np.float64)
+        h0_se = np.zeros((self._room.no_points, Kt.NO_LEDS), dtype=np.float64)
         h0_er = np.zeros((self._room.no_points, 1), dtype=np.float64)
 
         # Time delay between source and each cells
@@ -197,8 +197,8 @@ class Recursivemodel:
 
             # Creates the array to save h_k reflections response
             # and last h_er response
-            self.h_k.append(np.zeros((self._room.no_points, 4), np.float32))
-            hlast_er.append(np.zeros((self._room.no_points, 4), np.float32))
+            self.h_k.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float32))
+            hlast_er.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float32))
 
             # Creates the array to save time-delay reflections
             # response and last h_er
@@ -294,10 +294,10 @@ class Recursivemodel:
         from LoS and h_k reflections
         """
 
-        self.h_dcgain = np.zeros((self._room.no_reflections+1, 4), np.float32)
+        self.h_dcgain = np.zeros((self._room.no_reflections+1, Kt.NO_LEDS), np.float32)
 
         for i in range(0, self._room.no_reflections+1):
-            self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:4], axis=0)
+            self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:Kt.NO_LEDS], axis=0)
 
         self._rgby_dcgain = np.sum(self.h_dcgain, axis=0)
 
@@ -347,7 +347,7 @@ class Recursivemodel:
         for k_reflec in range(self._room.no_reflections+1):
 
             self.hist_power_time.append(
-                np.zeros((self.bins_hist, 4), np.float32))
+                np.zeros((self.bins_hist, Kt.NO_LEDS), np.float32))
 
             # Delay_aux variable
             delay_aux = np.reshape(
