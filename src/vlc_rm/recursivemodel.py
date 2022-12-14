@@ -52,7 +52,7 @@ class Recursivemodel:
             raise ValueError(
                 "Indoor environment attribute must be an object type IndoorEnv.")
 
-        self._rgby_dcgain = np.zeros((1, Kt.NO_LEDS))
+        self._channel_dcgain = np.zeros((1, Kt.NO_LEDS))
         self._channelmatrix = np.zeros(
             (Kt.NO_DETECTORS, Kt.NO_LEDS),
             dtype=np.float32
@@ -62,8 +62,8 @@ class Recursivemodel:
         self._cct = 0
 
     @property
-    def rgby_dcgain(self):
-        return self._rgby_dcgain
+    def channel_dcgain(self):
+        return self._channel_dcgain
 
     @property
     def channelmatrix(self):
@@ -84,7 +84,7 @@ class Recursivemodel:
     def __str__(self) -> str:
         return (
             f'\n|=============== Simulation results ================|\n'
-            f'DC-Gain [w]: \n {self._rgby_dcgain} \n'
+            f'DC-Gain [w]: \n {self._channel_dcgain} \n'
             f'Crosstalk Matrix: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CCT: {self._cct} \n'
@@ -299,7 +299,7 @@ class Recursivemodel:
         for i in range(0, self._room.no_reflections+1):
             self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:Kt.NO_LEDS], axis=0)
 
-        self._rgby_dcgain = np.sum(self.h_dcgain, axis=0)
+        self._channel_dcgain = np.sum(self.h_dcgain, axis=0)
 
     def print_Hk(self) -> None:
         """
@@ -462,24 +462,20 @@ class Recursivemodel:
         # Array for wavelenght points from 380nm to (782-2)nm with 2nm steps
         self.wavelenght = np.arange(380, 782, 2)
 
-        # Arrays to estimate the RGBY gain spectrum
-        self.r_data = self.rgby_dcgain[0]*stats.norm.pdf(
-            self.wavelenght, self._led._wavelengths[0], self._led._fwhm[0]/2)
-        self.g_data = self.rgby_dcgain[1]*stats.norm.pdf(
-            self.wavelenght, self._led._wavelengths[1], self._led._fwhm[1]/2)
-        self.b_data = self.rgby_dcgain[2]*stats.norm.pdf(
-            self.wavelenght, self._led._wavelengths[2], self._led._fwhm[2]/2)
-        self.y_data = self.rgby_dcgain[3]*stats.norm.pdf(
-            self.wavelenght, self._led._wavelengths[3], self._led._fwhm[3]/2)
-        self.spd_data = [self.r_data, self.g_data, self.b_data, self.y_data]
+        # Numpy Array to save the spectral power distribution of each color channel
+        self.spd_data = np.zeros(self.wavelenght.size, Kt.NO_LEDS)
+
+        for i in range(Kt.NO_LEDS):
+            # Arrays to estimate the RGBY gain spectrum
+            self.spd_data[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
+                self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)
 
     def _plot_spd(self) -> None:
         """ This function plots the SPD of QLED """
         # plot red spd data
-        plt.plot(self.wavelenght, self.r_data, 'r')
-        plt.plot(self.wavelenght, self.g_data, 'g')
-        plt.plot(self.wavelenght, self.b_data, 'b')
-        plt.plot(self.wavelenght, self.y_data, 'y')
+        for i in range(Kt.NO_LEDS):
+            plt.plot(self.wavelenght, self._channel_dcgain[i])
+        
         plt.title("Spectral Power distribution of QLED")
         plt.xlabel("Wavelength [nm]")
         plt.ylabel("Radiometric Power [W]")
