@@ -463,12 +463,14 @@ class Recursivemodel:
         self.wavelenght = np.arange(380, 782, 2)
 
         # Numpy Array to save the spectral power distribution of each color channel
-        self.spd_data = np.zeros(self.wavelenght.size, Kt.NO_LEDS)
+        self._spd_data = np.zeros(self.wavelenght.size, Kt.NO_LEDS)
 
         for i in range(Kt.NO_LEDS):
             # Arrays to estimate the RGBY gain spectrum
             self.spd_data[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
                 self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)
+
+        self._spd_total = np.sum(self._spd_data, axis=1)
 
     def _plot_spd(self) -> None:
         """ This function plots the SPD of QLED """
@@ -489,19 +491,14 @@ class Recursivemodel:
         xyz = lx.spd_to_xyz(
             [
                 self.wavelenght,
-                self.r_data + self.g_data + self.b_data + self.y_data
+                self._spd_total
             ])
         # Computing the CRI coordinates from SPD-RGBY estimated spectrum
         self._cri = lx.cri.spd_to_cri(
             np.vstack(
                     [
                         self.wavelenght,
-                        (
-                            self.r_data
-                            + self.g_data
-                            + self.b_data
-                            + self.y_data
-                            )/self._photodetector.area
+                        self._spd_total/self._photodetector.area
                     ]
                 )
             )
@@ -513,12 +510,7 @@ class Recursivemodel:
         
         self._irradiance = lx.spd_to_power(
             np.vstack(
-                [self.wavelenght,
-                    (
-                        self.r_data
-                        + self.g_data
-                        + self.b_data
-                        + self.y_data)/self._photodetector.area]
+                [self.wavelenght, self._spd_total/self._photodetector.area]
                     ),
             ptype='ru'
             )
@@ -527,11 +519,7 @@ class Recursivemodel:
         """ This function calculates the illuminance."""
         self._illuminance = lx.spd_to_power(
             np.vstack(
-                [self.wavelenght, (
-                    self.r_data
-                    + self.g_data
-                    + self.b_data
-                    + self.y_data)/self._photodetector.area]
+                [self.wavelenght, self._spd_total/self._photodetector.area]
                         ),
             ptype='pu'
             )
@@ -542,4 +530,4 @@ class Recursivemodel:
         for j in range(0, Kt.NO_LEDS):
             for i in range(1, Kt.NO_DETECTORS+1):
                 self._channelmatrix[i-1][j] = np.dot(
-                    self.spd_data[j], self._photodetector.responsivity[:, i])
+                    self._spd_data[j], self._photodetector.responsivity[:, i])
