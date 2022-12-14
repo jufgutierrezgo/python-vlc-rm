@@ -463,11 +463,11 @@ class Recursivemodel:
         self.wavelenght = np.arange(380, 782, 2)
 
         # Numpy Array to save the spectral power distribution of each color channel
-        self._spd_data = np.zeros(self.wavelenght.size, Kt.NO_LEDS)
+        self._spd_data = np.zeros((self.wavelenght.size, Kt.NO_LEDS))
 
         for i in range(Kt.NO_LEDS):
             # Arrays to estimate the RGBY gain spectrum
-            self.spd_data[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
+            self._spd_data[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
                 self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)
 
         self._spd_total = np.sum(self._spd_data, axis=1)
@@ -476,7 +476,7 @@ class Recursivemodel:
         """ This function plots the SPD of QLED """
         # plot red spd data
         for i in range(Kt.NO_LEDS):
-            plt.plot(self.wavelenght, self._channel_dcgain[i])
+            plt.plot(self.wavelenght, self._spd_data[:, i])
         
         plt.title("Spectral Power distribution of QLED")
         plt.xlabel("Wavelength [nm]")
@@ -527,7 +527,7 @@ class Recursivemodel:
     def _compute_channelmatrix(self) -> None:
         """ This function computes channel matrix."""
 
-        for j in range(0, Kt.NO_LEDS):
-            for i in range(1, Kt.NO_DETECTORS+1):
-                self._channelmatrix[i-1][j] = np.dot(
-                    self._spd_data[j], self._photodetector.responsivity[:, i])
+        for j in range(Kt.NO_LEDS):
+            for i in range(Kt.NO_DETECTORS):
+                self._channelmatrix[i][j] = np.dot(
+                    self._spd_data[:,j], self._photodetector.responsivity[:, i])
