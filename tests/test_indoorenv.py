@@ -56,6 +56,7 @@ def test_north(indoorenv):
 
 
 def test_east(indoorenv):
+    print(indoorenv.east)
     assert np.array_equal(indoorenv.east, np.array([0.8, 0.8, 0.8, 0.8]))
 
 

@@ -196,7 +196,7 @@ class Indoorenv:
         return self._floor
 
     @floor.setter
-    def east(self, floor):
+    def floor(self, floor):
         self._floor = np.array(floor)
         if self._floor.size != Kt.NO_LEDS:
             raise ValueError(

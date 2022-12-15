@@ -1,14 +1,16 @@
 import sys
 sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
 
-# Import Constants Transmitter
+# Import Transmitter
 from vlc_rm.transmitter import Transmitter
-# Import Constants Photodetector
+# Import Photodetector
 from vlc_rm.photodetector import Photodetector
-# Import Constants Photodetecto
+# Import Indoor Environment
 from vlc_rm.indoorenv import Indoorenv
-# Import Constants Photodetector
+# Import REcursiveModel
 from vlc_rm.recursivemodel import Recursivemodel
+# Import Symbol Error Rate 
+from vlc_rm.ser import SymbolErrorRate
 
 # from vlc_rm.cli import main
 def test_main():
@@ -57,6 +59,17 @@ def test_main():
     print(channel_model)
     channel_model.print_Hk()
     channel_model._plot_spd()
+
+    ser1 = SymbolErrorRate(
+            "SER-1",
+            recursivemodel=channel_model,
+            order_csk=16,
+            no_symbols=1e1
+                )
+    ser1._compute_iler()  
+    ser1._create_symbols()  
+    print(ser1)
+    
 
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06

@@ -7,7 +7,13 @@ from vlc_rm.transmitter import Transmitter
 
 from vlc_rm.photodetector import Photodetector
 
+from vlc_rm.indoorenv import Indoorenv
+
+from vlc_rm.recursivemodel import Recursivemodel
+
 from vlc_rm.loader import Loader
+
+import luxpy as lx
 
 # Numeric Numpy library
 import numpy as np
@@ -15,8 +21,10 @@ import numpy as np
 # Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 
+import logging
 
-class Transmitter:
+
+class SymbolErrorRate:
     """
     This class defines the transmitter features
     """
@@ -24,146 +32,78 @@ class Transmitter:
     def __init__(
         self,
         name: str,
-        position: np.ndarray,
-        normal: np.ndarray,
-        wavelengths: np.ndarray,
-        fwhm: np.ndarray,
-        mlambert: float = 1,
-        power: float = 1
+        recursivemodel: Recursivemodel,
+        order_csk: int,
+        no_symbols: int
             ) -> None:
 
-        self._name = name
-
-        self._position = np.array(position)
-        if self._position.size != 3:
-            raise ValueError("Position must be an 1d-numpy array [x y z].")
-
-        self._normal = np.array([normal])
-        if self._normal.size != 3:
-            raise ValueError("Normal must be an 1d-numpy array [x y z].")
-
-        self._mlambert = mlambert
-        if mlambert <= 0:
-            raise ValueError("Lambert number must be greater than zero.")
-
-        self._power = power
-        if power < 0:
-            raise ValueError("The power must be non-negative.")
-
-        self._wavelengths = np.array(wavelengths)
-        if self._wavelengths.size != Kt.NO_LEDS:
+        self._order_csk = int(order_csk)
+        #if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
+        #    raise ValueError(
+        #        "Resolution of points must be a real integer between 0 and 10.")
+        
+        self._no_symbols = int(no_symbols)
+        if self._no_symbols <= 0:
             raise ValueError(
-                "Dimension of wavelengths array must be equal to the number of LEDs.")
+                "No. of symbols must be greater than zero.")
 
-        self._fwhm = np.array(fwhm)
-        if self._fwhm.size != Kt.NO_LEDS:
+        self._recursivemodel = recursivemodel
+        if not type(self._recursivemodel) is Recursivemodel:
             raise ValueError(
-                "Dimension of FWHM array must be equal to the number of LEDs.")
+                "Recursivemodel attribute must be an object type Recursivemodel.")
 
-    @property
-    def name(self) -> str:
-        return self._name
+        @property
+        def order_csk(self) -> int:
+            """The number of symbols in the constellations"""
+            return self._order_csk
 
-    @name.setter
-    def name(self, name):
-        self._name = name
+        @order_csk.setter
+        def order_csk(self, order_csk):
+            self._order_csk = order_csk
+            if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
+                raise ValueError(
+                    "Resolution of points must be a real integer between 0 and 10.")
 
-    @property
-    def position(self) -> np.ndarray:
-        return self._position
+        @property
+        def no_symbols(self) -> int:
+            """The number of symbols for the transmission"""
+            return self._no_symbols
 
-    @position.setter
-    def position(self, position):
-        self._position = np.array(position)
-        if self._position.size != 3:
-            raise ValueError("Position must be a 3d-numpy array.")
+        @no_symbols.setter
+        def order_csk(self, no_symbols):
+            self._no_symbols = no_symbols
+            if self._no_symbols <= 0:
+                raise ValueError(
+                    "Number of symbols must be greater than zero.")
 
-    @property
-    def normal(self) -> np.ndarray:
-        return self._normal
+    def _compute_iler(self) -> None:
+        """
+        This function computes the inverse luminous efficacy radiation matrix.
+        This matrix has a size of NO_LEDS x NO_LEDS
+        """
+        self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
 
-    @normal.setter
-    def normal(self, normal):
-        self._normal = np.array(normal)
-        if self._normal.size != 3:
-            raise ValueError("Normal must be a 3d-numpy array.")
+        for i in range(Kt.NO_LEDS):
+            self._iler_matrix[i, i] = lx.spd_to_ler(
+                np.vstack(
+                    [
+                        self._recursivemodel.wavelenght,
+                        self._recursivemodel._spd_data[:, i]
+                    ])
+                )
 
-    @property
-    def mlambert(self) -> float:
-        return self._mlambert
-
-    @mlambert.setter
-    def mlambert(self, mlabert):
-        if mlabert <= 0:
-            raise ValueError("Lambert number must be greater than zero.")
-        self._mlambert = mlabert
-
-    @property
-    def power(self) -> float:
-        return self._power
-
-    @power.setter
-    def power(self, power):
-        if power < 0:
-            raise ValueError("The power must be non-negative.")
-        self._power = power
-
-    @property
-    def wavelengths(self) -> np.ndarray:
-        return self._wavelengths
-
-    @wavelengths.setter
-    def wavelengths(self, wavelengths):
-        self._wavelengths = np.array(wavelengths)
-        if self._wavelengths.size != Kt.NO_LEDS:
-            raise ValueError(
-                "Dimension of wavelengths array must be equal to the number of LEDs.")
-
-    @property
-    def fwhm(self) -> np.ndarray:
-        return self._fwhm
-
-    @fwhm.setter
-    def fwhm(self, fwhm):
-        self._fwhm = np.array(fwhm)
-        if self._fwhm.size != Kt.NO_LEDS:
-            raise ValueError(
-                "Dimension of FWHM array must be equal to the number of LEDs.")
+    def _create_symbols(self):       
+        self._symbols_decimal = np.random.randint(
+            0,
+            self._order_csk-1,
+            (1, self._no_symbols),
+            dtype='int16'
+            )
+        print(self._symbols_decimal)
+        
 
     def __str__(self) -> str:
         return (
-            f'\n List of parameters for LED transmitter: \n'
-            f'Position [x y z]: {self._position} \n'
-            f'Normal Vector [x y z]: {self._normal} \n'
-            f'Lambert Number: {self._mlambert} \n'
-            f'Power[W]: {self._power} \n'
-            f'Central Wavelengths[nm]: {self._wavelengths} \n'
-            f'FWHM[nm]: {self._fwhm}'
+            f'\n List of parameter of SER object \n'
+            f'Inverse LER Matrix: \n {self._iler_matrix} \n'
         )
-
-    def led_pattern(self) -> None:
-        """Function to create a 3d radiation pattern of the LED source.
-
-        The LED for recurse channel model is assumed as lambertian radiator.
-        The number of lambert defines the directivity of the light source.
-
-        Parameters:
-            m: Lambert number
-
-        Returns: None.
-
-        """
-
-        theta, phi = np.linspace(0, 2 * np.pi, 40), np.linspace(0, np.pi/2, 40)
-        THETA, PHI = np.meshgrid(theta, phi)
-        R = (self._mlambert + 1)/(2*np.pi)*np.cos(PHI)**self._mlambert
-        X = R * np.sin(PHI) * np.cos(THETA)
-        Y = R * np.sin(PHI) * np.sin(THETA)
-        Z = R * np.cos(PHI)
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1, projection='3d')
-        ax.plot_surface(
-            X, Y, Z, rstride=1, cstride=1, cmap=plt.get_cmap('jet'),
-            linewidth=0, antialiased=False, alpha=0.5)
-
-        plt.show()
