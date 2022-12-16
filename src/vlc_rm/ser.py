@@ -94,13 +94,16 @@ class SymbolErrorRate:
 
     def _create_symbols(self):       
         self._symbols_decimal = np.random.randint(
-            0,
-            self._order_csk-1,
-            (1, self._no_symbols),
-            dtype='int16'
+                0,
+                self._order_csk-1,
+                (self._no_symbols),
+                dtype='int16'
             )
-        print(self._symbols_decimal)
-        
+
+        self._symbols_csk = np.zeros((3, self._no_symbols))
+
+        for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
+            self._symbols_csk[:, counter] = Kt.IEEE_16CSK[:, index]
 
     def __str__(self) -> str:
         return (

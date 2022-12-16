@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+
 import os
 
+import numpy as np
 
 @dataclass(frozen=True)
 class Constants:
@@ -24,3 +26,24 @@ class Constants:
     NO_DETECTORS = 3
     # Speed of light
     SPEED_OF_LIGHT = 299792458
+    # IEEE 16-CSK constellation
+    IEEE_16CSK = np.transpose(
+        np.array([
+            [1/3, 1/3, 1/3],
+            [1/9, 7/9, 1/9],
+            [0, 2/3, 1/3],
+            [1/3, 2/3, 0],
+            [1/9, 4/9, 4/9],
+            [0, 1, 0],
+            [4/9, 4/9, 1/9],
+            [4/9, 1/9, 4/9],
+            [0, 1/3, 2/3],        
+            [1/9, 1/9, 7/9],
+            [0, 0, 1],
+            [1/3, 0, 2/3],
+            [2/3, 1/3, 0],
+            [7/9, 1/9, 1/9],
+            [2/3, 0, 1/3],
+            [1, 0, 0]
+            ])
+        )
