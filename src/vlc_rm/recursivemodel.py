@@ -249,7 +249,7 @@ class Recursivemodel:
                 # print("h0_er array->:",h0_er[:,0])
 
                 # Previous h_er RGBY vectors of magnitude for LoS
-                hlast_er[i] = np.repeat(h0_er, repeats=4, axis=1)
+                hlast_er[i] = np.repeat(h0_er, repeats=Kt.NO_LEDS, axis=1)
 
                 # Current vector for h1 impulse response for RGBY
                 # Red-Green-Blue-Yellow

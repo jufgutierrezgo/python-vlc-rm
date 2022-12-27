@@ -351,8 +351,9 @@ class Indoorenv:
             west_reflectance,
             north_reflectance,
             floor_reflectance,
-            [[0, 0, 0, 0]],
-            [[0, 0, 0, 0]]), axis=0, dtype=np.float16)
+            np.zeros((1, Kt.NO_LEDS)),
+            np.zeros((1, Kt.NO_LEDS))),
+            axis=0, dtype=np.float16)
 
         self.deltaA = (
             2*self._size[0]*self._size[1] +
