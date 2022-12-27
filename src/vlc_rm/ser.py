@@ -78,7 +78,7 @@ class SymbolErrorRate:
 
     def _compute_iler(self) -> None:
         """
-        This function computes the inverse luminous efficacy radiation matrix.
+        This function computes the inverse luminous efficacy radiation (LER) matrix.
         This matrix has a size of NO_LEDS x NO_LEDS
         """
         self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
@@ -93,6 +93,9 @@ class SymbolErrorRate:
                 )
 
     def _create_symbols(self):       
+        """
+        This function creates the symbols array to transmit.
+        """
         self._symbols_decimal = np.random.randint(
                 0,
                 self._order_csk-1,
@@ -100,7 +103,7 @@ class SymbolErrorRate:
                 dtype='int16'
             )
 
-        self._symbols_csk = np.zeros((3, self._no_symbols))
+        self._symbols_csk = np.zeros((Kt.NO_LEDS, self._no_symbols))
 
         for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
             self._symbols_csk[:, counter] = Kt.IEEE_16CSK[:, index]
