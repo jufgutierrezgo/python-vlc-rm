@@ -84,7 +84,7 @@ class SymbolErrorRate:
         self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
 
         for i in range(Kt.NO_LEDS):
-            self._iler_matrix[i, i] = lx.spd_to_ler(
+            self._iler_matrix[i, i] = 1/lx.spd_to_ler(
                 np.vstack(
                     [
                         self._recursivemodel.wavelenght,
@@ -103,10 +103,33 @@ class SymbolErrorRate:
                 dtype='int16'
             )
 
-        self._symbols_csk = np.zeros((Kt.NO_LEDS, self._no_symbols))
+        self._symbols_payload = np.zeros((Kt.NO_LEDS, self._no_symbols))
 
         for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
-            self._symbols_csk[:, counter] = Kt.IEEE_16CSK[:, index]
+            self._symbols_payload[:, counter] = Kt.IEEE_16CSK[:, index]
+        
+        # add to the payload three base symbols
+        self._symbols_csk = np.concatenate((
+                np.identity(Kt.NO_LEDS),
+                np.identity(Kt.NO_LEDS),
+                np.identity(Kt.NO_LEDS),
+                self._symbols_payload),
+                axis=1
+            )
+
+    def _transmit_symbols(self):       
+        """
+        This function computes the channel transformation of the origial 
+        symbols.
+        """
+
+        self._symbols_transmitted = np.matmul(
+            np.matmul(
+                self._recursivemodel.channelmatrix,
+                self._iler_matrix
+                ),
+            self._symbols_csk
+            )
 
     def __str__(self) -> str:
         return (

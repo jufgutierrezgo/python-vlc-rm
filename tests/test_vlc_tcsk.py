@@ -25,8 +25,8 @@ def test_vlc_tled():
         normal=[0, 0, -1],
         mlambert=1,
         power=1,
-        wavelengths=[650, 530, 430],
-        fwhm=[15, 15, 20]
+        wavelengths=[620, 530, 460],
+        fwhm=[20, 25, 20]
                     )
     led1.led_pattern()
     print(led1)
@@ -68,12 +68,15 @@ def test_vlc_tled():
             "SER-1",
             recursivemodel=channel_model,
             order_csk=16,
-            no_symbols=1e1
+            no_symbols=2e0
                 )
 
     ser1._compute_iler()  
-    ser1._create_symbols()  
+    ser1._create_symbols()
+    ser1._transmit_symbols()
     print(ser1)
+    print(ser1._symbols_csk)
+    print(ser1._symbols_transmitted)
 
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06

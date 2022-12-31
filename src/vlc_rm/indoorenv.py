@@ -13,7 +13,6 @@ from vlc_rm.photodetector import Photodetector
 
 from vlc_rm.loader import Loader
 
-# import logging
 
 class Indoorenv:
     """
@@ -183,7 +182,7 @@ class Indoorenv:
         """The east property"""
         return self._south
 
-    @east.setter
+    @south.setter
     def south(self, south):
         self._south = np.array(south)
         if self._south.size != Kt.NO_LEDS:
