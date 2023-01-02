@@ -108,7 +108,7 @@ class SymbolErrorRate:
         for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
             self._symbols_payload[:, counter] = Kt.IEEE_16CSK[:, index]
         
-        # add to the payload three base symbols
+        # add to the payload three base-set of symbols
         self._symbols_csk = np.concatenate((
                 np.identity(Kt.NO_LEDS),
                 np.identity(Kt.NO_LEDS),
@@ -118,9 +118,8 @@ class SymbolErrorRate:
             )
 
     def _transmit_symbols(self):       
-        """
-        This function computes the channel transformation of the origial 
-        symbols.
+        """ This function computes the channel transformation of the
+        original symbols.
         """
 
         self._symbols_transmitted = np.matmul(
@@ -130,6 +129,45 @@ class SymbolErrorRate:
                 ),
             self._symbols_csk
             )
+
+    def _add_noise(self):
+        """ 
+        This function adds AWGN noise to the self._symbols_transmitted
+        array.
+        """
+
+        plt.stem(self._symbols_transmitted[0, :])
+        plt.show()
+
+        # for channel in range(Kt.NO_LEDS):                   
+
+        # Set a target SNR
+        target_snr_db = 10
+
+        # Create an empty numpy-array equal to self._symbols_transmitted
+        self._noise_symbols = np.empty_like(self._symbols_transmitted)
+
+        for color_channel in range(Kt.NO_DETECTORS):
+            # define the x_current signal to add AWGN 
+            x_current = self._symbols_transmitted[color_channel, :]
+            # Calculate the power of the signal in the color channel
+            x_watts = x_current ** 2
+            # Calculate signal power and convert to dB 
+            sig_avg_watts = np.mean(x_watts)
+            sig_avg_db = 10 * np.log10(sig_avg_watts)
+            # Calculate noise according to [2] then convert to watts
+            noise_avg_db = sig_avg_db - target_snr_db
+            noise_avg_watts = 10 ** (noise_avg_db / 10)
+            # Generate an sample of white noise
+            mean_noise = 0        
+            noise_current = np.random.normal(mean_noise, np.sqrt(noise_avg_watts), len(x_watts))
+            # Noise up the original signal
+            signal_noise = x_current + noise_current
+            # COnvert negative values to zero
+            signal_noise[signal_noise < 0] = 0
+            # Save signal with noise in array
+            self._noise_symbols[color_channel, :] = signal_noise
+                
 
     def __str__(self) -> str:
         return (

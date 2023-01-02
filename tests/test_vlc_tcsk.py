@@ -73,11 +73,17 @@ def test_vlc_tled():
 
     ser1._compute_iler()  
     ser1._create_symbols()
-    ser1._transmit_symbols()
+    ser1._transmit_symbols()    
+    ser1._add_noise()
     print(ser1)
+    print("\n CSK symbols payload")
     print(ser1._symbols_csk)
+    print("\n CSK symbols frame transmitter noiseless")
     print(ser1._symbols_transmitted)
-
+    print("\n CSK symbols frame transmitter with noise")
+    print(ser1._noise_symbols)
+    
+    
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06
         # channel_model.rgby_dcgain[0] == 2.5e-06
