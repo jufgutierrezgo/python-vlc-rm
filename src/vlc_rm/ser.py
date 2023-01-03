@@ -92,10 +92,11 @@ class SymbolErrorRate:
                     ])
                 )
 
-    def _create_symbols(self):       
+    def _create_symbols(self) -> None:       
         """
         This function creates the symbols array to transmit.
         """
+        # create a random symbols identifier (decimal) for payload
         self._symbols_decimal = np.random.randint(
                 0,
                 self._order_csk-1,
@@ -105,9 +106,14 @@ class SymbolErrorRate:
 
         self._symbols_payload = np.zeros((Kt.NO_LEDS, self._no_symbols))
 
+        # using symbols identifier numbers to define the CSK symbols
         for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
             self._symbols_payload[:, counter] = Kt.IEEE_16CSK[:, index]
-        
+
+
+        # Define the number of symbols for delimiter header
+        self._delimiter_set = 3
+
         # add to the payload three base-set of symbols
         self._symbols_csk = np.concatenate((
                 np.identity(Kt.NO_LEDS),
@@ -117,7 +123,7 @@ class SymbolErrorRate:
                 axis=1
             )
 
-    def _transmit_symbols(self):       
+    def _transmit_symbols(self) -> None:       
         """ This function computes the channel transformation of the
         original symbols.
         """
@@ -130,7 +136,7 @@ class SymbolErrorRate:
             self._symbols_csk
             )
 
-    def _add_noise(self):
+    def _add_noise(self, target_snr_db) -> None:
         """ 
         This function adds AWGN noise to the self._symbols_transmitted
         array.
@@ -138,11 +144,6 @@ class SymbolErrorRate:
 
         plt.stem(self._symbols_transmitted[0, :])
         plt.show()
-
-        # for channel in range(Kt.NO_LEDS):                   
-
-        # Set a target SNR
-        target_snr_db = 10
 
         # Create an empty numpy-array equal to self._symbols_transmitted
         self._noise_symbols = np.empty_like(self._symbols_transmitted)
@@ -163,12 +164,45 @@ class SymbolErrorRate:
             noise_current = np.random.normal(mean_noise, np.sqrt(noise_avg_watts), len(x_watts))
             # Noise up the original signal
             signal_noise = x_current + noise_current
-            # COnvert negative values to zero
+            # Convert negative values to zero
             signal_noise[signal_noise < 0] = 0
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
-                
 
+
+    def _decode_symbols(self):
+        """
+        This funtion decodes the CSK symbols from the self._noise_symbols
+        """
+
+        # get the header and payload of the noisy received symbols
+        self._rx_header = self._noise_symbols[:, 0:Kt.NO_DETECTORS*self._delimiter_set]
+        self._rx_payload = self._noise_symbols[:, Kt.NO_DETECTORS*self._delimiter_set-1:-1]
+
+        # split the header into base-set
+        self.bases_split = np.array(
+            np.array_split(
+                self._rx_header,
+                self._delimiter_set,
+                axis=1
+                )
+            )
+
+        # average of the base-sets
+        self.avg_bases = np.mean(
+            self.bases_split,
+            axis=0
+            )
+        
+        # computes the inverse channel matrix from transmitted header
+        self._rx_channel_inverse = np.linalg.inv(self.avg_bases)
+
+        # Apply the inverse matrix for decoding
+        self._inverse_rx_symbols = np.matmul(
+                self._rx_channel_inverse,
+                self._rx_payload
+            )
+        
     def __str__(self) -> str:
         return (
             f'\n List of parameter of SER object \n'

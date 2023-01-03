@@ -14,6 +14,8 @@ from vlc_rm.ser import SymbolErrorRate
 # Import Symbol Constants
 from vlc_rm.constants import Constants as Kt
 
+import numpy as np
+
 # test python package vlc-rm with 4-LEDs and 3-DETECTORS
 def test_vlc_tled():
 
@@ -74,15 +76,30 @@ def test_vlc_tled():
     ser1._compute_iler()  
     ser1._create_symbols()
     ser1._transmit_symbols()    
-    ser1._add_noise()
+    ser1._add_noise(100)
+    ser1._decode_symbols()
     print(ser1)
+    print("\n Matrix transformation")
+    print(
+        np.matmul(
+            ser1._recursivemodel.channelmatrix,
+            ser1._iler_matrix
+            )
+        )
     print("\n CSK symbols payload")
     print(ser1._symbols_csk)
     print("\n CSK symbols frame transmitter noiseless")
     print(ser1._symbols_transmitted)
     print("\n CSK symbols frame transmitter with noise")
     print(ser1._noise_symbols)
-    
+    print("\n RX header")
+    print(ser1._rx_header)
+    print("\n Header splitted")
+    print(ser1.bases_split)
+    print("\n Average base")
+    print(ser1.avg_bases)
+    print("\n Inverse Symbols")
+    print(ser1._inverse_rx_symbols)
     
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06
