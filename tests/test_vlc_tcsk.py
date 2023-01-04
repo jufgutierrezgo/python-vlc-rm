@@ -76,7 +76,7 @@ def test_vlc_tled():
     ser1._compute_iler()  
     ser1._create_symbols()
     ser1._transmit_symbols()    
-    ser1._add_noise(100)
+    ser1._add_noise(50)
     ser1._decode_symbols()
     print(ser1)
     print("\n Matrix transformation")
@@ -86,21 +86,20 @@ def test_vlc_tled():
             ser1._iler_matrix
             )
         )
+
     print("\n CSK symbols payload")
     print(ser1._symbols_csk)
-    print("\n CSK symbols frame transmitter noiseless")
+    print("\n CSK symbols frame transmitted noiseless")
     print(ser1._symbols_transmitted)
-    print("\n CSK symbols frame transmitter with noise")
+    print("\n CSK symbols frame transmitted with noise")
     print(ser1._noise_symbols)
     print("\n RX header")
-    print(ser1._rx_header)
-    print("\n Header splitted")
-    print(ser1.bases_split)
-    print("\n Average base")
-    print(ser1.avg_bases)
+    print(ser1._rx_header)    
     print("\n Inverse Symbols")
     print(ser1._inverse_rx_symbols)
-    
+    print("\n Distance")
+    print(ser1._index_min)
+
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06
         # channel_model.rgby_dcgain[0] == 2.5e-06

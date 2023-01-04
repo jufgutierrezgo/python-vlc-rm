@@ -1,3 +1,4 @@
+# import numpy library
 import numpy as np
 
 import scipy

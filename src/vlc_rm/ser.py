@@ -21,7 +21,8 @@ import numpy as np
 # Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 
-import logging
+# import scipy library (cdist)
+import scipy
 
 
 class SymbolErrorRate:
@@ -180,7 +181,7 @@ class SymbolErrorRate:
         self._rx_payload = self._noise_symbols[:, Kt.NO_DETECTORS*self._delimiter_set-1:-1]
 
         # split the header into base-set
-        self.bases_split = np.array(
+        bases_split = np.array(
             np.array_split(
                 self._rx_header,
                 self._delimiter_set,
@@ -189,20 +190,31 @@ class SymbolErrorRate:
             )
 
         # average of the base-sets
-        self.avg_bases = np.mean(
-            self.bases_split,
+        avg_bases = np.mean(
+            bases_split,
             axis=0
             )
         
         # computes the inverse channel matrix from transmitted header
-        self._rx_channel_inverse = np.linalg.inv(self.avg_bases)
+        self._rx_channel_inverse = np.linalg.inv(avg_bases)
 
-        # Apply the inverse matrix for decoding
+        # apply the inverse matrix for decoding
         self._inverse_rx_symbols = np.matmul(
                 self._rx_channel_inverse,
                 self._rx_payload
             )
-        
+
+        # cdistance
+        self._distance = scipy.spatial.distance.cdist(
+            np.transpose(self._inverse_rx_symbols),
+            np.transpose(Kt.IEEE_16CSK)
+            )
+
+        self._index_min = np.empty_like(self._symbols_decimal)
+
+        for symbol in range(self._no_symbols):
+            self._index_min[symbol] = np.argmin(self._distance[symbol])
+
     def __str__(self) -> str:
         return (
             f'\n List of parameter of SER object \n'
