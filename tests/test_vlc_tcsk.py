@@ -70,14 +70,18 @@ def test_vlc_tled():
             "SER-1",
             recursivemodel=channel_model,
             order_csk=16,
-            no_symbols=2e0
+            no_symbols=1e6,
+            min_snr=0,
+            max_snr=50,
+            points_snr=10
                 )
-
+    
     ser1._compute_iler()  
     ser1._create_symbols()
     ser1._transmit_symbols()    
-    ser1._add_noise(50)
+    ser1._add_noise(20)
     ser1._decode_symbols()
+    #ser1._compute_error_rate()
     print(ser1)
     print("\n Matrix transformation")
     print(
@@ -87,6 +91,7 @@ def test_vlc_tled():
             )
         )
 
+    """
     print("\n CSK symbols payload")
     print(ser1._symbols_csk)
     print("\n CSK symbols frame transmitted noiseless")
@@ -97,8 +102,16 @@ def test_vlc_tled():
     print(ser1._rx_header)    
     print("\n Inverse Symbols")
     print(ser1._inverse_rx_symbols)
-    print("\n Distance")
+    print("\n Original symbols")
+    print(ser1._symbols_decimal)
+    print("\n Decoded symbols")
     print(ser1._index_min)
+    print("\n Symbol error rate")
+    print(ser1._error_rate)
+    """
+
+    print("\n Symbol error rate")
+    print(ser1._error_rate)
 
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06

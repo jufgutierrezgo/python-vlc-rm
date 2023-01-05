@@ -35,14 +35,17 @@ class SymbolErrorRate:
         name: str,
         recursivemodel: Recursivemodel,
         order_csk: int,
-        no_symbols: int
+        no_symbols: int,
+        min_snr: float = 0,
+        max_snr: float = 50,
+        points_snr: int = 10
             ) -> None:
 
         self._order_csk = int(order_csk)
-        #if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
+        # if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
         #    raise ValueError(
         #        "Resolution of points must be a real integer between 0 and 10.")
-        
+
         self._no_symbols = int(no_symbols)
         if self._no_symbols <= 0:
             raise ValueError(
@@ -53,29 +56,86 @@ class SymbolErrorRate:
             raise ValueError(
                 "Recursivemodel attribute must be an object type Recursivemodel.")
 
-        @property
-        def order_csk(self) -> int:
-            """The number of symbols in the constellations"""
-            return self._order_csk
+        self._min_snr = min_snr
+        if not (isinstance(self._min_snr, (int, float))):
+            raise ValueError(
+                "Minimum value of SNR must be int or float.")
 
-        @order_csk.setter
-        def order_csk(self, order_csk):
-            self._order_csk = order_csk
-            if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
-                raise ValueError(
-                    "Resolution of points must be a real integer between 0 and 10.")
+        self._max_snr = max_snr
+        if not (isinstance(self._max_snr, (int, float))):
+            raise ValueError(
+                "Maximum value of SNR must be int or float.")
+        elif self._max_snr <= self._min_snr:
+            raise ValueError(
+                "Maximum value of SNR must be greater than Minimum SNR.")
 
-        @property
-        def no_symbols(self) -> int:
-            """The number of symbols for the transmission"""
-            return self._no_symbols
+        self._points_snr = points_snr
+        if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
+            raise ValueError(
+                "Points for SER curve must be int and non-negative.")
 
-        @no_symbols.setter
-        def order_csk(self, no_symbols):
-            self._no_symbols = no_symbols
-            if self._no_symbols <= 0:
-                raise ValueError(
-                    "Number of symbols must be greater than zero.")
+    @property
+    def order_csk(self) -> int:
+        """The number of symbols in the constellations"""
+        return self._order_csk
+
+    @order_csk.setter
+    def order_csk(self, order_csk):
+        self._order_csk = order_csk
+        if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
+            raise ValueError(
+                "Resolution of points must be a real integer between 0 and 10.")
+
+    @property
+    def no_symbols(self) -> int:
+        """The number of symbols for the transmission"""
+        return self._no_symbols
+
+    @no_symbols.setter
+    def no_symbols(self, no_symbols):
+        self._no_symbols = no_symbols
+        if self._no_symbols <= 0:
+            raise ValueError(
+                "Number of symbols must be greater than zero.")
+
+    @property
+    def min_snr(self) -> float:
+        """Miminum SNR property"""
+        return self._min_snr
+
+    @min_snr.setter
+    def min_snr(self, min_snr):
+        self._min_snr = min_snr
+        if not (isinstance(self._min_snr, (int, float))):
+            raise ValueError(
+                "Minimum value of SNR must be int or float.")
+
+    @property
+    def max_snr(self) -> float:
+        """Maximum SNR property"""
+        return self._max_snr
+
+    @max_snr.setter
+    def max_snr(self, max_snr):
+        self._max_snr = max_snr
+        if not (isinstance(self._max_snr, (int, float))):
+            raise ValueError(
+                "Maximum value of SNR must be int or float.")
+        elif self._max_snr <= self._min_snr:
+            raise ValueError(
+                "Maximum value of SNR must be greater than Minimum SNR.")
+
+    @property
+    def points_snr(self) -> int:
+        """Maximum SNR property"""
+        return self._points_snr
+
+    @points_snr.setter
+    def points_snr(self, points_snr):
+        self._points_snr = points_snr
+        if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
+            raise ValueError(
+                "Points for SER curve must be int and non-negative.")
 
     def _compute_iler(self) -> None:
         """
@@ -143,8 +203,8 @@ class SymbolErrorRate:
         array.
         """
 
-        plt.stem(self._symbols_transmitted[0, :])
-        plt.show()
+        # plt.stem(self._symbols_transmitted[0, :])
+        # plt.show()
 
         # Create an empty numpy-array equal to self._symbols_transmitted
         self._noise_symbols = np.empty_like(self._symbols_transmitted)
@@ -178,7 +238,7 @@ class SymbolErrorRate:
 
         # get the header and payload of the noisy received symbols
         self._rx_header = self._noise_symbols[:, 0:Kt.NO_DETECTORS*self._delimiter_set]
-        self._rx_payload = self._noise_symbols[:, Kt.NO_DETECTORS*self._delimiter_set-1:-1]
+        self._rx_payload = self._noise_symbols[:, Kt.NO_DETECTORS*self._delimiter_set:]
 
         # split the header into base-set
         bases_split = np.array(
@@ -214,6 +274,19 @@ class SymbolErrorRate:
 
         for symbol in range(self._no_symbols):
             self._index_min[symbol] = np.argmin(self._distance[symbol])
+
+    def _compute_error_rate(self) -> float:
+        """
+        This function computes the symbol error rate 
+        """
+
+        # count different values and divide above the number of symbols        
+        return np.count_nonzero(self._symbols_decimal != self._index_min)/self._no_symbols
+
+    def _compute_ser_curve(self):
+        """
+        This function create a symbol error rate curve
+        """
 
     def __str__(self) -> str:
         return (
