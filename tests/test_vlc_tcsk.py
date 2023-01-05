@@ -47,7 +47,7 @@ def test_vlc_tled():
     room = Indoorenv(
         "Room",
         size=[5, 5, 3],
-        no_reflections=3,
+        no_reflections=0,
         resolution=1/4,
         ceiling=[0.8, 0.8, 0.8],
         west=[0.8, 0.8, 0.8],
@@ -72,24 +72,13 @@ def test_vlc_tled():
             order_csk=16,
             no_symbols=1e6,
             min_snr=0,
-            max_snr=50,
+            max_snr=30,
             points_snr=10
                 )
     
-    ser1._compute_iler()  
-    ser1._create_symbols()
-    ser1._transmit_symbols()    
-    ser1._add_noise(20)
-    ser1._decode_symbols()
-    #ser1._compute_error_rate()
-    print(ser1)
-    print("\n Matrix transformation")
-    print(
-        np.matmul(
-            ser1._recursivemodel.channelmatrix,
-            ser1._iler_matrix
-            )
-        )
+    ser1.compute_ser()
+    print(ser1)     
+    ser1.plot_ser()
 
     """
     print("\n CSK symbols payload")
@@ -109,9 +98,6 @@ def test_vlc_tled():
     print("\n Symbol error rate")
     print(ser1._error_rate)
     """
-
-    print("\n Symbol error rate")
-    print(ser1._error_rate)
 
     assert (
         channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06

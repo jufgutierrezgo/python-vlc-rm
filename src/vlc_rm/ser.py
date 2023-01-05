@@ -137,6 +137,16 @@ class SymbolErrorRate:
             raise ValueError(
                 "Points for SER curve must be int and non-negative.")
 
+    def compute_ser(self) -> None:
+        """
+        This function simulates the transmission of the CSK. The user 
+        uses this function, which bundles four main methods. 
+        """
+        self._compute_iler()
+        self._create_symbols()
+        self._transmit_symbols()
+        self._compute_ser_curve()
+
     def _compute_iler(self) -> None:
         """
         This function computes the inverse luminous efficacy radiation (LER) matrix.
@@ -230,7 +240,6 @@ class SymbolErrorRate:
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
 
-
     def _decode_symbols(self):
         """
         This funtion decodes the CSK symbols from the self._noise_symbols
@@ -285,11 +294,40 @@ class SymbolErrorRate:
 
     def _compute_ser_curve(self):
         """
-        This function create a symbol error rate curve
+        This function create a symbol error rate curve  
         """
+        self._snr_values = np.linspace(self._min_snr, self._max_snr, self._points_snr+1)
+
+        self._ser_values = np.empty_like(self._snr_values)
+
+        for snr, index in zip(self._snr_values, range(len(self._snr_values))):
+            self._add_noise(snr)
+            self._decode_symbols()
+            self._ser_values[index] = self._compute_error_rate()
+    
+    def plot_ser(self):
+        """
+        This function plots the Symbol Error Rate curve
+        """
+        # convert y-axis to Logarithmic scale
+        plt.yscale("log")
+        plt.plot(
+            self._snr_values,
+            self._ser_values,
+            color='b',
+            linestyle='dashed'
+        )
+        plt.title("Symbol Error Rate")
+        plt.xlabel("Signal to Noise Ration [dB]")
+        plt.ylabel("Error Probability")
+        plt.grid()
+        plt.show()
 
     def __str__(self) -> str:
         return (
             f'\n List of parameter of SER object \n'
             f'Inverse LER Matrix: \n {self._iler_matrix} \n'
+            f'Min SNR [dB]: {self._min_snr} \n'
+            f'Max SNR [dB]: {self._max_snr} \n'
+            f'Order of CSK: {self._order_csk} \n'
         )
