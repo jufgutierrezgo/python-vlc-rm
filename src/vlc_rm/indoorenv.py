@@ -1,6 +1,7 @@
 # import numpy library
 import numpy as np
 
+# import scipy library (cdist)
 import scipy
 
 import sys
@@ -51,9 +52,9 @@ class Indoorenv:
                 "Resolution of points must be a real number greater than zero.")
 
         self._no_reflections = no_reflections
-        if self._no_reflections <= 0:
+        if self._no_reflections < 0 or self._no_reflections > 10:
             raise ValueError(
-                "Resolution of points must be a real integer between 0 and 10.")
+                "No of reflections must be a real integer between 0 and 10.")
 
         self._ceiling = np.array(ceiling)
         if self._ceiling.size != Kt.NO_LEDS:

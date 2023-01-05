@@ -142,10 +142,17 @@ class SymbolErrorRate:
         This function simulates the transmission of the CSK. The user 
         uses this function, which bundles four main methods. 
         """
+
+        loader = Loader(
+            "Computing the Symbol Error Rate curves ...", "Computation done!", 0.05
+            ).start()
+
         self._compute_iler()
         self._create_symbols()
         self._transmit_symbols()
         self._compute_ser_curve()
+
+        loader.stop()
 
     def _compute_iler(self) -> None:
         """

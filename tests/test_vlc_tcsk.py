@@ -47,13 +47,13 @@ def test_vlc_tled():
     room = Indoorenv(
         "Room",
         size=[5, 5, 3],
-        no_reflections=0,
+        no_reflections=3,
         resolution=1/4,
-        ceiling=[0.8, 0.8, 0.8],
-        west=[0.8, 0.8, 0.8],
-        north=[0.8, 0.8, 0.8],
-        east=[0.8, 0.8, 0.8],
-        south=[0.8, 0.8, 0.8],
+        ceiling=[0.8, 0.5, 0.2],
+        west=[0.8, 0.5, 0.2],
+        north=[0.8, 0.5, 0.2],
+        east=[0.8, 0.5, 0.2],
+        south=[0.8, 0.5, 0.2],
         floor=[0.3, 0.3, 0.3]
             )
 
@@ -72,7 +72,7 @@ def test_vlc_tled():
             order_csk=16,
             no_symbols=1e6,
             min_snr=0,
-            max_snr=30,
+            max_snr=25,
             points_snr=10
                 )
     
