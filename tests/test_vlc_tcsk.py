@@ -26,10 +26,10 @@ def test_vlc_tled():
         position=[2.5, 2.5, 3],
         normal=[0, 0, -1],
         mlambert=1,
-        power=1,
+        power=10,
         wavelengths=[620, 530, 460],
         fwhm=[20, 25, 20]
-                    )
+                )
     led1.led_pattern()
     print(led1)
 
@@ -49,11 +49,11 @@ def test_vlc_tled():
         size=[5, 5, 3],
         no_reflections=3,
         resolution=1/4,
-        ceiling=[0.8, 0.5, 0.2],
-        west=[0.8, 0.5, 0.2],
-        north=[0.8, 0.5, 0.2],
-        east=[0.8, 0.5, 0.2],
-        south=[0.8, 0.5, 0.2],
+        ceiling=[0.8, 0.8, 0.8],
+        west=[0.8, 0.8, 0.8],
+        north=[0.8, 0.8, 0.8],
+        east=[0.8, 0.8, 0.8],
+        south=[0.8, 0.8, 0.8],
         floor=[0.3, 0.3, 0.3]
             )
 
@@ -69,14 +69,15 @@ def test_vlc_tled():
     ser1 = SymbolErrorRate(
             "SER-1",
             recursivemodel=channel_model,
-            order_csk=16,
-            no_symbols=1e6,
-            min_snr=0,
-            max_snr=25,
-            points_snr=10
-                )
+            order_csk=8,
+            no_symbols=1e6
+            )
     
-    ser1.compute_ser()
+    ser1.compute_ser_snr(        
+        min_snr=0,
+        max_snr=25,
+        points_snr=10
+        )
     print(ser1)     
     ser1.plot_ser()
 

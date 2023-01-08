@@ -47,3 +47,25 @@ class Constants:
             [1, 0, 0]
             ])
         )
+    # IEEE 8-CSK constellation
+    IEEE_8CSK = np.transpose(
+        np.array([
+            [0, 1, 0],
+            [0, 2/3, 1/3],
+            [1/3, 2/3, 0],
+            [11/18, 5/18, 2/18],
+            [0, 0, 1],
+            [2/18, 5/18, 11/18],
+            [1/2, 0, 1/2],
+            [1, 0, 0]
+            ])
+        )
+    # IEEE 4-CSK constellation
+    IEEE_4CSK = np.transpose(
+        np.array([
+            [1/3, 1/3, 1/3],            
+            [0, 1, 0],            
+            [0, 0, 1],            
+            [1, 0, 0]
+            ])
+        )

@@ -35,10 +35,7 @@ class SymbolErrorRate:
         name: str,
         recursivemodel: Recursivemodel,
         order_csk: int,
-        no_symbols: int,
-        min_snr: float = 0,
-        max_snr: float = 50,
-        points_snr: int = 10
+        no_symbols: int
             ) -> None:
 
         self._order_csk = int(order_csk)
@@ -54,25 +51,7 @@ class SymbolErrorRate:
         self._recursivemodel = recursivemodel
         if not type(self._recursivemodel) is Recursivemodel:
             raise ValueError(
-                "Recursivemodel attribute must be an object type Recursivemodel.")
-
-        self._min_snr = min_snr
-        if not (isinstance(self._min_snr, (int, float))):
-            raise ValueError(
-                "Minimum value of SNR must be int or float.")
-
-        self._max_snr = max_snr
-        if not (isinstance(self._max_snr, (int, float))):
-            raise ValueError(
-                "Maximum value of SNR must be int or float.")
-        elif self._max_snr <= self._min_snr:
-            raise ValueError(
-                "Maximum value of SNR must be greater than Minimum SNR.")
-
-        self._points_snr = points_snr
-        if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
-            raise ValueError(
-                "Points for SER curve must be int and non-negative.")
+                "Recursivemodel attribute must be an object type Recursivemodel.")        
 
     @property
     def order_csk(self) -> int:
@@ -96,27 +75,31 @@ class SymbolErrorRate:
         self._no_symbols = no_symbols
         if self._no_symbols <= 0:
             raise ValueError(
-                "Number of symbols must be greater than zero.")
+                "Number of symbols must be greater than zero.")    
 
-    @property
-    def min_snr(self) -> float:
-        """Miminum SNR property"""
-        return self._min_snr
+    def compute_ser_flux(
+            self,
+            min_flux: float = 1,
+            max_flux: float = 50,
+            points_flux: int = 10
+            ) -> None:
+        
 
-    @min_snr.setter
-    def min_snr(self, min_snr):
+    def compute_ser_snr(
+            self,
+            min_snr: float = 0,
+            max_snr: float = 50,
+            points_snr: int = 10
+            ) -> None:
+        """
+        This function simulates the transmission of the CSK. The user 
+        uses this function, which bundles four main methods. 
+        """
         self._min_snr = min_snr
         if not (isinstance(self._min_snr, (int, float))):
             raise ValueError(
                 "Minimum value of SNR must be int or float.")
 
-    @property
-    def max_snr(self) -> float:
-        """Maximum SNR property"""
-        return self._max_snr
-
-    @max_snr.setter
-    def max_snr(self, max_snr):
         self._max_snr = max_snr
         if not (isinstance(self._max_snr, (int, float))):
             raise ValueError(
@@ -125,26 +108,15 @@ class SymbolErrorRate:
             raise ValueError(
                 "Maximum value of SNR must be greater than Minimum SNR.")
 
-    @property
-    def points_snr(self) -> int:
-        """Maximum SNR property"""
-        return self._points_snr
-
-    @points_snr.setter
-    def points_snr(self, points_snr):
         self._points_snr = points_snr
         if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
             raise ValueError(
                 "Points for SER curve must be int and non-negative.")
 
-    def compute_ser(self) -> None:
-        """
-        This function simulates the transmission of the CSK. The user 
-        uses this function, which bundles four main methods. 
-        """
-
         loader = Loader(
-            "Computing the Symbol Error Rate curves ...", "Computation done!", 0.05
+            "Computing the Symbol Error Rate curves ...", 
+            "SER computation done!", 
+            0.05
             ).start()
 
         self._compute_iler()
@@ -185,9 +157,15 @@ class SymbolErrorRate:
         self._symbols_payload = np.zeros((Kt.NO_LEDS, self._no_symbols))
 
         # using symbols identifier numbers to define the CSK symbols
-        for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
-            self._symbols_payload[:, counter] = Kt.IEEE_16CSK[:, index]
+        if self._order_csk == 16:
+            self._constellation = Kt.IEEE_16CSK
+        elif self._order_csk == 8:
+            self._constellation = Kt.IEEE_8CSK
+        elif self._order_csk == 4:
+            self._constellation = Kt.IEEE_4CSK
 
+        for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
+                self._symbols_payload[:, counter] = self._constellation[:, index]
 
         # Define the number of symbols for delimiter header
         self._delimiter_set = 3
@@ -282,10 +260,11 @@ class SymbolErrorRate:
 
         # cdistance
         self._distance = scipy.spatial.distance.cdist(
-            np.transpose(self._inverse_rx_symbols),
-            np.transpose(Kt.IEEE_16CSK)
-            )
-
+                np.transpose(self._inverse_rx_symbols),
+                np.transpose(self._constellation)
+                )       
+        
+        
         self._index_min = np.empty_like(self._symbols_decimal)
 
         for symbol in range(self._no_symbols):
@@ -332,6 +311,7 @@ class SymbolErrorRate:
 
     def __str__(self) -> str:
         return (
+            f'\n|============= Error Rate analysis ==============|\n'
             f'\n List of parameter of SER object \n'
             f'Inverse LER Matrix: \n {self._iler_matrix} \n'
             f'Min SNR [dB]: {self._min_snr} \n'
