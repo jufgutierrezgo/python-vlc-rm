@@ -33,15 +33,9 @@ class SymbolErrorRate:
     def __init__(
         self,
         name: str,
-        recursivemodel: Recursivemodel,
-        order_csk: int,
+        recursivemodel: Recursivemodel,        
         no_symbols: int
             ) -> None:
-
-        self._order_csk = int(order_csk)
-        # if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
-        #    raise ValueError(
-        #        "Resolution of points must be a real integer between 0 and 10.")
 
         self._no_symbols = int(no_symbols)
         if self._no_symbols <= 0:
@@ -52,18 +46,6 @@ class SymbolErrorRate:
         if not type(self._recursivemodel) is Recursivemodel:
             raise ValueError(
                 "Recursivemodel attribute must be an object type Recursivemodel.")        
-
-    @property
-    def order_csk(self) -> int:
-        """The number of symbols in the constellations"""
-        return self._order_csk
-
-    @order_csk.setter
-    def order_csk(self, order_csk):
-        self._order_csk = order_csk
-        if (self._order_csk & (self._order_csk-1) == 0) and (self._order_csk != 0):
-            raise ValueError(
-                "Resolution of points must be a real integer between 0 and 10.")
 
     @property
     def no_symbols(self) -> int:
@@ -81,7 +63,7 @@ class SymbolErrorRate:
             self,
             min_flux: float = 1,
             max_flux: float = 50,
-            points_flux: int = 10
+            points_flux: int = 10        
             ) -> None:
         """
         This function simulates the transmission of the CSK by changing 
@@ -105,7 +87,11 @@ class SymbolErrorRate:
         self._points_flux = points_flux
         if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
             raise ValueError(
-                "Points for SER curve must be int and non-negative.")
+                "Points for SER curve must be int and non-negative.")       
+        
+        self._compute_iler()
+        self._create_symbols()
+        self._transmit_symbols()
 
     def compute_ser_snr(
             self,
@@ -179,14 +165,8 @@ class SymbolErrorRate:
 
         self._symbols_payload = np.zeros((Kt.NO_LEDS, self._no_symbols))
 
-        # using symbols identifier numbers to define the CSK symbols
-        if self._order_csk == 16:
-            self._constellation = Kt.IEEE_16CSK
-        elif self._order_csk == 8:
-            self._constellation = Kt.IEEE_8CSK
-        elif self._order_csk == 4:
-            self._constellation = Kt.IEEE_4CSK
-
+        self._constellation = self._recursivemodel._led._constellation
+        
         for index, counter in zip(self._symbols_decimal, range(self._no_symbols)):
                 self._symbols_payload[:, counter] = self._constellation[:, index]
 
@@ -248,6 +228,22 @@ class SymbolErrorRate:
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
 
+    def _add_dark_current(self) -> None:
+
+        for color_channel in range(Kt.NO_DETECTORS):
+            # define the x_current signal to add AWGN 
+            x_current = self._symbols_transmitted[color_channel, :]            
+            # Equal the standard deviation to dark current
+            std_deviation = self._recursivemodel._idark
+            # Generate an sample of white noise
+            mean_noise = 0
+            noise_current = np.random.normal(mean_noise, std_deviation, len(x_current))
+            # Noise up the original signal
+            signal_noise = x_current + noise_current
+            # Save signal with noise in array
+            self._noise_symbols[color_channel, :] = signal_noise
+
+
     def _decode_symbols(self):
         """
         This funtion decodes the CSK symbols from the self._noise_symbols
@@ -301,20 +297,34 @@ class SymbolErrorRate:
         # count different values and divide above the number of symbols        
         return np.count_nonzero(self._symbols_decimal != self._index_min)/self._no_symbols
 
-    def _compute_ser_curve(self):
+    def _compute_ser_curve(self, mode) -> None:
         """
         This function create a symbol error rate curve  
         """
-        self._snr_values = np.linspace(self._min_snr, self._max_snr, self._points_snr+1)
+        if mode == 'flux':
+            self._flux_values = np.linspace(self._min_flux, self._max_flux, self._points_flux+1)
+            self._ser_values = np.empty_like(self._flux_values)
 
-        self._ser_values = np.empty_like(self._snr_values)
+            for snr, index in zip(self._flux_values, range(len(self._flux_values))):
+                self._add_noise(snr)
+                self._decode_symbols()
+                self._ser_values[index] = self._compute_error_rate()
 
-        for snr, index in zip(self._snr_values, range(len(self._snr_values))):
-            self._add_noise(snr)
-            self._decode_symbols()
-            self._ser_values[index] = self._compute_error_rate()
+        elif mode == 'snr':
+            self._snr_values = np.linspace(self._min_snr, self._max_snr, self._points_snr+1)
+            self._ser_values = np.empty_like(self._snr_values)
+
+            for snr, index in zip(self._snr_values, range(len(self._snr_values))):
+                self._add_noise(snr)
+                self._decode_symbols()
+                self._ser_values[index] = self._compute_error_rate()
+
+        else:
+            raise ValueError(
+                "Mode for SER curve is not valid.")      
+        
     
-    def plot_ser(self):
+    def plot_ser(self) -> None:
         """
         This function plots the Symbol Error Rate curve
         """

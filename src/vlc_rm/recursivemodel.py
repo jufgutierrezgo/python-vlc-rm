@@ -43,6 +43,7 @@ class Recursivemodel:
                 "Tranmistter attribute must be an object type Transmitter.")
 
         self._photodetector = photodetector
+        self._idark = photodetector._idark        
         if not type(photodetector) is Photodetector:
             raise ValueError(
                 "Receiver attribute must be an object type Photodetector.")

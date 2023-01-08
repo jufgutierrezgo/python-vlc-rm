@@ -26,7 +26,8 @@ class Transmitter:
         wavelengths: np.ndarray,
         fwhm: np.ndarray,
         mlambert: float = 1,
-        power: float = 1
+        power: float = 1,
+        modulation: str = 'ieee16'
             ) -> None:
 
         self._name = name
@@ -56,6 +57,17 @@ class Transmitter:
         if self._fwhm.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of FWHM array must be equal to the number of LEDs.")
+
+        self._modulation = modulation
+        # define the modulation
+        if self._modulation == 'ieee16':
+            self._constellation = Kt.IEEE_16CSK
+        elif self._modulation == 'ieee8':
+            self._constellation = Kt.IEEE_8CSK
+        elif self._modulation == 'ieee4':
+            self._constellation = Kt.IEEE_4CSK
+        else:
+            print("Modulation is not valid")
 
     @property
     def name(self) -> str:
@@ -125,7 +137,24 @@ class Transmitter:
         self._fwhm = np.array(fwhm)
         if self._fwhm.size != Kt.NO_LEDS:
             raise ValueError(
-                "Dimension of FWHM array must be equal to the number of LEDs.")
+                "Dimension of FWHM array must be equal to the number of LEDs.") 
+
+    @property
+    def modulation(self) -> str:
+        return self._modulation
+
+    @modulation.setter
+    def modulation(self, modulation):
+        self._modulation = modulation
+        # define the modulation
+        if self._modulation == 'ieee16':
+            self._constellation = Kt.IEEE_16CSK
+        elif self._modulation == 'ieee8':
+            self._constellation = Kt.IEEE_8CSK
+        elif self._modulation == 'ieee4':
+            self._constellation = Kt.IEEE_4CSK
+        else:
+            print("Modulation name is not valid")
 
     def __str__(self) -> str:
         return (

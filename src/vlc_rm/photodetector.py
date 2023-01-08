@@ -22,7 +22,8 @@ class Photodetector:
         normal: np.ndarray,
         area: np.ndarray,
         sensor: str = " ",
-        fov: float = 90
+        fov: float = 90,
+        idark: float = 1e-12
     ) -> None:
 
         self._name = name
@@ -60,6 +61,11 @@ class Photodetector:
             print("Specify sensor reference")
         else:
             print("Sensor reference not valid")
+
+        self._idark = idark
+        if not (isinstance(self._idark, (float))) or self._idark <= 0:
+            raise ValueError(
+                "Dark current curve must be float and non-negative.")
 
     @property
     def name(self) -> str:
@@ -129,6 +135,17 @@ class Photodetector:
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
         else:
             raise ValueError(f"Unknown value for sensor reference{sensor}.")
+
+    @property
+    def idark(self) -> float:
+        return self._idark
+
+    @idark.setter
+    def idark(self, idark):
+        self._idark = idark
+        if not (isinstance(self._idark, (float))) or self._idark <= 0:
+            raise ValueError(
+                "Dark current curve must be float and non-negative.")
 
     def __str__(self) -> str:
         return (
