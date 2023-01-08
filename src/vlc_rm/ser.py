@@ -83,7 +83,29 @@ class SymbolErrorRate:
             max_flux: float = 50,
             points_flux: int = 10
             ) -> None:
-        
+        """
+        This function simulates the transmission of the CSK by changing 
+        the luminous flux radiated by the light source. The user uses 
+        this function, which bundles four main methods. 
+        """
+
+        self._min_flux = min_flux
+        if not (isinstance(self._min_flux, (int, float))) or self._min_flux <= 0:
+            raise ValueError(
+                "Minimum value of luminous flux must be non-negative int or float.")
+
+        self._max_flux = max_flux
+        if not (isinstance(self._max_flux, (int, float))) or self._max_flux <= 0:
+            raise ValueError(
+                "Maximum value of luminous flux must be non-negative int or float.")
+        elif self._max_flux <= self._min_flux:
+            raise ValueError(
+                "Maximum value of luminouns flux must be greater than Minimum Flux.")
+
+        self._points_flux = points_flux
+        if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
+            raise ValueError(
+                "Points for SER curve must be int and non-negative.")
 
     def compute_ser_snr(
             self,
@@ -92,8 +114,9 @@ class SymbolErrorRate:
             points_snr: int = 10
             ) -> None:
         """
-        This function simulates the transmission of the CSK. The user 
-        uses this function, which bundles four main methods. 
+        This function simulates the transmission of the CSK by changing 
+        the signal to noise ratio. The user uses this function, which 
+        bundles four main methods. 
         """
         self._min_snr = min_snr
         if not (isinstance(self._min_snr, (int, float))):
