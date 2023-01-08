@@ -532,3 +532,19 @@ class Recursivemodel:
             for i in range(Kt.NO_DETECTORS):
                 self._channelmatrix[i][j] = np.dot(
                     self._spd_data[:, j], self._photodetector.responsivity[:, i+1])
+
+    def _compute_iler(self) -> None:
+        """
+        This function computes the inverse luminous efficacy radiation (LER) matrix.
+        This matrix has a size of NO_LEDS x NO_LEDS
+        """
+        self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
+
+        for i in range(Kt.NO_LEDS):
+            self._iler_matrix[i, i] = 1/lx.spd_to_ler(
+                np.vstack(
+                    [
+                        self.wavelenght,
+                        self._spd_data[:, i]
+                    ])
+                )

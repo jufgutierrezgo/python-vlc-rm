@@ -135,22 +135,6 @@ class SymbolErrorRate:
 
         loader.stop()
 
-    def _compute_iler(self) -> None:
-        """
-        This function computes the inverse luminous efficacy radiation (LER) matrix.
-        This matrix has a size of NO_LEDS x NO_LEDS
-        """
-        self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
-
-        for i in range(Kt.NO_LEDS):
-            self._iler_matrix[i, i] = 1/lx.spd_to_ler(
-                np.vstack(
-                    [
-                        self._recursivemodel.wavelenght,
-                        self._recursivemodel._spd_data[:, i]
-                    ])
-                )
-
     def _create_symbols(self) -> None:       
         """
         This function creates the symbols array to transmit.
@@ -242,7 +226,6 @@ class SymbolErrorRate:
             signal_noise = x_current + noise_current
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
-
 
     def _decode_symbols(self):
         """
