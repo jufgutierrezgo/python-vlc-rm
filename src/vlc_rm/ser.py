@@ -87,9 +87,8 @@ class SymbolErrorRate:
         self._points_flux = points_flux
         if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
             raise ValueError(
-                "Points for SER curve must be int and non-negative.")       
-        
-        self._compute_iler()
+                "Points for SER curve must be int and non-negative.")            
+    
         self._create_symbols()
         self._transmit_symbols()
 
@@ -142,7 +141,7 @@ class SymbolErrorRate:
         # create a random symbols identifier (decimal) for payload
         self._symbols_decimal = np.random.randint(
                 0,
-                self._order_csk-1,
+                self._recursivemodel._led._order_csk-1,
                 (self._no_symbols),
                 dtype='int16'
             )
@@ -174,7 +173,7 @@ class SymbolErrorRate:
         self._symbols_transmitted = np.matmul(
             np.matmul(
                 self._recursivemodel.channelmatrix,
-                self._iler_matrix
+                self._recursivemodel._iler_matrix
                 ),
             self._symbols_csk
             )
@@ -304,9 +303,8 @@ class SymbolErrorRate:
 
         else:
             raise ValueError(
-                "Mode for SER curve is not valid.")      
-        
-    
+                "Mode for SER curve is not valid.")
+
     def plot_ser(self) -> None:
         """
         This function plots the Symbol Error Rate curve

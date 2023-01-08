@@ -149,10 +149,13 @@ class Transmitter:
         # define the modulation
         if self._modulation == 'ieee16':
             self._constellation = Kt.IEEE_16CSK
+            self._order_csk = 16
         elif self._modulation == 'ieee8':
             self._constellation = Kt.IEEE_8CSK
+            self._order_csk = 8
         elif self._modulation == 'ieee4':
-            self._constellation = Kt.IEEE_4CSK
+            self._constellation
+            self._order_csk = 4
         else:
             print("Modulation name is not valid")
 
