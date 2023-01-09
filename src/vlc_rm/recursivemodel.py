@@ -85,8 +85,8 @@ class Recursivemodel:
     def __str__(self) -> str:
         return (
             f'\n|=============== Simulation results ================|\n'
-            f'DC-Gain [w]: \n {self._channel_dcgain} \n'
-            f'Crosstalk Matrix: \n{self._channelmatrix} \n'
+            f'DC-Gain with respect to 1W [W]: \n {self._channel_dcgain} \n'
+            f'Crosstalk Matrix with respect to 1W: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CCT: {self._cct} \n'
             f'CRI: {self._cri} \n'
@@ -110,6 +110,13 @@ class Recursivemodel:
         self._compute_channelmatrix()
 
         loader.stop()
+
+    def print_Hk(self) -> None:
+        """
+        This function calculates the DC-Gain for each reflection.
+        """
+        for i in range(0, self._room.no_reflections+1):
+            print("\n DC-gain for H{} response [W] respect to 1W:\n {}".format(i, self.h_dcgain[i, :]))
 
     def _compute_cir(self) -> None:
         """ Function to compute the channel impulse response
@@ -301,14 +308,7 @@ class Recursivemodel:
             self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:Kt.NO_LEDS], axis=0)
 
         self._channel_dcgain = np.sum(self.h_dcgain, axis=0)
-
-    def print_Hk(self) -> None:
-        """
-        This function calculates the DC-Gain for each reflection.
-        """
-        for i in range(0, self._room.no_reflections+1):
-            print("\n DC-gain for H{} response [W]:\n {}".format(i, self.h_dcgain[i, :]))
-
+    
     def _create_histograms(self) -> None:
         """Function to create histograms from channel impulse
         response raw data.
@@ -479,7 +479,7 @@ class Recursivemodel:
                 self._avg_power
             )
 
-        self._spd_total = np.sum(self._spd_data, axis=1)
+        self._spd_total = self._led._luminous_flux*np.sum(self._spd_data, axis=1)
 
     def _plot_spd(self) -> None:
         """ This function plots the SPD of QLED """
@@ -523,7 +523,7 @@ class Recursivemodel:
                     ),
             ptype='ru'
             )
-    
+
     def _compute_illuminance(self) -> None:
         """ This function calculates the illuminance."""
         self._illuminance = lx.spd_to_power(

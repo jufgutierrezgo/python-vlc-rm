@@ -29,7 +29,8 @@ def test_vlc_tled():
         power=10,
         wavelengths=[620, 530, 460],
         fwhm=[20, 25, 20],
-        modulation='ieee16'
+        modulation='ieee16',
+        luminous_flux=600
                 )
     led1.led_pattern()
     print(led1)

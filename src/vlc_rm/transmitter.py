@@ -27,7 +27,8 @@ class Transmitter:
         fwhm: np.ndarray,
         mlambert: float = 1,
         power: float = 1,
-        modulation: str = 'ieee16'
+        modulation: str = 'ieee16',
+        luminous_flux: float = 1
             ) -> None:
 
         self._name = name
@@ -71,6 +72,10 @@ class Transmitter:
             self._order_csk = 4
         else:
             print("Modulation is not valid")
+
+        self._luminous_flux = luminous_flux
+        if luminous_flux <= 0:
+            raise ValueError("The luminous flux must be non-negative.")
 
     @property
     def name(self) -> str:
@@ -162,6 +167,16 @@ class Transmitter:
         else:
             print("Modulation name is not valid")
 
+    @property
+    def luminous_flux(self) -> float:
+        return self._luminous_flux
+
+    @luminous_flux.setter
+    def luminous_flux(self, luminous_flux):
+        if luminous_flux < 0:
+            raise ValueError("The luminous flux must be non-negative.")
+        self._luminous_flux = luminous_flux
+
     def __str__(self) -> str:
         return (
             f'\n List of parameters for LED transmitter: \n'
@@ -171,6 +186,7 @@ class Transmitter:
             f'Power[W]: {self._power} \n'
             f'Central Wavelengths[nm]: {self._wavelengths} \n'
             f'FWHM[nm]: {self._fwhm}'
+            f'Luminous Flux[lm]: {self._luminous_flux}'
         )
 
     def led_pattern(self) -> None:
