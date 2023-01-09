@@ -127,7 +127,6 @@ class SymbolErrorRate:
             0.05
             ).start()
 
-        self._compute_iler()
         self._create_symbols()
         self._transmit_symbols()
         self._compute_ser_curve()
@@ -327,8 +326,5 @@ class SymbolErrorRate:
         return (
             f'\n|============= Error Rate analysis ==============|\n'
             f'\n List of parameter of SER object \n'
-            f'Inverse LER Matrix: \n {self._iler_matrix} \n'
-            f'Min SNR [dB]: {self._min_snr} \n'
-            f'Max SNR [dB]: {self._max_snr} \n'
-            f'Order of CSK: {self._order_csk} \n'
+            f'Number of symbols: \n {self._no_symbols} \n'            
         )

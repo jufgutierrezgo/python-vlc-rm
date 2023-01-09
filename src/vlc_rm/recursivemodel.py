@@ -464,12 +464,20 @@ class Recursivemodel:
         self.wavelenght = np.arange(380, 782, 2)
 
         # Numpy Array to save the spectral power distribution of each color channel
-        self._spd_data = np.zeros((self.wavelenght.size, Kt.NO_LEDS))
+        spd_data_dcgain = np.zeros((self.wavelenght.size, Kt.NO_LEDS))
 
         for i in range(Kt.NO_LEDS):
             # Arrays to estimate the RGBY gain spectrum
-            self._spd_data[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
+            spd_data_dcgain[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
                 self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)
+
+        self._compute_iler(spd_data_dcgain)
+        self._avg_power_color()
+
+        self._spd_data = np.multiply(
+                spd_data_dcgain,
+                self._avg_power
+            )
 
         self._spd_total = np.sum(self._spd_data, axis=1)
 
@@ -533,7 +541,7 @@ class Recursivemodel:
                 self._channelmatrix[i][j] = np.dot(
                     self._spd_data[:, j], self._photodetector.responsivity[:, i+1])
 
-    def _compute_iler(self) -> None:
+    def _compute_iler(self, spd_data) -> None:        
         """
         This function computes the inverse luminous efficacy radiation (LER) matrix.
         This matrix has a size of NO_LEDS x NO_LEDS
@@ -545,6 +553,22 @@ class Recursivemodel:
                 np.vstack(
                     [
                         self.wavelenght,
-                        self._spd_data[:, i]
+                        spd_data[:, i]
                     ])
                 )
+
+    def _avg_power_color(self):
+        """
+        This function computes the average radiometric power emmitted by 
+        each color channel in the defined constellation.
+        """
+
+        self._avg_power = np.transpose(
+            np.matmul(
+                self._iler_matrix,
+                np.mean(
+                    self._led._constellation,
+                    axis=1
+                    )
+                )
+            )

@@ -28,7 +28,8 @@ def test_vlc_tled():
         mlambert=1,
         power=10,
         wavelengths=[620, 530, 460],
-        fwhm=[20, 25, 20]
+        fwhm=[20, 25, 20],
+        modulation='ieee16'
                 )
     led1.led_pattern()
     print(led1)
@@ -65,11 +66,11 @@ def test_vlc_tled():
     print(channel_model)
     channel_model.print_Hk()
     channel_model._plot_spd()
+    print(channel_model._avg_power)
 
     ser1 = SymbolErrorRate(
             "SER-1",
             recursivemodel=channel_model,
-            order_csk=8,
             no_symbols=1e6
             )
     
