@@ -85,12 +85,21 @@ class SymbolErrorRate:
                 "Maximum value of luminouns flux must be greater than Minimum Flux.")
 
         self._points_flux = points_flux
-        if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
+        if not (isinstance(self._points_flux, (int))) or self._points_flux <= 0:
             raise ValueError(
                 "Points for SER curve must be int and non-negative.")            
-    
+
+        loader = Loader(
+            "Computing the Symbol Error Rate curves ...", 
+            "SER computation done!", 
+            0.05
+            ).start()
+
         self._create_symbols()
         self._transmit_symbols()
+        self._compute_ser_curve(mode="flux")
+
+        loader.stop()
 
     def compute_ser_snr(
             self,
@@ -127,11 +136,48 @@ class SymbolErrorRate:
             0.05
             ).start()
 
+        
         self._create_symbols()
         self._transmit_symbols()
-        self._compute_ser_curve()
+        self._compute_ser_curve("snr")
 
         loader.stop()
+
+    def plot_ser(self, mode) -> None:
+        """
+        This function plots the Symbol Error Rate curve
+        """
+        if mode=='snr':
+            # convert y-axis to Logarithmic scale
+            plt.yscale("log")
+            plt.plot(
+                self._snr_values,
+                self._ser_values,
+                color='b',
+                linestyle='dashed'
+            )
+            plt.title("Symbol Error Rate")
+            plt.xlabel("Signal to Noise Ration [dB]")
+            plt.ylabel("Error Probability")
+            plt.grid()
+            plt.show()
+        elif mode=='flux':
+            # convert y-axis to Logarithmic scale
+            plt.yscale("log")
+            plt.plot(
+                self._flux_values,
+                self._ser_values,
+                color='b',
+                linestyle='dashed'
+            )
+            plt.title("Symbol Error Rate")
+            plt.xlabel("Signal to Noise Ration [dB]")
+            plt.ylabel("Error Probability")
+            plt.grid()
+            plt.show()
+        else:
+            raise ValueError(
+                "Mode for plottig SER curve is not valid.")
 
     def _create_symbols(self) -> None:       
         """
@@ -169,7 +215,7 @@ class SymbolErrorRate:
         original symbols.
         """
 
-        self._symbols_transmitted = np.matmul(
+        self._symbols_rx_1lm = np.matmul(
             np.matmul(
                 self._recursivemodel.channelmatrix,
                 self._recursivemodel._iler_matrix
@@ -179,19 +225,19 @@ class SymbolErrorRate:
 
     def _add_noise(self, target_snr_db) -> None:
         """ 
-        This function adds AWGN noise to the self._symbols_transmitted
+        This function adds AWGN noise to the self._symbols_rx_1lm
         array.
         """
 
-        # plt.stem(self._symbols_transmitted[0, :])
+        # plt.stem(self._symbols_rx_1lm[0, :])
         # plt.show()
 
-        # Create an empty numpy-array equal to self._symbols_transmitted
-        self._noise_symbols = np.empty_like(self._symbols_transmitted)
+        # Create an empty numpy-array equal to self._symbols_rx_1lm
+        self._noise_symbols = np.empty_like(self._symbols_rx_1lm)
 
         for color_channel in range(Kt.NO_DETECTORS):
             # define the x_current signal to add AWGN 
-            x_current = self._symbols_transmitted[color_channel, :]
+            x_current = self._symbols_rx_1lm[color_channel, :]
             # Calculate the power of the signal in the color channel
             x_watts = x_current ** 2
             # Calculate signal power and convert to dB 
@@ -210,18 +256,21 @@ class SymbolErrorRate:
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
 
-    def _add_dark_current(self) -> None:
+    def _add_dark_current(self, flux, idark) -> None:
+
+        # Create an empty numpy-array equal to self._symbols_rx_1lm
+        self._noise_symbols = np.empty_like(self._symbols_rx_1lm)
 
         for color_channel in range(Kt.NO_DETECTORS):
             # define the x_current signal to add AWGN 
-            x_current = self._symbols_transmitted[color_channel, :]            
+            x_current = self._symbols_rx_1lm[color_channel, :]            
             # Equal the standard deviation to dark current
-            std_deviation = self._recursivemodel._idark
+            std_deviation = idark
             # Generate an sample of white noise
             mean_noise = 0
             noise_current = np.random.normal(mean_noise, std_deviation, len(x_current))
             # Noise up the original signal
-            signal_noise = x_current + noise_current
+            signal_noise = flux*x_current + noise_current
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
 
@@ -263,8 +312,7 @@ class SymbolErrorRate:
                 np.transpose(self._inverse_rx_symbols),
                 np.transpose(self._constellation)
                 )       
-        
-        
+                
         self._index_min = np.empty_like(self._symbols_decimal)
 
         for symbol in range(self._no_symbols):
@@ -286,8 +334,8 @@ class SymbolErrorRate:
             self._flux_values = np.linspace(self._min_flux, self._max_flux, self._points_flux+1)
             self._ser_values = np.empty_like(self._flux_values)
 
-            for snr, index in zip(self._flux_values, range(len(self._flux_values))):
-                self._add_noise(snr)
+            for flux, index in zip(self._flux_values, range(len(self._flux_values))):
+                self._add_dark_current(flux, self._recursivemodel._photodetector._idark)
                 self._decode_symbols()
                 self._ser_values[index] = self._compute_error_rate()
 
@@ -303,28 +351,10 @@ class SymbolErrorRate:
         else:
             raise ValueError(
                 "Mode for SER curve is not valid.")
-
-    def plot_ser(self) -> None:
-        """
-        This function plots the Symbol Error Rate curve
-        """
-        # convert y-axis to Logarithmic scale
-        plt.yscale("log")
-        plt.plot(
-            self._snr_values,
-            self._ser_values,
-            color='b',
-            linestyle='dashed'
-        )
-        plt.title("Symbol Error Rate")
-        plt.xlabel("Signal to Noise Ration [dB]")
-        plt.ylabel("Error Probability")
-        plt.grid()
-        plt.show()
-
+    
     def __str__(self) -> str:
         return (
             f'\n|============= Error Rate analysis ==============|\n'
             f'\n List of parameter of SER object \n'
-            f'Number of symbols: \n {self._no_symbols} \n'            
+            f'Number of symbols: {self._no_symbols} \n'            
         )

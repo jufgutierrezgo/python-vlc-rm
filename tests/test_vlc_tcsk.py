@@ -66,8 +66,7 @@ def test_vlc_tled():
     channel_model.simulate_channel()
     print(channel_model)
     channel_model.print_Hk()
-    channel_model._plot_spd()
-    print(channel_model._avg_power)
+    channel_model._plot_spd()   
 
     ser1 = SymbolErrorRate(
             "SER-1",
@@ -75,13 +74,18 @@ def test_vlc_tled():
             no_symbols=1e6
             )
     
-    ser1.compute_ser_snr(        
-        min_snr=0,
-        max_snr=25,
-        points_snr=10
+    # ser1.compute_ser_snr(        
+    #     min_snr=0,
+    #    max_snr=40,
+    #    points_snr=10
+    #    )
+    ser1.compute_ser_flux(
+        min_flux=10,
+        max_flux=120,
+        points_flux=10
         )
     print(ser1)     
-    ser1.plot_ser()
+    ser1.plot_ser(mode='flux')
 
     """
     print("\n CSK symbols payload")

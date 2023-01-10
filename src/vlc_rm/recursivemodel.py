@@ -85,8 +85,8 @@ class Recursivemodel:
     def __str__(self) -> str:
         return (
             f'\n|=============== Simulation results ================|\n'
-            f'DC-Gain with respect to 1W [W]: \n {self._channel_dcgain} \n'
-            f'Crosstalk Matrix with respect to 1W: \n{self._channelmatrix} \n'
+            f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
+            f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n{self._channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CCT: {self._cct} \n'
             f'CRI: {self._cri} \n'
@@ -562,7 +562,7 @@ class Recursivemodel:
         This function computes the average radiometric power emmitted by 
         each color channel in the defined constellation.
         """
-
+        
         self._avg_power = np.transpose(
             np.matmul(
                 self._iler_matrix,
@@ -572,3 +572,6 @@ class Recursivemodel:
                     )
                 )
             )
+
+        # Manual setted of avg_power by each color channels
+        #self._avg_power = np.array([1, 1, 1])

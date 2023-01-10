@@ -185,8 +185,8 @@ class Transmitter:
             f'Lambert Number: {self._mlambert} \n'
             f'Power[W]: {self._power} \n'
             f'Central Wavelengths[nm]: {self._wavelengths} \n'
-            f'FWHM[nm]: {self._fwhm}'
-            f'Luminous Flux[lm]: {self._luminous_flux}'
+            f'FWHM[nm]: {self._fwhm}\n'
+            f'Luminous Flux[lm]: {self._luminous_flux}\n'
         )
 
     def led_pattern(self) -> None:
