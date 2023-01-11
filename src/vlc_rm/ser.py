@@ -171,7 +171,7 @@ class SymbolErrorRate:
                 linestyle='dashed'
             )
             plt.title("Symbol Error Rate")
-            plt.xlabel("Signal to Noise Ration [dB]")
+            plt.xlabel("Luminous Flux [lm]")
             plt.ylabel("Error Probability")
             plt.grid()
             plt.show()
@@ -347,7 +347,6 @@ class SymbolErrorRate:
                 self._add_noise(snr)
                 self._decode_symbols()
                 self._ser_values[index] = self._compute_error_rate()
-
         else:
             raise ValueError(
                 "Mode for SER curve is not valid.")

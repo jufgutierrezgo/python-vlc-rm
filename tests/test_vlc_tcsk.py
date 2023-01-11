@@ -49,7 +49,7 @@ def test_vlc_tled():
     room = Indoorenv(
         "Room",
         size=[5, 5, 3],
-        no_reflections=3,
+        no_reflections=10,
         resolution=1/4,
         ceiling=[0.8, 0.8, 0.8],
         west=[0.8, 0.8, 0.8],
@@ -66,7 +66,8 @@ def test_vlc_tled():
     channel_model.simulate_channel()
     print(channel_model)
     channel_model.print_Hk()
-    channel_model._plot_spd()   
+    channel_model._plot_spd()  
+    #print(channel_model._avg_power) 
 
     ser1 = SymbolErrorRate(
             "SER-1",
@@ -81,7 +82,7 @@ def test_vlc_tled():
     #    )
     ser1.compute_ser_flux(
         min_flux=10,
-        max_flux=120,
+        max_flux=100,
         points_flux=10
         )
     print(ser1)     
