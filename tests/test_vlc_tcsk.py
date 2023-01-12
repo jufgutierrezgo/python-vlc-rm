@@ -33,6 +33,7 @@ def test_vlc_tled():
         luminous_flux=600
                 )
     led1.led_pattern()
+    led1.plot_spd_led()
     print(led1)
 
     pd1 = Photodetector(

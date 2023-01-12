@@ -12,6 +12,8 @@ import matplotlib.pyplot as plt
 # Library for logging
 import logging
 
+from scipy import stats
+
 
 class Transmitter:
     """
@@ -76,6 +78,8 @@ class Transmitter:
         self._luminous_flux = luminous_flux
         if luminous_flux <= 0:
             raise ValueError("The luminous flux must be non-negative.")
+
+        self._create_led_spd()
 
     @property
     def name(self) -> str:
@@ -214,4 +218,32 @@ class Transmitter:
             X, Y, Z, rstride=1, cstride=1, cmap=plt.get_cmap('jet'),
             linewidth=0, antialiased=False, alpha=0.5)
 
+        plt.show()
+
+    def _create_led_spd(self):
+        """
+        This function creates the normilized spectrum of the LEDs 
+        from central wavelengths and FWHM.
+        """
+        # Array for wavelenght points from 380nm to (782-2)nm with 2nm steps
+        self._wavelenght = np.arange(380, 782, 2)
+
+        # Numpy Array to save the spectral power distribution of each color channel
+        self._led_spd = np.zeros((self._wavelenght.size, Kt.NO_LEDS))
+
+        for i in range(Kt.NO_LEDS):
+            # Arrays to estimates the normalized spectrum of LEDs
+            self._led_spd[:, i] = stats.norm.pdf(
+                self._wavelenght, self._wavelengths[i], self._fwhm[i]/2)
+            self._led_spd[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
+        
+    def plot_spd_led(self):
+        # plot red spd data
+        for i in range(Kt.NO_LEDS):
+            plt.plot(self._wavelenght, self._led_spd[:, i])
+        
+        plt.title("Normilized Spectral Power Distribution")
+        plt.xlabel("Wavelength [nm]")
+        plt.ylabel("Normalized Power [W]")
+        plt.grid()
         plt.show()
