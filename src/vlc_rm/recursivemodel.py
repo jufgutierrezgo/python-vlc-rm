@@ -539,7 +539,7 @@ class Recursivemodel:
         for j in range(Kt.NO_LEDS):
             for i in range(Kt.NO_DETECTORS):
                 self._channelmatrix[i][j] = np.dot(
-                    self._spd_data[:, j], self._photodetector.responsivity[:, i+1])
+                    self._spd_data[:, j], self._photodetector._responsivity[:, i+1])
 
     def _compute_iler(self, spd_data) -> None:        
         """

@@ -50,11 +50,11 @@ class Photodetector:
 
         if self.sensor == 'TCS3103-04':
             # read text file into NumPy array
-            self.responsivity = np.loadtxt(
+            self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityTCS3103-04.txt")  # TODO: these files should be on a data directory
             # print("Responsivity loaded succesfully")
         elif self.sensor == 'S10917-35GT':
-            self.responsivity = np.loadtxt(
+            self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
             # print("Responsivity loaded succesfully")
         elif self.sensor == '':
@@ -127,11 +127,11 @@ class Photodetector:
         self._sensor = sensor
 
         if self.sensor == 'TCS3103-04':
-            self.responsivity = np.loadtxt(
+            self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityTCS3103-04.txt")
             print("Responsivity loaded succesfully")
         elif self.sensor == 'S10917-35GT':
-            self.responsivity = np.loadtxt(
+            self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
         else:
             raise ValueError(f"Unknown value for sensor reference{sensor}.")
@@ -159,20 +159,20 @@ class Photodetector:
 
     def plot_responsivity(self) -> None:
         plt.plot(
-            self.responsivity[:, 0],
-            self.responsivity[:, 1],
+            self._responsivity[:, 0],
+            self._responsivity[:, 1],
             color='r',
             linestyle='dashed'
         )
         plt.plot(
-            self.responsivity[:, 0],
-            self.responsivity[:, 2],
+            self._responsivity[:, 0],
+            self._responsivity[:, 2],
             color='g',
             linestyle='dashed'
         )
         plt.plot(
-            self.responsivity[:, 0],
-            self.responsivity[:, 3],
+            self._responsivity[:, 0],
+            self._responsivity[:, 3],
             color='b',
             linestyle='dashed'
         )
