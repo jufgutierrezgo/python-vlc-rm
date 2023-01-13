@@ -87,11 +87,10 @@ class Recursivemodel:
             f'\n|=============== Simulation results ================|\n'
             f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
             f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n{self._channelmatrix} \n'
+            f'Normalized Crosstalk matrix: \n{self._norm_channelmatrix} \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CCT: {self._cct} \n'
-            f'CRI: {self._cri} \n'
-            f'ILER: \n {self._iler_matrix} \n'
-            f'Total Power: \n {self._total_power} \n'
+            f'CRI: {self._cri} \n'            
         )
 
     def simulate_channel(self) -> None:
@@ -110,6 +109,7 @@ class Recursivemodel:
         self._compute_irradiance()
         self._compute_illuminance()
         self._compute_channelmatrix()
+        self._compute_normalized_channelmatrix()
 
         loader.stop()
 
@@ -471,14 +471,11 @@ class Recursivemodel:
         for i in range(Kt.NO_LEDS):
             # Arrays to estimate the RGBY gain spectrum
             spd_data_dcgain[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
-                self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)
-
-        self._compute_iler(spd_data_dcgain)
-        self._avg_power_color()
+                self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)             
 
         self._spd_data = np.multiply(
                 spd_data_dcgain,
-                self._avg_power
+                self._led._avg_power
             )
 
         self._spd_total = self._led._luminous_flux*np.sum(self._spd_data, axis=1)
@@ -541,40 +538,9 @@ class Recursivemodel:
         for j in range(Kt.NO_LEDS):
             for i in range(Kt.NO_DETECTORS):
                 self._channelmatrix[i][j] = np.dot(
-                    self._spd_data[:, j], self._photodetector._responsivity[:, i+1])
+                    self._spd_data[:, j], self._photodetector._responsivity[:, i+1])       
+    
+    def _compute_normalized_channelmatrix(self) -> None:
+        """ This function computes channel matrix normilized between 0 and 1."""
 
-    def _compute_iler(self, spd_data) -> None:        
-        """
-        This function computes the inverse luminous efficacy radiation (LER) matrix.
-        This matrix has a size of NO_LEDS x NO_LEDS
-        """
-        self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
-
-        for i in range(Kt.NO_LEDS):
-            self._iler_matrix[i, i] = 1/lx.spd_to_ler(
-                np.vstack(
-                    [
-                        self.wavelenght,
-                        spd_data[:, i]
-                    ])
-                )
-
-    def _avg_power_color(self):
-        """
-        This function computes the average radiometric power emmitted by 
-        each color channel in the defined constellation.
-        """
-        
-        self._avg_power = np.transpose(
-            np.matmul(
-                self._iler_matrix,
-                np.mean(
-                    self._led._constellation,
-                    axis=1
-                    )
-                )
-            )
-
-        self._total_power = np.sum(self._avg_power)
-        # Manual setted of avg_power by each color channels
-        #self._avg_power = np.array([1, 1, 1])
+        self._norm_channelmatrix = self._channelmatrix/np.max(self._channelmatrix)

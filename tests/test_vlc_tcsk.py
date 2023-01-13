@@ -27,13 +27,13 @@ def test_vlc_tled():
         normal=[0, 0, -1],
         mlambert=1,
         power=10,
-        wavelengths=[620, 530, 460],
-        fwhm=[60, 55, 40],
+        wavelengths=[620, 530, 470],
+        fwhm=[15, 25, 18],
         modulation='ieee16',
-        luminous_flux=10000
+        luminous_flux=1000                
                 )
-    led1.led_pattern()
-    led1.plot_spd_led()
+    # led1.led_pattern()
+    # led1.plot_spd_led()
     print(led1)
 
     pd1 = Photodetector(
@@ -44,7 +44,7 @@ def test_vlc_tled():
         fov=85,
         sensor='S10917-35GT'
                 )
-    pd1.plot_responsivity()
+    # pd1.plot_responsivity()
     print(pd1)
 
     room = Indoorenv(
@@ -52,12 +52,12 @@ def test_vlc_tled():
         size=[5, 5, 3],
         no_reflections=10,
         resolution=1/4,
-        ceiling=[0.8, 0.8, 0.8],
-        west=[0.8, 0.8, 0.8],
-        north=[0.8, 0.8, 0.8],
-        east=[0.8, 0.8, 0.8],
-        south=[0.8, 0.8, 0.8],
-        floor=[0.3, 0.3, 0.3]
+        ceiling=[0.82, 0.71, 0.64],
+        west=[0.82, 0.71, 0.64],
+        north=[0.82, 0.71, 0.64],
+        east=[0.82, 0.71, 0.64],
+        south=[0.82, 0.71, 0.64],
+        floor=[0.65, 0.58, 0.64]
             )
 
     room.create_envirorment(led1, pd1)
@@ -66,9 +66,9 @@ def test_vlc_tled():
     channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
     channel_model.simulate_channel()
     print(channel_model)
-    channel_model.print_Hk()
+    # channel_model.print_Hk()
     channel_model._plot_spd()  
-    #print(channel_model._avg_power) 
+    # print(channel_model._avg_power) 
 
     ser1 = SymbolErrorRate(
             "SER-1",

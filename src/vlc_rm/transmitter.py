@@ -14,6 +14,8 @@ import logging
 
 from scipy import stats
 
+import luxpy as lx
+
 
 class Transmitter:
     """
@@ -79,7 +81,10 @@ class Transmitter:
         if luminous_flux <= 0:
             raise ValueError("The luminous flux must be non-negative.")
 
+        # Initial function
         self._create_led_spd()
+        self._compute_iler(self._led_spd)
+        self._avg_power_color()
 
     @property
     def name(self) -> str:
@@ -170,6 +175,7 @@ class Transmitter:
             self._order_csk = 4
         else:
             print("Modulation name is not valid")
+    
 
     @property
     def luminous_flux(self) -> float:
@@ -191,6 +197,9 @@ class Transmitter:
             f'Central Wavelengths[nm]: {self._wavelengths} \n'
             f'FWHM[nm]: {self._fwhm}\n'
             f'Luminous Flux[lm]: {self._luminous_flux}\n'
+            f'ILER: \n {self._iler_matrix} \n'
+            f'Total Power emmited by the Transmitter [W]: {self._total_power} \n'
+            
         )
 
     def led_pattern(self) -> None:
@@ -247,3 +256,40 @@ class Transmitter:
         plt.ylabel("Normalized Power [W]")
         plt.grid()
         plt.show()
+    
+    def _compute_iler(self, spd_data) -> None:        
+        """
+        This function computes the inverse luminous efficacy radiation (LER) matrix.
+        This matrix has a size of NO_LEDS x NO_LEDS
+        """
+        self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
+
+        for i in range(Kt.NO_LEDS):
+            self._iler_matrix[i, i] = 1/lx.spd_to_ler(
+                np.vstack(
+                    [
+                        self._wavelenght,
+                        spd_data[:, i]
+                    ])
+                )
+
+    def _avg_power_color(self):
+        """
+        This function computes the average radiometric power emmitted by 
+        each color channel in the defined constellation.
+        """
+       
+        
+        self._avg_power = np.transpose(
+            np.matmul(
+                self._iler_matrix,
+                np.mean(
+                    self._constellation,
+                    axis=1
+                    )
+                )
+            )
+
+        self._total_power = self._luminous_flux*np.sum(self._avg_power)
+        # Manual setted of avg_power by each color channels
+        #self._avg_power = np.array([1, 1, 1])
