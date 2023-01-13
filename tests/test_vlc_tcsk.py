@@ -28,9 +28,9 @@ def test_vlc_tled():
         mlambert=1,
         power=10,
         wavelengths=[620, 530, 460],
-        fwhm=[20, 25, 20],
+        fwhm=[60, 55, 40],
         modulation='ieee16',
-        luminous_flux=600
+        luminous_flux=10000
                 )
     led1.led_pattern()
     led1.plot_spd_led()
@@ -81,13 +81,13 @@ def test_vlc_tled():
     #    max_snr=40,
     #    points_snr=10
     #    )
-    ser1.compute_ser_flux(
-        min_flux=10,
-        max_flux=100,
-        points_flux=10
-        )
-    print(ser1)     
-    ser1.plot_ser(mode='flux')
+    # ser1.compute_ser_flux(
+    #    min_flux=10,
+    #    max_flux=100,
+    #    points_flux=10
+    #    )
+    # print(ser1)     
+    # ser1.plot_ser(mode='flux')
 
     """
     print("\n CSK symbols payload")

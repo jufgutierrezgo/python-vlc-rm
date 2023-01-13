@@ -90,6 +90,8 @@ class Recursivemodel:
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CCT: {self._cct} \n'
             f'CRI: {self._cri} \n'
+            f'ILER: \n {self._iler_matrix} \n'
+            f'Total Power: \n {self._total_power} \n'
         )
 
     def simulate_channel(self) -> None:
@@ -461,7 +463,7 @@ class Recursivemodel:
         """
 
         # Array for wavelenght points from 380nm to (782-2)nm with 2nm steps
-        self.wavelenght = np.arange(380, 782, 2)
+        self.wavelenght = np.arange(380, 781, 1)
 
         # Numpy Array to save the spectral power distribution of each color channel
         spd_data_dcgain = np.zeros((self.wavelenght.size, Kt.NO_LEDS))
@@ -487,7 +489,7 @@ class Recursivemodel:
         for i in range(Kt.NO_LEDS):
             plt.plot(self.wavelenght, self._spd_data[:, i])
         
-        plt.title("Spectral Power distribution of QLED")
+        plt.title("Spectral Power Distribution")
         plt.xlabel("Wavelength [nm]")
         plt.ylabel("Radiometric Power [W]")
         plt.grid()
@@ -573,5 +575,6 @@ class Recursivemodel:
                 )
             )
 
+        self._total_power = np.sum(self._avg_power)
         # Manual setted of avg_power by each color channels
         #self._avg_power = np.array([1, 1, 1])

@@ -225,8 +225,8 @@ class Transmitter:
         This function creates the normilized spectrum of the LEDs 
         from central wavelengths and FWHM.
         """
-        # Array for wavelenght points from 380nm to (782-2)nm with 2nm steps
-        self._wavelenght = np.arange(380, 782, 2)
+        # Array for wavelenght points from 380nm to (782-2)nm with 1nm steps
+        self._wavelenght = np.arange(380, 781, 1)
 
         # Numpy Array to save the spectral power distribution of each color channel
         self._led_spd = np.zeros((self._wavelenght.size, Kt.NO_LEDS))
