@@ -30,7 +30,7 @@ def test_vlc_tled():
         wavelengths=[620, 530, 470],
         fwhm=[15, 25, 18],
         modulation='ieee16',
-        luminous_flux=1000                
+        luminous_flux=1000
                 )
     # led1.led_pattern()
     # led1.plot_spd_led()
@@ -38,7 +38,7 @@ def test_vlc_tled():
 
     pd1 = Photodetector(
         "PD1",
-        position=[0.5, 1.0, 0],
+        position=[2.5, 2.5, 0],
         normal=[0, 0, 1],
         area=1e-4,
         fov=85,
@@ -51,13 +51,13 @@ def test_vlc_tled():
         "Room",
         size=[5, 5, 3],
         no_reflections=10,
-        resolution=1/4,
+        resolution=1/8,
         ceiling=[0.82, 0.71, 0.64],
         west=[0.82, 0.71, 0.64],
         north=[0.82, 0.71, 0.64],
         east=[0.82, 0.71, 0.64],
         south=[0.82, 0.71, 0.64],
-        floor=[0.65, 0.58, 0.64]
+        floor=[0.63, 0.6, 0.58]
             )
 
     room.create_envirorment(led1, pd1)
@@ -109,6 +109,6 @@ def test_vlc_tled():
     """
 
     assert (
-        channel_model._channel_dcgain[0] > 2.44e-06 and channel_model._channel_dcgain[0] < 2.46e-06
+        channel_model._channel_dcgain[0] > 2.43e-06 and channel_model._channel_dcgain[0] < 2.44e-06
         # channel_model.rgby_dcgain[0] == 2.5e-06
         )

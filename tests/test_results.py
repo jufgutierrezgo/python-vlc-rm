@@ -52,20 +52,7 @@ def test_vlc_tled():
     floor_reflectance = loadtxt(
         "/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/Interp_ReflecFloor.txt"
         )
-    plt.plot(
-            walls_reflectance[:, 0],
-            walls_reflectance[:, 1],
-            color='black',
-            linestyle='solid',
-            label='Walls-Reflectance'
-        )
-    plt.plot(
-            floor_reflectance[:, 0],
-            floor_reflectance[:, 1],
-            color='black',
-            linestyle='dashed',
-            label='Floor-Reflectance'
-        )
+    
     plt.plot(
             led1._wavelenght,
             led1._led_spd[:, 0],
@@ -109,8 +96,21 @@ def test_vlc_tled():
             linestyle='dashed',
             label='Blue-Detector'
         )
+    plt.plot(
+            walls_reflectance[:, 0],
+            walls_reflectance[:, 1],
+            color='black',
+            linestyle='solid',
+            label='Walls-Reflectance'
+        )
+    plt.plot(
+            floor_reflectance[:, 0],
+            floor_reflectance[:, 1],
+            color='black',
+            linestyle='dashed',
+            label='Floor-Reflectance'
+        )
 
-    
     #plt.title("Spectral Response of LEDs and Detectors", fontsize=20)
     plt.xlabel("Wavelength [nm]", fontsize=16)
     plt.ylabel("Relative Spectrum and Response",  fontsize=16)

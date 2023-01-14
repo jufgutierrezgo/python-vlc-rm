@@ -86,11 +86,13 @@ class Recursivemodel:
         return (
             f'\n|=============== Simulation results ================|\n'
             f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
-            f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n{self._channelmatrix} \n'
+            f'Crosstalk Matrix at 1-lm: \n{self._channelmatrix} \n'
             f'Normalized Crosstalk matrix: \n{self._norm_channelmatrix} \n'
+            f'Lighting Parameters at {self._led._luminous_flux}-lm \n'
             f'Illuminance [lx]: {self._illuminance} \n'
+            f'CIExyz: {self._xyz} \n'
             f'CCT: {self._cct} \n'
-            f'CRI: {self._cri} \n'            
+            f'CRI: {self._cri} \n'
         )
 
     def simulate_channel(self) -> None:
@@ -496,22 +498,33 @@ class Recursivemodel:
         """ This function calculates a CCT and CRI of the QLED SPD."""
 
         # Computing the xyz coordinates from SPD-RGBY estimated spectrum
-        xyz = lx.spd_to_xyz(
+        self._xyz = lx.spd_to_xyz(
             [
                 self.wavelenght,
-                self._spd_total
+                self._spd_total/self._photodetector.area
             ])
+
+        # Example of xyx with D65 illuminant     
+        # self._xyz = lx.spd_to_xyz(
+        #    lx._CIE_ILLUMINANTS['D65']
+        #    )
+
         # Computing the CRI coordinates from SPD-RGBY estimated spectrum
         self._cri = lx.cri.spd_to_cri(
             np.vstack(
                     [
                         self.wavelenght,
                         self._spd_total/self._photodetector.area
+
                     ]
                 )
             )
+        
+        # Example of CRI for D65 illuminant
+        # self._cri = lx.cri.spd_to_cri(lx._CIE_ILLUMINANTS['D65'])
+
         # Computing the CCT coordinates from SPD-RGBY estimated spectrum
-        self._cct = lx.xyz_to_cct_ohno2014(xyz)
+        self._cct = lx.xyz_to_cct_ohno2014(self._xyz)
 
     def _compute_irradiance(self) -> None:
         """ This function calculates the irradiance."""
@@ -538,7 +551,7 @@ class Recursivemodel:
         for j in range(Kt.NO_LEDS):
             for i in range(Kt.NO_DETECTORS):
                 self._channelmatrix[i][j] = np.dot(
-                    self._spd_data[:, j], self._photodetector._responsivity[:, i+1])       
+                    self._spd_data[:, j], self._photodetector._responsivity[:, i+1])
     
     def _compute_normalized_channelmatrix(self) -> None:
         """ This function computes channel matrix normilized between 0 and 1."""
