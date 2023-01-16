@@ -49,10 +49,6 @@ class Transmitter:
         if mlambert <= 0:
             raise ValueError("Lambert number must be greater than zero.")
 
-        self._power = power
-        if power < 0:
-            raise ValueError("The power must be non-negative.")
-
         self._wavelengths = np.array(wavelengths)
         if self._wavelengths.size != Kt.NO_LEDS:
             raise ValueError(
@@ -82,7 +78,7 @@ class Transmitter:
             raise ValueError("The luminous flux must be non-negative.")
 
         # Initial function
-        self._create_led_spd()
+        self._create_led_spd()        
         self._compute_iler(self._led_spd)
         self._avg_power_color()
 
@@ -123,16 +119,6 @@ class Transmitter:
         if mlabert <= 0:
             raise ValueError("Lambert number must be greater than zero.")
         self._mlambert = mlabert
-
-    @property
-    def power(self) -> float:
-        return self._power
-
-    @power.setter
-    def power(self, power):
-        if power < 0:
-            raise ValueError("The power must be non-negative.")
-        self._power = power
 
     @property
     def wavelengths(self) -> np.ndarray:
@@ -192,13 +178,13 @@ class Transmitter:
             f'\n List of parameters for LED transmitter: \n'
             f'Position [x y z]: {self._position} \n'
             f'Normal Vector [x y z]: {self._normal} \n'
-            f'Lambert Number: {self._mlambert} \n'
-            f'Power[W]: {self._power} \n'
-            f'Central Wavelengths[nm]: {self._wavelengths} \n'
-            f'FWHM[nm]: {self._fwhm}\n'
-            f'Luminous Flux[lm]: {self._luminous_flux}\n'
-            f'ILER: \n {self._iler_matrix} \n'
-            f'Total Power emmited by the Transmitter [W]: {self._total_power} \n'
+            f'Lambert Number: {self._mlambert} \n'            
+            f'Central Wavelengths [nm]: {self._wavelengths} \n'
+            f'FWHM [nm]: {self._fwhm}\n'
+            f'Luminous Flux [lm]: {self._luminous_flux}\n'
+            f'ILER [W/lm]: \n {self._iler_matrix} \n'
+            f'Average Power per Channel Color: \n {self._luminous_flux*self._avg_power} \n'
+            f'Total Power emmited by the Transmitter [W]: \n {self._total_power} \n'
             
         )
 
@@ -235,40 +221,72 @@ class Transmitter:
         from central wavelengths and FWHM.
         """
         # Array for wavelenght points from 380nm to (782-2)nm with 1nm steps
-        self._wavelenght = np.arange(380, 781, 1)
+        self._array_wavelenghts = np.arange(380, 781, 1)
 
         # Numpy Array to save the spectral power distribution of each color channel
-        self._led_spd = np.zeros((self._wavelenght.size, Kt.NO_LEDS))
+        self._led_spd = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
+        self._spd_normalized = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
 
         for i in range(Kt.NO_LEDS):
             # Arrays to estimates the normalized spectrum of LEDs
             self._led_spd[:, i] = stats.norm.pdf(
-                self._wavelenght, self._wavelengths[i], self._fwhm[i]/2)
-            self._led_spd[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
+                self._array_wavelenghts, self._wavelengths[i], self._fwhm[i]/2)
+            self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         
-    def plot_spd_led(self):
+    def plot_spd_at_1w(self):
         # plot red spd data
         for i in range(Kt.NO_LEDS):
-            plt.plot(self._wavelenght, self._led_spd[:, i])
+            plt.plot(self._array_wavelenghts, self._avg_power[i]*self._led_spd[:, i])
         
-        plt.title("Normilized Spectral Power Distribution")
+        plt.title("Spectral Power Distribution at 1W/channel")
         plt.xlabel("Wavelength [nm]")
-        plt.ylabel("Normalized Power [W]")
+        plt.ylabel("Power [W]")
         plt.grid()
         plt.show()
+    
+    def plot_spd_normalized(self):
+        # plot red spd data
+        for i in range(Kt.NO_LEDS):
+            plt.plot(
+                self._array_wavelenghts,
+                self._spd_normalized[:, i]
+                )
+        
+        plt.title("Normalized Spectral Power Distribution")
+        plt.xlabel("Wavelength [nm]")
+        plt.ylabel("Normalied Power [W]")
+        plt.grid()
+        plt.show()
+    
     
     def _compute_iler(self, spd_data) -> None:        
         """
         This function computes the inverse luminous efficacy radiation (LER) matrix.
         This matrix has a size of NO_LEDS x NO_LEDS
         """
+        self._photometric = lx.spd_to_power(
+            np.vstack(
+                    [
+                        self._array_wavelenghts,
+                        spd_data[:, 0]
+                    ]),
+            'pu'
+        )
+        self._radiometric = lx.spd_to_power(
+            np.vstack(
+                    [
+                        self._array_wavelenghts,
+                        spd_data[:, 0]
+                    ]),
+            'ru'
+        )
         self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
 
         for i in range(Kt.NO_LEDS):
             self._iler_matrix[i, i] = 1/lx.spd_to_ler(
                 np.vstack(
                     [
-                        self._wavelenght,
+                        self._array_wavelenghts,
                         spd_data[:, i]
                     ])
                 )
@@ -278,15 +296,15 @@ class Transmitter:
         This function computes the average radiometric power emmitted by 
         each color channel in the defined constellation.
         """
-       
         
-        self._avg_power = np.transpose(
-            np.matmul(
-                self._iler_matrix,
-                np.mean(
+        self._avg_lm = np.mean(
                     self._constellation,
                     axis=1
                     )
+        self._avg_power = np.transpose(
+            np.matmul(
+                self._iler_matrix,
+                self._avg_lm
                 )
             )
 

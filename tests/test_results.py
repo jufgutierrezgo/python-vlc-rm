@@ -25,15 +25,19 @@ def test_vlc_tled():
         normal=[0, 0, -1],
         mlambert=1,
         power=10,
-        wavelengths=[620, 530, 470],
-        fwhm=[15, 25, 18],
+        wavelengths=[620, 530, 475],
+        fwhm=[25, 40, 25],
         modulation='ieee16',
-        luminous_flux=600
+        luminous_flux=1000
                 )
     # led1.led_pattern()
     # led1.plot_spd_led()
     print(led1)
+    led1.plot_spd_at_1w()
 
+    print("**-----------------**")
+    print(led1._photometric)
+    print(led1._radiometric)
     pd1 = Photodetector(
         "PD1",
         position=[0.5, 1.0, 0],
@@ -52,24 +56,25 @@ def test_vlc_tled():
     floor_reflectance = loadtxt(
         "/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/Interp_ReflecFloor.txt"
         )
-    
+
+        
     plt.plot(
-            led1._wavelenght,
-            led1._led_spd[:, 0],
+            led1._array_wavelenghts,
+            led1._spd_normalized[:, 0],
             color='r',
             linestyle='solid',
             label='Red-LED'
         )
     plt.plot(
-            led1._wavelenght,
-            led1._led_spd[:, 1],
+            led1._array_wavelenghts,
+            led1._spd_normalized[:, 1],
             color='g',
             linestyle='solid',
             label='Green-LED'
         )
     plt.plot(
-            led1._wavelenght,
-            led1._led_spd[:, 2],
+            led1._array_wavelenghts,
+            led1._spd_normalized[:, 2],
             color='b',
             linestyle='solid',
             label='Blue-LED'
@@ -112,18 +117,26 @@ def test_vlc_tled():
         )
 
     #plt.title("Spectral Response of LEDs and Detectors", fontsize=20)
+    plt.legend(
+        loc='upper right',
+        fontsize=14,
+        ncol=1,
+        # bbox_to_anchor=[0, 1],
+        # shadow=True, 
+        # fancybox=True
+        )
+    plt.xticks(
+        # rotation=90,
+        fontsize=14
+        )
+    plt.yticks(
+        # rotation=90,
+        fontsize=14
+        )        
     plt.xlabel("Wavelength [nm]", fontsize=16)
     plt.ylabel("Relative Spectrum and Response",  fontsize=16)
     plt.grid()
-    plt.legend(
-        loc="upper left", 
-        fontsize=12, 
-        bbox_to_anchor=[0, 1],
-        ncol=1, 
-        #shadow=True, 
-        #fancybox=True
-        )
     plt.xlim([400, 700])
-    plt.ylim([0, 1.1])
+    plt.ylim([0, 1.15])
     plt.show()
 

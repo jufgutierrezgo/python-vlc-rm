@@ -27,14 +27,14 @@ def test_vlc_tled():
         normal=[0, 0, -1],
         mlambert=1,
         power=10,
-        wavelengths=[620, 530, 470],
-        fwhm=[15, 25, 18],
+        wavelengths=[620, 530, 475],
+        fwhm=[25, 40, 25],
         modulation='ieee16',
         luminous_flux=1000
                 )
     # led1.led_pattern()
     # led1.plot_spd_led()
-    print(led1)
+    print(led1)    
 
     pd1 = Photodetector(
         "PD1",
@@ -57,7 +57,7 @@ def test_vlc_tled():
         north=[0.82, 0.71, 0.64],
         east=[0.82, 0.71, 0.64],
         south=[0.82, 0.71, 0.64],
-        floor=[0.63, 0.6, 0.58]
+        floor=[0.635, 0.61, 0.58]
             )
 
     room.create_envirorment(led1, pd1)
