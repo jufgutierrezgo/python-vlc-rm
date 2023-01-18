@@ -393,7 +393,7 @@ class Indoorenv:
         """
 
         self.wall_parameters = np.zeros(
-            (2, self.no_points, self.no_points), dtype=np.float16)
+            (2, self.no_points, self.no_points), dtype=np.float32)
 
         # Computes pairwise-element distance using tensor
         # TODO: consider using Numpy only if possible

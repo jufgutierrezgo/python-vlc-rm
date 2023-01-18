@@ -26,11 +26,10 @@ def test_vlc_tled():
         position=[2.5, 2.5, 3],
         normal=[0, 0, -1],
         mlambert=1,
-        power=10,
         wavelengths=[620, 530, 475],
-        fwhm=[25, 40, 25],
+        fwhm=[20, 30, 20],
         modulation='ieee16',
-        luminous_flux=1000
+        luminous_flux=5000
                 )
     # led1.led_pattern()
     # led1.plot_spd_led()
@@ -38,9 +37,10 @@ def test_vlc_tled():
 
     pd1 = Photodetector(
         "PD1",
-        position=[2.5, 2.5, 0],
+        position=[0.5, 0.5, 0],
         normal=[0, 0, 1],
-        area=1e-4,
+        area=(1e-6)/3,
+        # area=0.5e-4,
         fov=85,
         sensor='S10917-35GT'
                 )
@@ -66,8 +66,8 @@ def test_vlc_tled():
     channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
     channel_model.simulate_channel()
     print(channel_model)
-    # channel_model.print_Hk()
-    channel_model._plot_spd()  
+    #channel_model.print_Hk()
+    #channel_model._plot_spd()  
     # print(channel_model._avg_power) 
 
     ser1 = SymbolErrorRate(

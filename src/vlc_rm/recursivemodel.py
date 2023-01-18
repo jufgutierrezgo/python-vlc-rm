@@ -56,7 +56,7 @@ class Recursivemodel:
         self._channel_dcgain = np.zeros((1, Kt.NO_LEDS))
         self._channelmatrix = np.zeros(
             (Kt.NO_DETECTORS, Kt.NO_LEDS),
-            dtype=np.float32
+            dtype=np.float64
             )
         self._illuminance = 0
         self._cri = 0
@@ -143,9 +143,9 @@ class Recursivemodel:
         rx_index_point = self._room.no_points-1
 
         cos_phi = np.zeros(
-            (self._room.no_points), dtype=np.float16)
+            (self._room.no_points), dtype=np.float64)
         dis2 = np.zeros((
-            self._room.no_points, self._room.no_points), dtype=np.float16)
+            self._room.no_points, self._room.no_points), dtype=np.float64)
 
         h0_se = np.zeros((self._room.no_points, Kt.NO_LEDS), dtype=np.float64)
         h0_er = np.zeros((self._room.no_points, 1), dtype=np.float64)
@@ -173,13 +173,13 @@ class Recursivemodel:
                 )
 
         rx_wall_factor = (
-            self._photodetector.area *
+            self._photodetector._area *
             self._room.wall_parameters[1, int(rx_index_point), :]
             )
 
         # Differential power between all grid points without reflectance
         dP_ij = np.zeros(
-            (self._room.no_points, self._room.no_points), np.float32)
+            (self._room.no_points, self._room.no_points), np.float64)
         dP_ij = (
             np.divide(
                 self._room.deltaA*self._room.wall_parameters[1, :, :] *
@@ -199,7 +199,7 @@ class Recursivemodel:
 
         # Time delay matrix
         tDelay_ij = np.zeros(
-            (self._room.no_points, self._room.no_points), dtype=np.float32)
+            (self._room.no_points, self._room.no_points), dtype=np.float64)
         tDelay_ij = self._room.wall_parameters[0, :, :]/Kt.SPEED_OF_LIGHT
         # print(np.shape(tDelay_ij))
 
@@ -209,15 +209,15 @@ class Recursivemodel:
 
             # Creates the array to save h_k reflections response
             # and last h_er response
-            self.h_k.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float32))
-            hlast_er.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float32))
+            self.h_k.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float64))
+            hlast_er.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float64))
 
             # Creates the array to save time-delay reflections
             # response and last h_er
             self.delay_hk.append(np.zeros(
-                (self._room.no_points, 1), np.float32))
+                (self._room.no_points, 1), np.float64))
             delay_hlast_er.append(np.zeros(
-                (self._room.no_points, 1), np.float32))
+                (self._room.no_points, 1), np.float64))
 
             if i == 0:
 
@@ -306,7 +306,7 @@ class Recursivemodel:
         from LoS and h_k reflections
         """
 
-        self.h_dcgain = np.zeros((self._room.no_reflections+1, Kt.NO_LEDS), np.float32)
+        self.h_dcgain = np.zeros((self._room.no_reflections+1, Kt.NO_LEDS), np.float64)
 
         for i in range(0, self._room.no_reflections+1):
             self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:Kt.NO_LEDS], axis=0)
@@ -352,7 +352,7 @@ class Recursivemodel:
         for k_reflec in range(self._room.no_reflections+1):
 
             self.hist_power_time.append(
-                np.zeros((self.bins_hist, Kt.NO_LEDS), np.float32))
+                np.zeros((self.bins_hist, Kt.NO_LEDS), np.float64))
 
             # Delay_aux variable
             delay_aux = np.reshape(
@@ -531,19 +531,19 @@ class Recursivemodel:
         
         self._irradiance = lx.spd_to_power(
             np.vstack(
-                [self.wavelenght, self._spd_total/self._photodetector.area]
+                [self.wavelenght, self._spd_total]
                     ),
             ptype='ru'
-            )
+            )/self._photodetector._area
 
     def _compute_illuminance(self) -> None:
         """ This function calculates the illuminance."""
         self._illuminance = lx.spd_to_power(
             np.vstack(
-                [self.wavelenght, self._spd_total/self._photodetector.area]
+                [self.wavelenght, self._spd_total]
                         ),
             ptype='pu'
-            )
+            )/self._photodetector._area
 
     def _compute_channelmatrix(self) -> None:
         """ This function computes channel matrix."""
