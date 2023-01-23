@@ -179,7 +179,19 @@ class SymbolErrorRate:
             raise ValueError(
                 "Mode for plottig SER curve is not valid.")
 
-    def _create_symbols(self) -> None:       
+    def save_SerFLux_data(self) -> None:
+        """
+        This function save in txt the numpy arrays with the
+        symbol erro rate data.
+        """
+
+        np.savetxt(
+            'SerFlux_data.out',
+            (self._flux_values, self._ser_values),
+            delimiter=','
+            )
+
+    def _create_symbols(self) -> None:
         """
         This function creates the symbols array to transmit.
         """
@@ -218,7 +230,7 @@ class SymbolErrorRate:
         self._symbols_rx_1lm = np.matmul(
             np.matmul(
                 self._recursivemodel.channelmatrix,
-                self._recursivemodel._iler_matrix
+                self._recursivemodel._led._iler_matrix
                 ),
             self._symbols_csk
             )

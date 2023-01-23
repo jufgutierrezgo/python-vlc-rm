@@ -27,7 +27,7 @@ def test_vlc_tled():
         normal=[0, 0, -1],
         mlambert=1,
         wavelengths=[620, 530, 475],
-        fwhm=[20, 30, 20],
+        fwhm=[20, 45, 20],
         modulation='ieee16',
         luminous_flux=5000
                 )
@@ -37,7 +37,7 @@ def test_vlc_tled():
 
     pd1 = Photodetector(
         "PD1",
-        position=[0.5, 0.5, 0],
+        position=[2.5, 2.5, 0.85],
         normal=[0, 0, 1],
         area=(1e-6)/3,
         # area=0.5e-4,
@@ -67,7 +67,7 @@ def test_vlc_tled():
     channel_model.simulate_channel()
     print(channel_model)
     #channel_model.print_Hk()
-    #channel_model._plot_spd()  
+    channel_model._plot_spd()  
     # print(channel_model._avg_power) 
 
     ser1 = SymbolErrorRate(
@@ -81,13 +81,14 @@ def test_vlc_tled():
     #    max_snr=40,
     #    points_snr=10
     #    )
-    # ser1.compute_ser_flux(
-    #    min_flux=10,
-    #    max_flux=100,
-    #    points_flux=10
-    #    )
-    # print(ser1)     
-    # ser1.plot_ser(mode='flux')
+    ser1.compute_ser_flux(
+        min_flux=10,
+        max_flux=1.5e4,
+        points_flux=10
+        )
+    print(ser1)     
+    ser1.plot_ser(mode='flux')
+    ser1.save_SerFLux_data()
 
     """
     print("\n CSK symbols payload")
