@@ -150,6 +150,7 @@ class Photodetector:
     def __str__(self) -> str:
         return (
             f'\n List of parameters for photodetector {self._name}: \n'
+            f'Name: {self._name} \n'
             f'Position [x y z]: {self._position} \n'
             f'Normal Vector [x y z]: {self._normal} \n'
             f'Active Area[m2]: {self._area} \n'

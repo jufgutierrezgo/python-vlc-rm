@@ -186,9 +186,9 @@ class SymbolErrorRate:
         """
 
         np.savetxt(
-            'SerFlux_data.out',
+            f'SER-Flux_data{self._recursivemodel._photodetector._name}.txt',
             (self._flux_values, self._ser_values),
-            delimiter=','
+            delimiter=' '
             )
 
     def _create_symbols(self) -> None:
@@ -367,5 +367,7 @@ class SymbolErrorRate:
         return (
             f'\n|============= Error Rate analysis ==============|\n'
             f'\n List of parameter of SER object \n'
-            f'Number of symbols: {self._no_symbols} \n'            
+            f'Number of symbols: {self._no_symbols} \n'
+            f'Min Flux [lm]: {self._min_flux} \n'
+            f'Max Flux [lm]: {self._max_flux} \n'
         )

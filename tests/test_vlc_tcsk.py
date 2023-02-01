@@ -17,7 +17,7 @@ from vlc_rm.constants import Constants as Kt
 import numpy as np
 
 # test python package vlc-rm with 4-LEDs and 3-DETECTORS
-def test_vlc_tled():
+def test_vlc_configA():
 
     Kt.NO_LEDS = 3
 
@@ -36,8 +36,8 @@ def test_vlc_tled():
     print(led1)    
 
     pd1 = Photodetector(
-        "PD1",
-        position=[2.5, 2.5, 0.85],
+        "PD2",
+        position=[1.5, 1.5, 0.85],
         normal=[0, 0, 1],
         area=(1e-6)/3,
         # area=0.5e-4,
@@ -66,14 +66,14 @@ def test_vlc_tled():
     channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
     channel_model.simulate_channel()
     print(channel_model)
-    #channel_model.print_Hk()
-    channel_model._plot_spd()  
+    # channel_model.print_Hk()
+    # channel_model._plot_spd()  
     # print(channel_model._avg_power) 
 
     ser1 = SymbolErrorRate(
             "SER-1",
             recursivemodel=channel_model,
-            no_symbols=1e6
+            no_symbols=5e6
             )
     
     # ser1.compute_ser_snr(        
@@ -83,8 +83,8 @@ def test_vlc_tled():
     #    )
     ser1.compute_ser_flux(
         min_flux=10,
-        max_flux=1.5e4,
-        points_flux=10
+        max_flux=10e3,
+        points_flux=8
         )
     print(ser1)     
     ser1.plot_ser(mode='flux')
@@ -108,8 +108,114 @@ def test_vlc_tled():
     print("\n Symbol error rate")
     print(ser1._error_rate)
     """
+    assert (True)
 
+# test python package vlc-rm with 4-LEDs and 3-DETECTORS
+def test_vlc_configA():
+
+    Kt.NO_LEDS = 3
+
+    led1 = Transmitter(
+        "Led1",
+        position=[2.5, 2.5, 3],
+        normal=[0, 0, -1],
+        mlambert=1,
+        wavelengths=[620, 530, 475],
+        fwhm=[20, 45, 20],
+        modulation='ieee16',
+        luminous_flux=5000
+                )
+    # led1.led_pattern()
+    # led1.plot_spd_led()
+    print(led1)    
+
+    pd1 = Photodetector(
+        "PD2",
+        position=[1.5, 1.5, 0.85],
+        normal=[0, 0, 1],
+        area=(1e-6)/3,
+        # area=0.5e-4,
+        fov=85,
+        sensor='S10917-35GT'
+                )
+    # pd1.plot_responsivity()
+    print(pd1)
+
+    room = Indoorenv(
+        "Room",
+        size=[5, 5, 3],
+        no_reflections=10,
+        resolution=1/8,
+        ceiling=[0.82, 0.71, 0.64],
+        west=[0.82, 0.71, 0.64],
+        north=[0.82, 0.71, 0.64],
+        east=[0.82, 0.71, 0.64],
+        south=[0.82, 0.71, 0.64],
+        floor=[0.635, 0.61, 0.58]
+            )
+
+    room.create_envirorment(led1, pd1)
+    print(room)
+
+    channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
+    channel_model.simulate_channel()
+    print(channel_model)
+    # channel_model.print_Hk()
+    # channel_model._plot_spd()  
+    # print(channel_model._avg_power) 
+
+    assert (True)
+
+# test python package vlc-rm with 4-LEDs and 3-DETECTORS
+def test_vlc_validation():
+
+    Kt.NO_LEDS = 3
+
+    led1 = Transmitter(
+        "Led1",
+        position=[2.5, 2.5, 3],
+        normal=[0, 0, -1],
+        mlambert=1,
+        wavelengths=[620, 530, 475],
+        fwhm=[20, 45, 20],
+        modulation='ieee16',
+        luminous_flux=5000
+                )
+    # led1.led_pattern()
+    # led1.plot_spd_led()
+    print(led1)    
+
+    pd1 = Photodetector(
+        "PD2",
+        position=[0.5, 1, 0],
+        normal=[0, 0, 1],
+        area=1e-4,
+        # area=0.5e-4,
+        fov=85,
+        sensor='S10917-35GT'
+                )
+    # pd1.plot_responsivity()
+    print(pd1)
+
+    room = Indoorenv(
+        "Room",
+        size=[5, 5, 3],
+        no_reflections=3,
+        resolution=1/8,
+        ceiling=[0.8, 0.8, 0.8],
+        west=[0.8, 0.8, 0.8],
+        north=[0.8, 0.8, 0.8],
+        east=[0.8, 0.8, 0.8],
+        south=[0.8, 0.8, 0.8],
+        floor=[0.3, 0.3, 0.3]
+            )
+
+    room.create_envirorment(led1, pd1)
+    print(room)
+
+    channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
+    channel_model.simulate_channel()
+    print(channel_model)
     assert (
-        channel_model._channel_dcgain[0] > 2.43e-06 and channel_model._channel_dcgain[0] < 2.44e-06
-        # channel_model.rgby_dcgain[0] == 2.5e-06
+        channel_model._channel_dcgain[0] > 2.43e-06 and channel_model._channel_dcgain[0] < 2.44e-06        
         )

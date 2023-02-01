@@ -41,7 +41,7 @@ def test_vlc_tled():
         "PD1",
         position=[0.5, 1.0, 0],
         normal=[0, 0, 1],
-        area=1e-5,
+        area=1e-4,
         fov=85,
         sensor='S10917-35GT'
                 )
@@ -50,10 +50,10 @@ def test_vlc_tled():
 
     # load the spectral reflectance of Plaster material
     walls_reflectance = loadtxt(
-        "/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/Interp_ReflecPlaster.txt"
+        "tests/walls_reflectance/Interp_ReflecPlaster.txt"
         )
     floor_reflectance = loadtxt(
-        "/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/Interp_ReflecFloor.txt"
+        "tests/walls_reflectance/Interp_ReflecFloor.txt"
         )
 
         
@@ -126,14 +126,14 @@ def test_vlc_tled():
         )
     plt.xticks(
         # rotation=90,
-        fontsize=14
+        fontsize=18
         )
     plt.yticks(
         # rotation=90,
-        fontsize=14
+        fontsize=18
         )        
-    plt.xlabel("Wavelength [nm]", fontsize=16)
-    plt.ylabel("Relative Spectrum and Response",  fontsize=16)
+    plt.xlabel("Wavelength [nm]", fontsize=20)
+    plt.ylabel("Relative Spectrum and Response",  fontsize=20)
     plt.grid()
     plt.xlim([400, 700])
     plt.ylim([0, 1.15])

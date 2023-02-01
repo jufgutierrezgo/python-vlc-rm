@@ -85,6 +85,7 @@ class Recursivemodel:
     def __str__(self) -> str:        
         return (
             f'\n|=============== Simulation results ================|\n'
+            f'Name: {self.name} \n'
             f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
             f'Crosstalk Matrix at 1-lm: \n{self._channelmatrix} \n'
             f'Normalized Crosstalk matrix: \n{self._norm_channelmatrix} \n'
@@ -498,7 +499,7 @@ class Recursivemodel:
         """ This function calculates a CCT and CRI of the QLED SPD."""
 
         # Computing the xyz coordinates from SPD-RGBY estimated spectrum
-        self._xyz = lx.spd_to_xyz(
+        self._XYZ_uppper = lx.spd_to_xyz(
             [
                 self.wavelenght,
                 self._spd_total/self._photodetector.area
@@ -508,6 +509,8 @@ class Recursivemodel:
         # self._xyz = lx.spd_to_xyz(
         #    lx._CIE_ILLUMINANTS['D65']
         #    )
+
+        self._xyz = self._XYZ_uppper/np.sum(self._XYZ_uppper)
 
         # Computing the CRI coordinates from SPD-RGBY estimated spectrum
         self._cri = lx.cri.spd_to_cri(

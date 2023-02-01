@@ -206,6 +206,7 @@ class Indoorenv:
     def __str__(self) -> str:
         return (
             f'\n List of parameters for indoor envirionment {self._name}: \n'
+            f'Name: {self._name}\n'
             f'Size [x y z] -> [m]: {self._size} \n'
             f'Order reflection: {self._no_reflections} \n'
             f'Resolution points [m]: {self._resolution}\n'
