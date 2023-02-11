@@ -11,7 +11,6 @@ from vlc_rm.indoorenv import Indoorenv
 
 from vlc_rm.recursivemodel import Recursivemodel
 
-from vlc_rm.loader import Loader
 
 import luxpy as lx
 
@@ -89,17 +88,13 @@ class SymbolErrorRate:
             raise ValueError(
                 "Points for SER curve must be int and non-negative.")            
 
-        loader = Loader(
-            "Computing the Symbol Error Rate curves ...", 
-            "SER computation done!", 
-            0.05
-            ).start()
-
+        print("\nComputing the Symbol Error Rate curves ...")      
+        
         self._create_symbols()
         self._transmit_symbols()
         self._compute_ser_curve(mode="flux")
 
-        loader.stop()
+        print("SER computation done!\n")
 
     def compute_ser_snr(
             self,

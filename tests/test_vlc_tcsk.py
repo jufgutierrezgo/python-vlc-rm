@@ -110,61 +110,6 @@ def test_vlc_configA():
     """
     assert (True)
 
-# test python package vlc-rm with 4-LEDs and 3-DETECTORS
-def test_vlc_configA():
-
-    Kt.NO_LEDS = 3
-
-    led1 = Transmitter(
-        "Led1",
-        position=[2.5, 2.5, 3],
-        normal=[0, 0, -1],
-        mlambert=1,
-        wavelengths=[620, 530, 475],
-        fwhm=[20, 45, 20],
-        modulation='ieee16',
-        luminous_flux=5000
-                )
-    # led1.led_pattern()
-    # led1.plot_spd_led()
-    print(led1)    
-
-    pd1 = Photodetector(
-        "PD2",
-        position=[1.5, 1.5, 0.85],
-        normal=[0, 0, 1],
-        area=(1e-6)/3,
-        # area=0.5e-4,
-        fov=85,
-        sensor='S10917-35GT'
-                )
-    # pd1.plot_responsivity()
-    print(pd1)
-
-    room = Indoorenv(
-        "Room",
-        size=[5, 5, 3],
-        no_reflections=10,
-        resolution=1/8,
-        ceiling=[0.82, 0.71, 0.64],
-        west=[0.82, 0.71, 0.64],
-        north=[0.82, 0.71, 0.64],
-        east=[0.82, 0.71, 0.64],
-        south=[0.82, 0.71, 0.64],
-        floor=[0.635, 0.61, 0.58]
-            )
-
-    room.create_envirorment(led1, pd1)
-    print(room)
-
-    channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
-    channel_model.simulate_channel()
-    print(channel_model)
-    # channel_model.print_Hk()
-    # channel_model._plot_spd()  
-    # print(channel_model._avg_power) 
-
-    assert (True)
 
 # test python package vlc-rm with 4-LEDs and 3-DETECTORS
 def test_vlc_validation():
@@ -180,9 +125,7 @@ def test_vlc_validation():
         fwhm=[20, 45, 20],
         modulation='ieee16',
         luminous_flux=5000
-                )
-    # led1.led_pattern()
-    # led1.plot_spd_led()
+                )    
     print(led1)    
 
     pd1 = Photodetector(
@@ -217,5 +160,7 @@ def test_vlc_validation():
     channel_model.simulate_channel()
     print(channel_model)
     assert (
-        channel_model._channel_dcgain[0] > 2.43e-06 and channel_model._channel_dcgain[0] < 2.44e-06        
+        channel_model._channel_dcgain[0] > 2.43e-06 and channel_model._channel_dcgain[0] < 2.44e-06 and
+        channel_model._channel_dcgain[1] > 2.43e-06 and channel_model._channel_dcgain[1] < 2.44e-06 and
+        channel_model._channel_dcgain[2] > 2.43e-06 and channel_model._channel_dcgain[2] < 2.44e-06
         )

@@ -26,17 +26,7 @@ def test_ser_curves():
         )
     ser_p3 = loadtxt(
         "tests/ser_flux_curves/SER-Flux_dataPD3.txt"
-        )
-    ser_p4 = loadtxt(
-        "tests/ser_flux_curves/SER-Flux_dataPD4.txt"
-        )
-    ser_p5 = loadtxt(
-        "tests/ser_flux_curves/SER-Flux_dataPD5.txt"
-        )
-    ser_p6 = loadtxt(
-        "tests/ser_flux_curves/SER-Flux_dataPD6.txt"
-        )
-    print(ser_p1)
+        )        
         
     plt.plot(
             ser_p1[0, :],
@@ -89,4 +79,3 @@ def test_ser_curves():
     plt.ylabel("Symbol Error Rate", fontsize=20)
     plt.grid()
     plt.show()
-

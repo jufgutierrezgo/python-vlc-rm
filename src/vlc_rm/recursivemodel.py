@@ -18,8 +18,6 @@ from vlc_rm.photodetector import Photodetector
 
 from vlc_rm.indoorenv import Indoorenv
 
-from vlc_rm.loader import Loader
-
 
 class Recursivemodel:
     """
@@ -101,10 +99,8 @@ class Recursivemodel:
         This method simulates the indoor enviornment
         """
 
-        loader = Loader(
-            "Simulating indoor environment ...", "Simulation done!", 0.05
-            ).start()
-
+        print("\n Simulating indoor environment ...")
+        
         self._compute_cir()
         self._compute_dcgain()
         self._create_spd()
@@ -114,7 +110,8 @@ class Recursivemodel:
         self._compute_channelmatrix()
         self._compute_normalized_channelmatrix()
 
-        loader.stop()
+        print("Simulation done! \n")
+        
 
     def print_Hk(self) -> None:
         """

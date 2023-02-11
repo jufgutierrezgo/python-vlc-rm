@@ -13,8 +13,6 @@ from vlc_rm.transmitter import Transmitter
 
 from vlc_rm.photodetector import Photodetector
 
-from vlc_rm.loader import Loader
-
 
 class Indoorenv:
     """
@@ -230,10 +228,7 @@ class Indoorenv:
             raise ValueError(
                 "Receiver attribute must be an object type Photodetector.")
 
-        loader = Loader(
-            "Creating parameters of indoor environment ...",
-            "Parameters created!", 0.05
-            ).start()
+        print("\n Creating parameters of indoor environment ...")
 
         self.create_grid(
             self._tx._position,
@@ -243,7 +238,7 @@ class Indoorenv:
             )
         self.compute_parameters(self._rx._fov)
 
-        loader.stop()
+        print("Parameters created!\n")
 
     def create_grid(
         self,
