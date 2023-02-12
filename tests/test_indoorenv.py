@@ -14,9 +14,10 @@ import numpy as np
 # Import Pytest
 import pytest
 
-@pytest.fixture
-def indoorenv():
-    return Indoorenv(
+
+class TestHappyPathsEnv:
+
+    indoorenv = Indoorenv(
         "Room",
         size=[5, 5, 3],
         no_reflections=3,
@@ -29,32 +30,29 @@ def indoorenv():
         floor=[0.3, 0.3, 0.3, 0.3]
             )
 
-class TestHappyPathsEnv:
+    def test_size(self):
+        assert np.array_equal(self.indoorenv.size, np.array([5, 5, 3]))
 
-    @pytest.fixture(autouse=True)
-    def test_size(self, indoorenv):
-        assert np.array_equal(indoorenv.size, np.array([5, 5, 3]))
+    def test_no_reflections(self):
+        assert self.indoorenv.no_reflections == 3
 
-    def test_no_reflections(self, indoorenv):
-        assert indoorenv.no_reflections == 3
+    def test_resolution(self):
+        assert self.indoorenv.resolution == 1/8
 
-    def test_resolution(self, indoorenv):
-        assert indoorenv.resolution == 1/8
+    def test_ceiling(self):
+        assert np.array_equal(self.indoorenv.ceiling, np.array([0.8, 0.8, 0.8, 0.8]))
 
-    def test_ceiling(self, indoorenv):
-        assert np.array_equal(indoorenv.ceiling, np.array([0.8, 0.8, 0.8, 0.8]))
+    def test_west(self):
+        assert np.array_equal(self.indoorenv.west, np.array([0.8, 0.8, 0.8, 0.8]))
 
-    def test_west(self, indoorenv):
-        assert np.array_equal(indoorenv.west, np.array([0.8, 0.8, 0.8, 0.8]))
+    def test_north(self):
+        assert np.array_equal(self.indoorenv.north, np.array([0.8, 0.8, 0.8, 0.8]))
 
-    def test_north(self, indoorenv):
-        assert np.array_equal(indoorenv.north, np.array([0.8, 0.8, 0.8, 0.8]))
+    def test_east(self):
+        assert np.array_equal(self.indoorenv.east, np.array([0.8, 0.8, 0.8, 0.8]))
 
-    def test_east(self, indoorenv):
-        assert np.array_equal(indoorenv.east, np.array([0.8, 0.8, 0.8, 0.8]))
+    def test_south(self):
+        assert np.array_equal(self.indoorenv.south, np.array([0.8, 0.8, 0.8, 0.8]))
 
-    def test_south(self, indoorenv):
-        assert np.array_equal(indoorenv.south, np.array([0.8, 0.8, 0.8, 0.8]))
-
-    def test_floor(self, indoorenv):
-        assert np.array_equal(indoorenv.floor, np.array([0.3, 0.3, 0.3, 0.3]))
+    def test_floor(self):
+        assert np.array_equal(self.indoorenv.floor, np.array([0.3, 0.3, 0.3, 0.3]))
