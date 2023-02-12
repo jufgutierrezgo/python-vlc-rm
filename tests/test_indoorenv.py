@@ -22,12 +22,12 @@ class TestHappyPathsEnv:
         size=[5, 5, 3],
         no_reflections=3,
         resolution=1/8,
-        ceiling=[0.8, 0.8, 0.8, 0.8],
-        west=[0.8, 0.8, 0.8, 0.8],
-        north=[0.8, 0.8, 0.8, 0.8],
-        east=[0.8, 0.8, 0.8, 0.8],
-        south=[0.8, 0.8, 0.8, 0.8],
-        floor=[0.3, 0.3, 0.3, 0.3]
+        ceiling=[0.8, 0.8, 0.8],
+        west=[0.8, 0.8, 0.8],
+        north=[0.8, 0.8, 0.8],
+        east=[0.8, 0.8, 0.8],
+        south=[0.8, 0.8, 0.8],
+        floor=[0.3, 0.3, 0.3]
             )
 
     def test_size(self):
@@ -40,19 +40,19 @@ class TestHappyPathsEnv:
         assert self.indoorenv.resolution == 1/8
 
     def test_ceiling(self):
-        assert np.array_equal(self.indoorenv.ceiling, np.array([0.8, 0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.ceiling, np.array([0.8, 0.8, 0.8]))
 
     def test_west(self):
-        assert np.array_equal(self.indoorenv.west, np.array([0.8, 0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.west, np.array([0.8, 0.8, 0.8]))
 
     def test_north(self):
-        assert np.array_equal(self.indoorenv.north, np.array([0.8, 0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.north, np.array([0.8, 0.8, 0.8]))
 
     def test_east(self):
-        assert np.array_equal(self.indoorenv.east, np.array([0.8, 0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.east, np.array([0.8, 0.8, 0.8]))
 
     def test_south(self):
-        assert np.array_equal(self.indoorenv.south, np.array([0.8, 0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.south, np.array([0.8, 0.8, 0.8]))
 
     def test_floor(self):
-        assert np.array_equal(self.indoorenv.floor, np.array([0.3, 0.3, 0.3, 0.3]))
+        assert np.array_equal(self.indoorenv.floor, np.array([0.3, 0.3, 0.3]))

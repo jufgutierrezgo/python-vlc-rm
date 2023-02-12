@@ -21,7 +21,7 @@ class Constants:
     # directory to save histograms and graphs
     REPORT_PATH = ROOT_DIR + "/report/"
     # Numbers of LED (Transmission channels)
-    NO_LEDS = 4
+    NO_LEDS = 3
     # Numbers of Photodetector Channels
     NO_DETECTORS = 3
     # Speed of light

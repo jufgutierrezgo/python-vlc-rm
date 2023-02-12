@@ -16,35 +16,40 @@ from vlc_rm.constants import Constants as Kt
 
 import numpy as np
 
-@pytest.fixture
-def transmitter():
-    return Transmitter(
+
+# test python package vlc-rm with 4-LEDs and 3-DETECTORS
+def test_vlc_configA():
+
+    Kt.NO_LEDS = 3
+
+    led1 = Transmitter(
         "Led1",
-        position=[2, 4, 3.3],
+        position=[2.5, 2.5, 3],
         normal=[0, 0, -1],
         mlambert=1,
-        power=1,
-        wavelengths=[650, 530, 430, 580],
-        fwhm=[20, 12, 20, 20]
+        wavelengths=[620, 530, 475],
+        fwhm=[20, 45, 20],
+        modulation='ieee16',
+        luminous_flux=5000
                 )
+    # led1.led_pattern()
+    # led1.plot_spd_led()
+    print(led1)    
 
-
-@pytest.fixture
-def photodetector():
-    return Photodetector(
+    pd1 = Photodetector(
         "PD2",
         position=[1.5, 1.5, 0.85],
         normal=[0, 0, 1],
         area=(1e-6)/3,
         # area=0.5e-4,
         fov=85,
-        sensor='S10917-35GT'
+        sensor='S10917-35GT',
+        idark=1e-12
                 )
+    # pd1.plot_responsivity()
+    print(pd1)
 
-
-@pytest.fixture
-def indoor_env():
-    return Indoorenv(
+    room = Indoorenv(
         "Room",
         size=[5, 5, 3],
         no_reflections=10,
@@ -57,60 +62,55 @@ def indoor_env():
         floor=[0.635, 0.61, 0.58]
             )
 
-class TestHappyPathsRM:   
+    room.create_envirorment(led1, pd1)
+    print(room)
 
-    # test python package vlc-rm with 4-LEDs and 3-DETECTORS
-    def test_vlc_configA():    
+    channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
+    channel_model.simulate_channel()
+    print(channel_model)
+    # channel_model.print_Hk()
+    # channel_model._plot_spd()  
+    # print(channel_model._avg_power) 
 
-        room.create_envirorment(led1, pd1)
-        print(room)
-
-        channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
-        channel_model.simulate_channel()
-        print(channel_model)
-        # channel_model.print_Hk()
-        # channel_model._plot_spd()  
-        # print(channel_model._avg_power) 
-
-        ser1 = SymbolErrorRate(
-                "SER-1",
-                recursivemodel=channel_model,
-                no_symbols=5e6
-                )
-        
-        # ser1.compute_ser_snr(        
-        #     min_snr=0,
-        #    max_snr=40,
-        #    points_snr=10
-        #    )
-        ser1.compute_ser_flux(
-            min_flux=10,
-            max_flux=10e3,
-            points_flux=8
+    ser1 = SymbolErrorRate(
+            "SER-1",
+            recursivemodel=channel_model,
+            no_symbols=5e6
             )
-        print(ser1)     
-        ser1.plot_ser(mode='flux')
-        ser1.save_SerFLux_data()
+    
+    # ser1.compute_ser_snr(        
+    #     min_snr=0,
+    #    max_snr=40,
+    #    points_snr=10
+    #    )
+    ser1.compute_ser_flux(
+        min_flux=10,
+        max_flux=10e3,
+        points_flux=8
+        )
+    print(ser1)     
+    ser1.plot_ser(mode='flux')
+    ser1.save_SerFLux_data()
 
-        """
-        print("\n CSK symbols payload")
-        print(ser1._symbols_csk)
-        print("\n CSK symbols frame transmitted noiseless")
-        print(ser1._symbols_transmitted)
-        print("\n CSK symbols frame transmitted with noise")
-        print(ser1._noise_symbols)
-        print("\n RX header")
-        print(ser1._rx_header)    
-        print("\n Inverse Symbols")
-        print(ser1._inverse_rx_symbols)
-        print("\n Original symbols")
-        print(ser1._symbols_decimal)
-        print("\n Decoded symbols")
-        print(ser1._index_min)
-        print("\n Symbol error rate")
-        print(ser1._error_rate)
-        """
-        assert (True)
+    """
+    print("\n CSK symbols payload")
+    print(ser1._symbols_csk)
+    print("\n CSK symbols frame transmitted noiseless")
+    print(ser1._symbols_transmitted)
+    print("\n CSK symbols frame transmitted with noise")
+    print(ser1._noise_symbols)
+    print("\n RX header")
+    print(ser1._rx_header)    
+    print("\n Inverse Symbols")
+    print(ser1._inverse_rx_symbols)
+    print("\n Original symbols")
+    print(ser1._symbols_decimal)
+    print("\n Decoded symbols")
+    print(ser1._index_min)
+    print("\n Symbol error rate")
+    print(ser1._error_rate)
+    """
+    assert (True)
 
 
 # test python package vlc-rm with 4-LEDs and 3-DETECTORS

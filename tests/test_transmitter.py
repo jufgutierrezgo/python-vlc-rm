@@ -11,9 +11,7 @@ import numpy as np
 import pytest   
 
 
-class TestHappyPathsTx:
-
-    Kt.NO_LEDS = 3
+class TestHappyPathsTx:    
         
     transmitter = Transmitter(
         "Led1",
