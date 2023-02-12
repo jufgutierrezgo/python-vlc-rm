@@ -19,27 +19,27 @@ import pytest
 def transmitter():
     return Transmitter(
         "Led1",
-        position=[2, 4, 3.3],
+        position=[2.5, 2.5, 3],
         normal=[0, 0, -1],
         mlambert=1,
-        power=1,
-        wavelengths=[650, 530, 430],
-        fwhm=[20, 12, 20]
+        wavelengths=[620, 530, 475],
+        fwhm=[20, 45, 20],
+        modulation='ieee16',
+        luminous_flux=5000
                 )
 
 @pytest.fixture
 def photodetector():
     return Photodetector(
         "PD2",
-        position=[1.5, 1.5, 0.85],
+        position=[0.5, 1, 0],
         normal=[0, 0, 1],
-        area=(1e-6)/3,
+        area=1e-4,
         # area=0.5e-4,
         fov=85,
         sensor='S10917-35GT',
         idark=1e-12
-                )
-
+            )
 
 @pytest.fixture
 def indoor_env():
@@ -55,16 +55,30 @@ def indoor_env():
         south=[0.8, 0.8, 0.8],
         floor=[0.3, 0.3, 0.3]
             )
+        
 
 
-class TestHappyPathsRM:
+class TestHappyPathsRM:   
     
     def test_attributes(self, transmitter, photodetector, indoor_env):
-
         indoor_env.create_envirorment(transmitter, photodetector)
         channel_model = Recursivemodel("ChannelModelA", transmitter, photodetector, indoor_env)                   
+        
         assert (
             channel_model._led == transmitter and
             channel_model._photodetector == photodetector and
             channel_model._room == indoor_env
             )
+
+    def test_validation(self, transmitter, photodetector, indoor_env):
+        
+        indoor_env.create_envirorment(transmitter, photodetector)
+        channel_model = Recursivemodel("ChannelModelA", transmitter, photodetector, indoor_env)
+        channel_model.simulate_channel()
+        print(channel_model)
+
+        assert (
+        channel_model._channel_dcgain[0] > 2.43e-06 and channel_model._channel_dcgain[0] < 2.44e-06 and
+        channel_model._channel_dcgain[1] > 2.43e-06 and channel_model._channel_dcgain[1] < 2.44e-06 and
+        channel_model._channel_dcgain[2] > 2.43e-06 and channel_model._channel_dcgain[2] < 2.44e-06
+        )
