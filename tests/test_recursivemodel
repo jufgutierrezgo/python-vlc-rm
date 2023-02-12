@@ -9,8 +9,6 @@ from vlc_rm.photodetector import Photodetector
 from vlc_rm.indoorenv import Indoorenv
 # Import REcursiveModel
 from vlc_rm.recursivemodel import Recursivemodel
-# Import Symbol Error Rate 
-from vlc_rm.ser import SymbolErrorRate
 # Import Symbol Constants
 from vlc_rm.constants import Constants as Kt
 
@@ -44,72 +42,32 @@ def photodetector():
 
 @pytest.fixture
 def indoor_env():
-    return Indoorenv(
+    room = Indoorenv(
         "Room",
         size=[5, 5, 3],
-        no_reflections=10,
+        no_reflections=3,
         resolution=1/8,
-        ceiling=[0.82, 0.71, 0.64],
-        west=[0.82, 0.71, 0.64],
-        north=[0.82, 0.71, 0.64],
-        east=[0.82, 0.71, 0.64],
-        south=[0.82, 0.71, 0.64],
-        floor=[0.635, 0.61, 0.58]
+        ceiling=[0.8, 0.8, 0.8],
+        west=[0.8, 0.8, 0.8],
+        north=[0.8, 0.8, 0.8],
+        east=[0.8, 0.8, 0.8],
+        south=[0.8, 0.8, 0.8],
+        floor=[0.3, 0.3, 0.3]
             )
+        
+    
 
 class TestHappyPathsRM:   
 
     # test python package vlc-rm with 4-LEDs and 3-DETECTORS
-    def test_vlc_configA():    
+    def test_recursivemodel(transmitter, photodetector, indoor_env):                
+        indoor_env.create_envirorment(transmitter, photodetector)
 
-        room.create_envirorment(led1, pd1)
-        print(room)
-
-        channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
+        channel_model = Recursivemodel("ChannelModelA", transmitter, photodetector, indoor_env)
         channel_model.simulate_channel()
-        print(channel_model)
-        # channel_model.print_Hk()
-        # channel_model._plot_spd()  
-        # print(channel_model._avg_power) 
+        print(channel_model)        
+       
 
-        ser1 = SymbolErrorRate(
-                "SER-1",
-                recursivemodel=channel_model,
-                no_symbols=5e6
-                )
-        
-        # ser1.compute_ser_snr(        
-        #     min_snr=0,
-        #    max_snr=40,
-        #    points_snr=10
-        #    )
-        ser1.compute_ser_flux(
-            min_flux=10,
-            max_flux=10e3,
-            points_flux=8
-            )
-        print(ser1)     
-        ser1.plot_ser(mode='flux')
-        ser1.save_SerFLux_data()
-
-        """
-        print("\n CSK symbols payload")
-        print(ser1._symbols_csk)
-        print("\n CSK symbols frame transmitted noiseless")
-        print(ser1._symbols_transmitted)
-        print("\n CSK symbols frame transmitted with noise")
-        print(ser1._noise_symbols)
-        print("\n RX header")
-        print(ser1._rx_header)    
-        print("\n Inverse Symbols")
-        print(ser1._inverse_rx_symbols)
-        print("\n Original symbols")
-        print(ser1._symbols_decimal)
-        print("\n Decoded symbols")
-        print(ser1._index_min)
-        print("\n Symbol error rate")
-        print(ser1._error_rate)
-        """
         assert (True)
 
 
