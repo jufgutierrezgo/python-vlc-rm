@@ -230,17 +230,17 @@ class Indoorenv:
 
         print("\n Creating parameters of indoor environment ...")
 
-        self.create_grid(
+        self._create_grid(
             self._tx._position,
             self._rx._position,
             self._tx._normal,
             self._rx._normal
             )
-        self.compute_parameters(self._rx._fov)
-
+        
+        self._compute_parameters(self._rx._fov)
         print("Parameters created!\n")
 
-    def create_grid(
+    def _create_grid(
         self,
         tx_position: np.ndarray,
         rx_position: np.ndarray,
@@ -358,7 +358,7 @@ class Indoorenv:
             2*self._size[1]*self._size[2]
         )/(self.no_points-2)
 
-    def compute_parameters(self, fov: float) -> None:
+    def _compute_parameters(self, fov: float) -> None:
         """This function creates an 3d-array with cross-parametes between
             points.
 

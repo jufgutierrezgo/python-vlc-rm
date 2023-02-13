@@ -57,10 +57,10 @@ def indoor_env():
             )
         
 
-
-class TestHappyPathsRM:   
-    
+class TestRecursiveModule:   
+        
     def test_attributes(self, transmitter, photodetector, indoor_env):
+        
         indoor_env.create_envirorment(transmitter, photodetector)
         channel_model = Recursivemodel("ChannelModelA", transmitter, photodetector, indoor_env)                   
         
@@ -70,7 +70,7 @@ class TestHappyPathsRM:
             channel_model._room == indoor_env
             )
 
-    def test_validation(self, transmitter, photodetector, indoor_env):
+    def test_dcgain_validation(self, transmitter, photodetector, indoor_env):
         
         indoor_env.create_envirorment(transmitter, photodetector)
         channel_model = Recursivemodel("ChannelModelA", transmitter, photodetector, indoor_env)
