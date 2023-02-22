@@ -90,8 +90,8 @@ class TestHappyRM:
 
     def test_dcgain_validation(self):        
         for channel in range(Kt.NO_LEDS):
-            assert self.channel_model._channel_dcgain[0] > self.MIN_DC_GAIN
-            assert self.channel_model._channel_dcgain[0] < self.MAX_DC_GAIN
+            assert self.channel_model._channel_dcgain[channel] > self.MIN_DC_GAIN
+            assert self.channel_model._channel_dcgain[channel] < self.MAX_DC_GAIN
 
     def test_crosstalk_matrix(self):
         assert np.allclose(

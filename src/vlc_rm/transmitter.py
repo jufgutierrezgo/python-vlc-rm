@@ -29,15 +29,14 @@ class Transmitter:
         normal: np.ndarray,
         wavelengths: np.ndarray,
         fwhm: np.ndarray,
-        mlambert: float = 1,
-        power: float = 1,
+        mlambert: float = 1,        
         modulation: str = 'ieee16',
         luminous_flux: float = 1
             ) -> None:
 
         self._name = name
 
-        self._position = np.array(position)
+        self._position = np.array(position, dtype=np.float32)
         if self._position.size != 3:
             raise ValueError("Position must be an 1d-numpy array [x y z].")
 

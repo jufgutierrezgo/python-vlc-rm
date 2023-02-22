@@ -52,3 +52,63 @@ class TestHappyPathsTx:
     
     def test_luminous_flux(self):
         assert self.transmitter.luminous_flux == self.LUMINOUS_FLUX
+
+class TestUnhappyTx:    
+   
+    POSITION = [2.5, 2.5, 3]
+    NORMAL = [0, 0, -1]
+    MLAMBERT = 1
+    WAVELENGTHS = [620, 530, 475]
+    FWHM = [20, 45, 20]
+    MODULATION = 'ieee16'
+    LUMINOUS_FLUX = 5000
+    
+
+    def test_position(self):        
+        with pytest.raises(ValueError):
+            transmitter = Transmitter(
+                "Led1",
+                position=['2.5', 2, 3],
+                normal=self.NORMAL,
+                mlambert=self.MLAMBERT,
+                wavelengths=self.WAVELENGTHS,
+                fwhm=self.FWHM,
+                modulation=self.MODULATION,
+                luminous_flux=self.LUMINOUS_FLUX
+                        )
+        with pytest.raises(ValueError):
+            transmitter = Transmitter(
+                "Led1",
+                position=[2.5, 2.5, 3, 4],
+                normal=self.NORMAL,
+                mlambert=self.MLAMBERT,
+                wavelengths=self.WAVELENGTHS,
+                fwhm=self.FWHM,
+                modulation=self.MODULATION,
+                luminous_flux=self.LUMINOUS_FLUX
+                        )
+    
+    def test_normal(self):        
+        with pytest.raises(ValueError):
+            transmitter = Transmitter(
+                "Led1",
+                position=self.POSITION,
+                normal=['0', 0, -1],
+                mlambert=self.MLAMBERT,
+                wavelengths=self.WAVELENGTHS,
+                fwhm=self.FWHM,
+                modulation=self.MODULATION,
+                luminous_flux=self.LUMINOUS_FLUX
+                        )
+        with pytest.raises(ValueError):
+            transmitter = Transmitter(
+                "Led1",
+                position=self.POSITION,
+                normal=[0, 0, 1, 1],
+                mlambert=self.MLAMBERT,
+                wavelengths=self.WAVELENGTHS,
+                fwhm=self.FWHM,
+                modulation=self.MODULATION,
+                luminous_flux=self.LUMINOUS_FLUX
+                        )
+
