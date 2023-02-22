@@ -103,7 +103,7 @@ class TestHappyRM:
     def test_illuminance(self):
         assert self.channel_model.illuminance > self.MIN_ILLUMINANCE
         assert self.channel_model.illuminance < self.MAX_ILLUMINANCE
-    
+
     def test_cie_xyz(self):
         #print(repr(self.channel_model._xyz))
         assert np.allclose(
