@@ -14,10 +14,10 @@ from vlc_rm.constants import Constants as Kt
 
 import numpy as np
 import pytest
-        
 
-class TestRecursiveModule:
-    
+
+class TestHappyRM:
+
     transmitter = Transmitter(
             "Led1",
             position=[2.5, 2.5, 3],
@@ -55,33 +55,25 @@ class TestRecursiveModule:
 
     indoor_env.create_envirorment(transmitter, photodetector)
     channel_model = Recursivemodel(
-        "ChannelModelA", 
-        transmitter, 
-        photodetector, 
+        "ChannelModelA",
+        transmitter,
+        photodetector,
         indoor_env
         )
-    channel_model.simulate_channel()      
+    channel_model.simulate_channel()
     print(channel_model)
-        
 
-    def test_attributes(self):        
-        assert (
-            self.channel_model._led == self.transmitter and
-            self.channel_model._photodetector == self.photodetector and
-            self.channel_model._room == self.indoor_env
-            )
+    def test_attributes(self):
+        assert self.channel_model._led == self.transmitter
+        assert self.channel_model._photodetector == self.photodetector
+        assert self.channel_model._room == self.indoor_env
+
 
     def test_dcgain_validation(self):        
-        assert (
-        self.channel_model._channel_dcgain[0] > 2.43e-06 and 
-        self.channel_model._channel_dcgain[0] < 2.44e-06 and
-        self.channel_model._channel_dcgain[1] > 2.43e-06 and 
-        self.channel_model._channel_dcgain[1] < 2.44e-06 and
-        self.channel_model._channel_dcgain[2] > 2.43e-06 and 
-        self.channel_model._channel_dcgain[2] < 2.44e-06
-        )    
-    
+        for channel in range(Kt.NO_LEDS):
+            assert self.channel_model._channel_dcgain[0] > 2.43e-06
+            assert self.channel_model._channel_dcgain[0] < 2.44e-06
+
     def test_illuminance(self):
-        assert (
-            self.channel_model.illuminance > 1.2165e+02 and  
-            self.channel_model.illuminance < 1.2166e+02)
+        assert self.channel_model.illuminance > 1.2165e+02
+        assert self.channel_model.illuminance < 1.2166e+02
