@@ -12,35 +12,43 @@ import pytest
 
 
 class TestHappyPathsTx:    
-        
+
+    POSITION = [2.5, 2.5, 3]
+    NORMAL = [0, 0, -1]
+    MLAMBERT = 1
+    WAVELENGTHS = [620, 530, 475]
+    FWHM = [20, 45, 20]
+    MODULATION = 'ieee16'
+    LUMINOUS_FLUX = 5000
+
     transmitter = Transmitter(
         "Led1",
-        position=[2.5, 2.5, 3],
-        normal=[0, 0, -1],
-        mlambert=1,
-        wavelengths=[620, 530, 475],
-        fwhm=[20, 45, 20],
-        modulation='ieee16',
-        luminous_flux=5000
+        position=POSITION,
+        normal=NORMAL,
+        mlambert=MLAMBERT,
+        wavelengths=WAVELENGTHS,
+        fwhm=FWHM,
+        modulation=MODULATION,
+        luminous_flux=LUMINOUS_FLUX
                 )
    
     def test_position(self):
-        assert np.array_equal(self.transmitter.position, np.array([2.5, 2.5, 3]))
+        assert np.array_equal(self.transmitter.position, np.array(self.POSITION))
 
     def test_normal(self):
-        assert np.array_equal(self.transmitter.normal, np.array([[0, 0, -1]]))
+        assert np.array_equal(self.transmitter.normal, np.array([self.NORMAL]))
 
-    def test_mlambert(self, transmitter):
-        assert transmitter.mlambert == 1    
+    def test_mlambert(self):
+        assert self.transmitter.mlambert == self.MLAMBERT
 
-    def test_wavelengths(self, transmitter):
-        assert np.array_equal(transmitter.wavelengths, np.array([620, 530, 475]))
+    def test_wavelengths(self):
+        assert np.array_equal(self.transmitter.wavelengths, np.array(self.WAVELENGTHS))
 
-    def test_fwhm(self, transmitter):
-        assert np.array_equal(transmitter.fwhm, np.array([20, 45, 20]))
+    def test_fwhm(self):
+        assert np.array_equal(self.transmitter.fwhm, np.array(self.FWHM))
 
-    def test_modulation(self, transmitter):
-        assert transmitter.modulation == 'ieee16'
+    def test_modulation(self):
+        assert self.transmitter.modulation == self.MODULATION
     
-    def test_luminous_flux(self, transmitter):
-        assert transmitter.luminous_flux == 5000
+    def test_luminous_flux(self):
+        assert self.transmitter.luminous_flux == self.LUMINOUS_FLUX

@@ -55,45 +55,56 @@ class TestHappyPathsEnv:
         ],
         dtype=np.float32)
 
+    SIZE = [5, 5, 3]
+    NO_REFLECTIONS = 3
+    RESOLUTION = 1/8
+    CEILING = [0.8, 0.8, 0.8]
+    ceiling=[0.8, 0.8, 0.8]
+    WEST=[0.8, 0.8, 0.8]
+    NORTH=[0.8, 0.8, 0.8]
+    EAST=[0.8, 0.8, 0.8]
+    SOUTH=[0.8, 0.8, 0.8]
+    FLOOR=[0.3, 0.3, 0.3]
+
     indoorenv = Indoorenv(
         "Room",
-        size=[5, 5, 3],
-        no_reflections=3,
-        resolution=1/8,
-        ceiling=[0.8, 0.8, 0.8],
-        west=[0.8, 0.8, 0.8],
-        north=[0.8, 0.8, 0.8],
-        east=[0.8, 0.8, 0.8],
-        south=[0.8, 0.8, 0.8],
-        floor=[0.3, 0.3, 0.3]
+        size=SIZE,
+        no_reflections=NO_REFLECTIONS,
+        resolution=RESOLUTION,
+        ceiling=CEILING,
+        west=WEST,
+        north=NORTH,
+        east=EAST,
+        south=SOUTH,
+        floor=FLOOR
             )    
 
     def test_size(self):
-        assert np.array_equal(self.indoorenv.size, np.array([5, 5, 3]))
+        assert np.array_equal(self.indoorenv.size, np.array(self.SIZE))
 
     def test_no_reflections(self):
-        assert self.indoorenv.no_reflections == 3
+        assert self.indoorenv.no_reflections == self.NO_REFLECTIONS
 
     def test_resolution(self):
-        assert self.indoorenv.resolution == 1/8
+        assert self.indoorenv.resolution == self.RESOLUTION
 
     def test_ceiling(self):
-        assert np.array_equal(self.indoorenv.ceiling, np.array([0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.ceiling, np.array(self.CEILING))
 
     def test_west(self):
-        assert np.array_equal(self.indoorenv.west, np.array([0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.west, np.array(self.WEST))
 
     def test_north(self):
-        assert np.array_equal(self.indoorenv.north, np.array([0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.north, np.array(self.NORTH))
 
     def test_east(self):
-        assert np.array_equal(self.indoorenv.east, np.array([0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.east, np.array(self.EAST))
 
     def test_south(self):
-        assert np.array_equal(self.indoorenv.south, np.array([0.8, 0.8, 0.8]))
+        assert np.array_equal(self.indoorenv.south, np.array(self.SOUTH))
 
     def test_floor(self):
-        assert np.array_equal(self.indoorenv.floor, np.array([0.3, 0.3, 0.3]))
+        assert np.array_equal(self.indoorenv.floor, np.array(self.FLOOR))
 
     def test_parameters(self):
         

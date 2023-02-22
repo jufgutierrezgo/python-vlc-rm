@@ -11,30 +11,37 @@ import pytest
 
 class TestHappyPathsRx:
 
+    POSITION = [6.6, 2.8, 0.8]
+    NORMAL = [0, 0, 1]
+    AREA = 1e-4
+    FOV = 70
+    SENSOR = 'S10917-35GT'
+    IDARK = 1e-12
+
     photodetector = Photodetector(
         "PD1",
-        position=[6.6, 2.8, 0.8],
-        normal=[0, 0, 1],
-        area=1e-4,
-        fov=70,
-        sensor='S10917-35GT',
-        idark=1e-12
+        position=POSITION,
+        normal=NORMAL,
+        area=AREA,
+        fov=FOV,
+        sensor=SENSOR,
+        idark=IDARK
             )
     
     def test_position(self):
-        assert np.array_equal(self.photodetector.position, np.array([6.6, 2.8, 0.8]))
+        assert np.array_equal(self.photodetector.position, np.array(self.POSITION))
 
     def test_normal(self):
-        assert np.array_equal(self.photodetector.normal, np.array([[0, 0, 1]]))
+        assert np.array_equal(self.photodetector.normal, np.array([self.NORMAL]))
 
     def test_area(self):
-        assert self.photodetector.area == 1e-4
+        assert self.photodetector.area == self.AREA
 
     def test_fov(self):
-        assert self.photodetector.fov == 70
+        assert self.photodetector.fov == self.FOV
 
     def test_sensor(self):
-        assert self.photodetector.sensor == 'S10917-35GT'
+        assert self.photodetector.sensor == self.SENSOR
 
     def test_idark(self):
-        assert self.photodetector.idark == 1e-12
+        assert self.photodetector.idark == self.IDARK
