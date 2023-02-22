@@ -58,13 +58,12 @@ class TestHappyPathsEnv:
     SIZE = [5, 5, 3]
     NO_REFLECTIONS = 3
     RESOLUTION = 1/8
-    CEILING = [0.8, 0.8, 0.8]
-    ceiling=[0.8, 0.8, 0.8]
-    WEST=[0.8, 0.8, 0.8]
-    NORTH=[0.8, 0.8, 0.8]
-    EAST=[0.8, 0.8, 0.8]
-    SOUTH=[0.8, 0.8, 0.8]
-    FLOOR=[0.3, 0.3, 0.3]
+    CEILING = [0.8, 0.8, 0.8]    
+    WEST = [0.8, 0.8, 0.8]
+    NORTH = [0.8, 0.8, 0.8]
+    EAST = [0.8, 0.8, 0.8]
+    SOUTH = [0.8, 0.8, 0.8]
+    FLOOR = [0.3, 0.3, 0.3]
 
     indoorenv = Indoorenv(
         "Room",
