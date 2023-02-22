@@ -40,15 +40,15 @@ class Transmitter:
         if self._position.size != 3:
             raise ValueError("Position must be an 1d-numpy array [x y z].")
 
-        self._normal = np.array([normal])
-        if self._normal.size != 3:
-            raise ValueError("Normal must be an 1d-numpy array [x y z].")
+        self._normal = np.array([normal],  dtype=np.float32)
+        if not (isinstance(self._normal, np.ndarray)) or self._normal.size != 3:
+            raise ValueError("Normal must be an 1d-numpy array [x y z] dtype= float or int.")        
 
-        self._mlambert = mlambert
+        self._mlambert = np.float32(mlambert)
         if mlambert <= 0:
-            raise ValueError("Lambert number must be greater than zero.")
+            raise ValueError("Lambert number must be greater than zero.")        
 
-        self._wavelengths = np.array(wavelengths)
+        self._wavelengths = np.array(wavelengths,  dtype=np.float32)
         if self._wavelengths.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of wavelengths array must be equal to the number of LEDs.")
@@ -95,7 +95,7 @@ class Transmitter:
 
     @position.setter
     def position(self, position):
-        self._position = np.array(position)
+        self._position = np.array(position,  dtype=np.float32)
         if self._position.size != 3:
             raise ValueError("Position must be a 3d-numpy array.")
 
@@ -105,7 +105,7 @@ class Transmitter:
 
     @normal.setter
     def normal(self, normal):
-        self._normal = np.array(normal)
+        self._normal = np.array(normal,  dtype=np.float32)
         if self._normal.size != 3:
             raise ValueError("Normal must be a 3d-numpy array.")
 
@@ -125,7 +125,7 @@ class Transmitter:
 
     @wavelengths.setter
     def wavelengths(self, wavelengths):
-        self._wavelengths = np.array(wavelengths)
+        self._wavelengths = np.array(wavelengths,  dtype=np.float32)
         if self._wavelengths.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of wavelengths array must be equal to the number of LEDs.")
@@ -136,7 +136,7 @@ class Transmitter:
 
     @fwhm.setter
     def fwhm(self, fwhm):
-        self._fwhm = np.array(fwhm)
+        self._fwhm = np.array(fwhm,  dtype=np.float32)
         if self._fwhm.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of FWHM array must be equal to the number of LEDs.") 
