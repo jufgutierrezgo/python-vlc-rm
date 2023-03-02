@@ -70,10 +70,10 @@ class Transmitter:
             self._constellation = Kt.IEEE_4CSK
             self._order_csk = 4
         else:
-            print("Modulation is not valid")
+            raise ValueError("Modulation is not valid.")
 
-        self._luminous_flux = luminous_flux
-        if luminous_flux <= 0:
+        self._luminous_flux = np.float32(luminous_flux)        
+        if self._luminous_flux <= 0:
             raise ValueError("The luminous flux must be non-negative.")
 
         # Initial function
