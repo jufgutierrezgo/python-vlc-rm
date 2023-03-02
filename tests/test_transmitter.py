@@ -11,7 +11,7 @@ import numpy as np
 import pytest   
 
 
-class TestHappyPathsTx:    
+class TestTransmitter:    
 
     POSITION = [2.5, 2.5, 3]
     NORMAL = [0, 0, -1]
@@ -53,18 +53,7 @@ class TestHappyPathsTx:
     def test_luminous_flux(self):
         assert self.transmitter.luminous_flux == self.LUMINOUS_FLUX
 
-class TestUnhappyTx:    
-   
-    POSITION = [2.5, 2.5, 3]
-    NORMAL = [0, 0, -1]
-    MLAMBERT = 1
-    WAVELENGTHS = [620, 530, 475]
-    FWHM = [20, 45, 20]
-    MODULATION = 'ieee16'
-    LUMINOUS_FLUX = 5000
-    
-
-    def test_position(self):        
+    def test_position_error(self):        
         with pytest.raises(ValueError):
             transmitter = Transmitter(
                 "Led1",
@@ -88,7 +77,7 @@ class TestUnhappyTx:
                 luminous_flux=self.LUMINOUS_FLUX
                         )
     
-    def test_normal(self):        
+    def test_normal_error(self):        
         with pytest.raises(ValueError):
             transmitter = Transmitter(
                 "Led1",
@@ -112,7 +101,7 @@ class TestUnhappyTx:
                 luminous_flux=self.LUMINOUS_FLUX
                         )
 
-    def test_mlambert(self):        
+    def test_mlambert_error(self):        
         with pytest.raises(ValueError):
             transmitter = Transmitter(
                 "Led1",
@@ -136,7 +125,7 @@ class TestUnhappyTx:
                 luminous_flux=self.LUMINOUS_FLUX
                         )
     
-    def test_wavelengths(self):   
+    def test_wavelengths_error(self):   
         with pytest.raises(ValueError):
             transmitter = Transmitter(
                 "Led1",
