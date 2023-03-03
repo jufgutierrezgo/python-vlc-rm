@@ -81,29 +81,23 @@ class TestTransmitter:
             rtol=1e-5
             )
 
-    def test_position_error(self):        
+    def test_position_error(self):
+           
+        
+        position_errors = [['a', 2, 3], [2.5, 2.5, 3, 4], 'a']  
+            
         with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=['a', 2, 3],
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=self.FWHM,
-                modulation=self.MODULATION,
-                luminous_flux=self.LUMINOUS_FLUX
-                        )
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=[2.5, 2.5, 3, 4],
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=self.FWHM,
-                modulation=self.MODULATION,
-                luminous_flux=self.LUMINOUS_FLUX
-                        )
+            for options in position_errors:
+                transmitter = Transmitter(
+                    "Led1",
+                    position=,
+                    normal=self.NORMAL,
+                    mlambert=self.MLAMBERT,
+                    wavelengths=self.WAVELENGTHS,
+                    fwhm=self.FWHM,
+                    modulation=self.MODULATION,
+                    luminous_flux=self.LUMINOUS_FLUX
+                            )        
     
     def test_normal_error(self):        
         with pytest.raises(ValueError):
@@ -209,7 +203,7 @@ class TestTransmitter:
                 normal=self.NORMAL,
                 mlambert=self.MLAMBERT,
                 wavelengths=self.WAVELENGTHS,
-                fwhm=[20, 10, 20],
+                fwhm=self.FWHM,
                 modulation='okk',
                 luminous_flux=self.LUMINOUS_FLUX
                         )

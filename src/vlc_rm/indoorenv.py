@@ -42,17 +42,23 @@ class Indoorenv:
         self._size = np.array(size, dtype=np.float32)
         if self._size.size != 3:
             raise ValueError(
-                "Size of the indoor environment must be an 1d-numpy array [x y z]")
-
-        self._resolution = resolution
-        if self._resolution <= 0:
-            raise ValueError(
-                "Resolution of points must be a real number greater than zero.")
+                "Size of the indoor environment must be an 1d-numpy array [x y z]")        
 
         self._no_reflections = no_reflections
+        if not isinstance(self._no_reflections, int):
+            raise ValueError(
+                "No of reflections must be a positive integer between 0 and 10.")
         if self._no_reflections < 0 or self._no_reflections > 10:
             raise ValueError(
                 "No of reflections must be a real integer between 0 and 10.")
+        
+        self._resolution = np.float32(resolution)
+        if self._resolution > min(self._size):
+            raise ValueError(
+                "Resolution of points must be less or equal to minimum size of the rectangular indoor space.")
+        if self._resolution <= 0:
+            raise ValueError(
+                "Resolution of points must be a real number greater than zero.")
 
         self._ceiling = np.array(ceiling)
         if self._ceiling.size != Kt.NO_LEDS:

@@ -151,31 +151,57 @@ class TestIndoorEnv:
         )
                 
     def test_size_error(self):
-        with pytest.raises(ValueError):
-            basic_env = Indoorenv(
-                "Basic-Env",
-                size=[1, 1],
-                no_reflections=3,
-                resolution=1,
-                ceiling=[1, 1, 1],
-                west=[1, 1, 1],
-                north=[1, 1, 1],
-                east=[1, 1, 1],
-                south=[1, 1, 1],
-                floor=[1, 1, 1]
+        size_errors = [
+            [1, 1], [1,  "a", "other"], [1, 1, 1, 2]
+        ]
+        
+        for options in size_errors:
+            with pytest.raises(ValueError):
+                basic_env = Indoorenv(
+                    "Room",
+                    size=options,
+                    no_reflections=self.NO_REFLECTIONS,
+                    resolution=self.RESOLUTION,
+                    ceiling=self.CEILING,
+                    west=self.WEST,
+                    north=self.NORTH,
+                    east=self.EAST,
+                    south=self.SOUTH,
+                    floor=self.FLOOR
                     )
-        with pytest.raises(ValueError):
-            basic_env = Indoorenv(
-                "Basic-Env",
-                size=[1, 1, 'other'],
-                no_reflections=3,
-                resolution=1,
-                ceiling=[1, 1, 1],
-                west=[1, 1, 1],
-                north=[1, 1, 1],
-                east=[1, 1, 1],
-                south=[1, 1, 1],
-                floor=[1, 1, 1]
-                    )
+        
+    def test_no_reflections_error(self):
+        reflections_errors = [-3, 'a', 1.2, [1, 1], -3.5]
 
+        for options in reflections_errors:
+            with pytest.raises(ValueError):           
+                basic_env = Indoorenv(
+                    "Room",
+                    size=self.SIZE,
+                    no_reflections=options,
+                    resolution=self.RESOLUTION,
+                    ceiling=self.CEILING,
+                    west=self.WEST,
+                    north=self.NORTH,
+                    east=self.EAST,
+                    south=self.SOUTH,
+                    floor=self.FLOOR
+                    )
     
+    def test_resolution_error(self):
+        resolution_errors = [-3, 'a', 12, [1, 1], -3.5]
+
+        for options in resolution_errors:
+            with pytest.raises(ValueError):           
+                basic_env = Indoorenv(
+                    "Room",
+                    size=self.SIZE,
+                    no_reflections=self.NO_REFLECTIONS,
+                    resolution=options,
+                    ceiling=self.CEILING,
+                    west=self.WEST,
+                    north=self.NORTH,
+                    east=self.EAST,
+                    south=self.SOUTH,
+                    floor=self.FLOOR
+                    )
