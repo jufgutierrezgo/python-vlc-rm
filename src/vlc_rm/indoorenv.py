@@ -39,7 +39,7 @@ class Indoorenv:
         self.deltaA = 'Non defined, create grid.'
         self.no_points = 'Non defined, create grid.'
 
-        self._size = np.array(size)
+        self._size = np.array(size, dtype=np.float32)
         if self._size.size != 3:
             raise ValueError(
                 "Size of the indoor environment must be an 1d-numpy array [x y z]")

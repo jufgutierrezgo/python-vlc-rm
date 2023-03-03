@@ -15,7 +15,7 @@ import numpy as np
 import pytest
 
 
-class TestHappyPathsEnv:
+class TestIndoorEnv:
 
     DIST_COSINE = np.array([[
             [0.0000e+00, 7.0711e-01, 7.0711e-01, 7.0711e-01, 7.0711e-01, 
@@ -150,5 +150,32 @@ class TestHappyPathsEnv:
             self.DIST_COSINE
         )
                 
-            
-        
+    def test_size_error(self):
+        with pytest.raises(ValueError):
+            basic_env = Indoorenv(
+                "Basic-Env",
+                size=[1, 1],
+                no_reflections=3,
+                resolution=1,
+                ceiling=[1, 1, 1],
+                west=[1, 1, 1],
+                north=[1, 1, 1],
+                east=[1, 1, 1],
+                south=[1, 1, 1],
+                floor=[1, 1, 1]
+                    )
+        with pytest.raises(ValueError):
+            basic_env = Indoorenv(
+                "Basic-Env",
+                size=[1, 1, 'other'],
+                no_reflections=3,
+                resolution=1,
+                ceiling=[1, 1, 1],
+                west=[1, 1, 1],
+                north=[1, 1, 1],
+                east=[1, 1, 1],
+                south=[1, 1, 1],
+                floor=[1, 1, 1]
+                    )
+
+    
