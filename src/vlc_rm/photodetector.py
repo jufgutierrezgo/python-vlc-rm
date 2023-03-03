@@ -28,20 +28,20 @@ class Photodetector:
 
         self._name = name
 
-        self._position = np.array(position)
+        self._position = np.array(position, dtype=np.float32)
         if self._position.size != 3:
             raise ValueError("Position must be an 1d-numpy array [x y z].")
 
-        self._normal = np.array([normal])
+        self._normal = np.array([normal], dtype=np.float32)
         if self._normal.size != 3:
             raise ValueError("Normal must be an 1d-numpy array [x y z].")
 
-        self._area = np.array(area)
+        self._area = np.float32(area)
         if self._area <= 0:
             raise ValueError(
                 "Active area of the detector must be greater than 0.")
 
-        self._fov = fov
+        self._fov = np.float32(fov)
         if self._fov <= 0 or self._fov >= 90:
             raise ValueError(
                 "Field-of-View of the detector must be between 0 and 90 degrees.")
