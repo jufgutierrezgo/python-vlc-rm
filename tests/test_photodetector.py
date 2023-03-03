@@ -47,7 +47,7 @@ class TestPhotodetector:
         assert self.photodetector.sensor == self.SENSOR
 
     def test_idark(self):
-        assert self.photodetector.idark == self.IDARK
+        assert self.photodetector.idark == np.float32(self.IDARK)
 
     def test_position_error(self):        
         with pytest.raises(ValueError):
@@ -123,4 +123,48 @@ class TestPhotodetector:
                 fov=91,
                 sensor=self.SENSOR,
                 idark=self.IDARK
+                    )
+
+    def test_sensor_error(self):
+        with pytest.raises(ValueError):
+            photodetector = Photodetector(
+                "PD1",
+                position=self.POSITION,
+                normal=self.NORMAL,
+                area=self.AREA,
+                fov=self.FOV,
+                sensor='other',
+                idark=self.IDARK
+                    )
+        with pytest.raises(ValueError):
+            photodetector = Photodetector(
+                "PD1",
+                position=self.POSITION,
+                normal=self.NORMAL,
+                area=self.AREA,
+                fov=self.FOV,
+                sensor='',
+                idark=self.IDARK
+                    )
+    
+    def test_idark_error(self):
+        with pytest.raises(ValueError):
+            photodetector = Photodetector(
+                "PD1",
+                position=self.POSITION,
+                normal=self.NORMAL,
+                area=self.AREA,
+                fov=self.FOV,
+                sensor=self.SENSOR,
+                idark=-1
+                    )
+        with pytest.raises(ValueError):
+            photodetector = Photodetector(
+                "PD1",
+                position=self.POSITION,
+                normal=self.NORMAL,
+                area=self.AREA,
+                fov=self.FOV,
+                sensor=self.SENSOR,
+                idark='1e-a'
                     )

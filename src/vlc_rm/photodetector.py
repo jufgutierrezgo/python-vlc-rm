@@ -58,12 +58,12 @@ class Photodetector:
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
             # print("Responsivity loaded succesfully")
         elif self.sensor == '':
-            print("Specify sensor reference")
+            raise ValueError("Specify sensor reference")
         else:
-            print("Sensor reference not valid")
+            raise ValueError("Sensor reference not valid")
 
-        self._idark = idark
-        if not (isinstance(self._idark, (float))) or self._idark <= 0:
+        self._idark = np.float32(idark)
+        if self._idark <= 0:
             raise ValueError(
                 "Dark current curve must be float and non-negative.")
 
