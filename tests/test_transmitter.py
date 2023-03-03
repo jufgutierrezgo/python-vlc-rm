@@ -21,6 +21,18 @@ class TestTransmitter:
     MODULATION = 'ieee16'
     LUMINOUS_FLUX = 5000
 
+    ILER_REF = np.array(
+        [[3.8001e-03, 0.0000e+00, 0.0000e+00],
+         [0.0000e+00, 1.9315e-03, 0.0000e+00],
+         [0.0000e+00, 0.0000e+00, 1.1960e-02]],
+        dtype=np.float32
+        )
+
+    AVG_POWER_COLOR = np.array(
+        [6.3336e+00, 3.2192e+00, 1.9934e+01],
+        dtype=np.float32
+        )
+
     transmitter = Transmitter(
         "Led1",
         position=POSITION,
@@ -31,6 +43,8 @@ class TestTransmitter:
         modulation=MODULATION,
         luminous_flux=LUMINOUS_FLUX
                 )
+    
+    print(transmitter)
    
     def test_position(self):
         assert np.array_equal(self.transmitter.position, np.array(self.POSITION))
@@ -52,6 +66,20 @@ class TestTransmitter:
     
     def test_luminous_flux(self):
         assert self.transmitter.luminous_flux == self.LUMINOUS_FLUX
+    
+    def test_iler(self):
+        assert np.allclose(
+            self.transmitter._iler_matrix, 
+            self.ILER_REF,
+            rtol=1e-4
+            )
+
+    def test_avg_power(self):
+        assert np.allclose(
+            self.transmitter._luminous_flux*self.transmitter._avg_power, 
+            self.AVG_POWER_COLOR,
+            rtol=1e-5
+            )
 
     def test_position_error(self):        
         with pytest.raises(ValueError):
