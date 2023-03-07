@@ -45,13 +45,18 @@ class Transmitter:
             raise ValueError("Normal must be an 1d-numpy array [x y z] dtype= float or int.")        
 
         self._mlambert = np.float32(mlambert)
-        if mlambert <= 0:
+        if self._mlambert.size > 1:
+            raise ValueError("Lambert number must be scalar float.")
+        elif mlambert <= 0:
             raise ValueError("Lambert number must be greater than zero.")        
 
         self._wavelengths = np.array(wavelengths, dtype=np.float32)
         if self._wavelengths.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of wavelengths array must be equal to the number of LEDs.")
+        elif (np.any(self._wavelengths > 780) or np.any(self._wavelengths < 380)):
+            raise ValueError(
+                "Wavelengths must be between 380nm and 780 nm.")
 
         self._fwhm = np.array(fwhm, dtype=np.float32)
         if self._fwhm.size != Kt.NO_LEDS:
