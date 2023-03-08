@@ -110,6 +110,17 @@ class TestHappyRM:
                     self.indoor_env
                     )
 
+    def test_ie_error(self):
+        ie_errors = ['a', 1, [1, 2, 3], self.transmitter, self.photodetector]
+        for options in ie_errors:
+            with pytest.raises(ValueError):
+                channel_model = Recursivemodel(
+                    "ChannelModelA",
+                    self.transmitter,
+                    self.photodetector,
+                    options
+                    )
+
     def test_dcgain_validation(self):        
         for channel in range(Kt.NO_LEDS):
             assert self.channel_model._channel_dcgain[channel] > self.MIN_DC_GAIN
