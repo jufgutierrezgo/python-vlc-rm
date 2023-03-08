@@ -118,3 +118,23 @@ class TestSER:
                     max_flux=10e3,
                     points_flux=8
                     )
+
+    def test_max_flux_error(self):
+        max_flux_errors = ['a', 'other', [1, 1, 1], 1]
+        for options in max_flux_errors:
+            with pytest.raises(ValueError):
+                self.ser.compute_ser_flux(
+                    min_flux=10,
+                    max_flux=options,
+                    points_flux=8
+                    )
+
+    def test_points_flux_error(self):
+        points_flux_errors = ['a', 'other', [1, 1, 1], -10, 8]
+        for options in points_flux_errors:
+            with pytest.raises(ValueError):
+                self.ser.compute_ser_flux(
+                    min_flux=10,
+                    max_flux=10e3,
+                    points_flux=options
+                    )
