@@ -147,84 +147,50 @@ class TestTransmitter:
         
             
     def test_fwhm_error(self):   
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=['a', 10, 20],
-                modulation=self.MODULATION,
-                luminous_flux=self.LUMINOUS_FLUX
-                        )
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=[10, 20],
-                modulation=self.MODULATION,
-                luminous_flux=self.LUMINOUS_FLUX
-                        )
+
+        fwdm_errors = [[-10, 50, 60], ['a', 2, 3], [40, 50, 60, 70], 'a'] 
+        
+        for options in fwdm_errors:
+            with pytest.raises(ValueError):
+                transmitter = Transmitter(
+                    "Led1",
+                    position=self.POSITION,
+                    normal=self.NORMAL,
+                    mlambert=self.MLAMBERT,
+                    wavelengths=self.WAVELENGTHS,
+                    fwhm=options,
+                    modulation=self.MODULATION,
+                    luminous_flux=self.LUMINOUS_FLUX
+                            )
     
     def test_modulation_error(self):
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=self.FWHM,
-                modulation='okk',
-                luminous_flux=self.LUMINOUS_FLUX
-                        )
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=[20, 10, 20],
-                modulation='csk',
-                luminous_flux=self.LUMINOUS_FLUX
-                        )
-
+        modulation_erorrs = ['ook', 'csk', 'ieee', 10, [10, 10]]
+        
+        for options in modulation_erorrs: 
+            with pytest.raises(ValueError):
+                transmitter = Transmitter(
+                    "Led1",
+                    position=self.POSITION,
+                    normal=self.NORMAL,
+                    mlambert=self.MLAMBERT,
+                    wavelengths=self.WAVELENGTHS,
+                    fwhm=self.FWHM,
+                    modulation=options,
+                    luminous_flux=self.LUMINOUS_FLUX
+                            )
+        
     def test_luminous_flux_error(self):
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=[20, 10, 20],
-                modulation='ieee16',
-                luminous_flux=-10
-                        )
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=[20, 10, 20],
-                modulation='ieee16',
-                luminous_flux=0
-                        )
-        with pytest.raises(ValueError):
-            transmitter = Transmitter(
-                "Led1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                mlambert=self.MLAMBERT,
-                wavelengths=self.WAVELENGTHS,
-                fwhm=[20, 10, 20],
-                modulation='ieee16',
-                luminous_flux='a'
-                        )
+        flux_errors = [-100, 0, 'a', 'wrong']
+
+        for options in flux_errors:
+            with pytest.raises(ValueError):
+                transmitter = Transmitter(
+                    "Led1",
+                    position=self.POSITION,
+                    normal=self.NORMAL,
+                    mlambert=self.MLAMBERT,
+                    wavelengths=self.WAVELENGTHS,
+                    fwhm=self.FWHM,
+                    modulation=self.MODULATION,
+                    luminous_flux=options
+                            )

@@ -62,6 +62,10 @@ class Transmitter:
         if self._fwhm.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of FWHM array must be equal to the number of LEDs.")
+        elif np.any(self._fwhm <= 0):
+            raise ValueError(
+                "FWDM must be non-negative.")
+
 
         self._modulation = modulation
         # define the modulation
