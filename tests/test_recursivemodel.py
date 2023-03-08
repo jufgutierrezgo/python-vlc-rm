@@ -74,6 +74,7 @@ class TestHappyRM:
                 )
 
     indoor_env.create_envirorment(transmitter, photodetector)
+    
     channel_model = Recursivemodel(
         "ChannelModelA",
         transmitter,
@@ -87,6 +88,17 @@ class TestHappyRM:
         assert self.channel_model._led == self.transmitter
         assert self.channel_model._photodetector == self.photodetector
         assert self.channel_model._room == self.indoor_env
+
+    def test_led_error(self):
+        led_errors = ['a', 1, [1, 2, 3], self.photodetector]
+        for options in led_errors:
+            with pytest.raises(ValueError):
+                channel_model = Recursivemodel(
+                    "ChannelModelA",
+                    options,
+                    self.photodetector,
+                    self.indoor_env
+                    )
 
     def test_dcgain_validation(self):        
         for channel in range(Kt.NO_LEDS):
