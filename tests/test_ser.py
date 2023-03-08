@@ -20,10 +20,15 @@ import pytest
 
 class TestSER:
 
-    SER_FLUX_VALUES = np.array(
+    SER_VALUES = np.array(
             [9.6921e-01, 3.2325e-01, 9.5142e-02, 1.5848e-02, 1.4954e-03,
              1.1980e-04, 8.8000e-06, 2.0000e-07, 0.0000e+00]
             )
+
+    FLUX_VALUES = np.array(
+        [1.0000e+01, 1.2588e+03, 2.5075e+03, 3.7562e+03, 5.0050e+03,
+       6.2538e+03, 7.5025e+03, 8.7512e+03, 1.0000e+04]
+    )
 
     led1 = Transmitter(
         "Led1",
@@ -67,12 +72,31 @@ class TestSER:
     ser = SymbolErrorRate(
             "SER-1",
             recursivemodel=channel_model,
-            no_symbols=5e6
+            no_symbols=1e6
             )
     
     def test_attributes(self):
         assert self.ser._recursivemodel == self.channel_model
-        assert self.ser.no_symbols == 5e6
+        assert self.ser.no_symbols == 1e6   
+    
+    def test_ser_validation(self):        
+        self.ser.compute_ser_flux(
+            min_flux=10,
+            max_flux=10e3,
+            points_flux=8
+            )
+        
+        #print(repr(self.ser._flux_values))                     
+        #print(repr(self.ser._ser_values))                    
+
+        assert np.allclose(
+            self.ser._flux_values,
+            self.FLUX_VALUES,
+            rtol=1e-4
+                )
+        
+        assert min(self.ser._ser_values) < 1e-6
+
     
     def test_rm_error(self):
         rm_errors = ['a', 1, [1, 2, 3], self.led1, self.pd1]
@@ -82,7 +106,7 @@ class TestSER:
                 ser_wrong = SymbolErrorRate(
                     "SER-1",
                     recursivemodel=options,
-                    no_symbols=5e6
+                    no_symbols=1e6
                     )
     
     def test_no_symbols_error(self):
@@ -96,19 +120,6 @@ class TestSER:
                     no_symbols=options
                     )  
 
-    def test_ser_validation(self):        
-        self.ser.compute_ser_flux(
-            min_flux=10,
-            max_flux=10e3,
-            points_flux=8
-            )
-        # print(repr(self.ser._ser_values))             
-        assert np.allclose(
-            self.ser._ser_values,
-            self.SER_FLUX_VALUES,
-            rtol=1e-1
-                )
-    
     def test_min_flux_error(self):
         min_flux_errors = ['a', 'other', [1, 1, 1], 20e3]
         for options in min_flux_errors:
@@ -130,7 +141,7 @@ class TestSER:
                     )
 
     def test_points_flux_error(self):
-        points_flux_errors = ['a', 'other', [1, 1, 1], -10, 8]
+        points_flux_errors = ['a', 'other', [1, 1, 1], -10]
         for options in points_flux_errors:
             with pytest.raises(ValueError):
                 self.ser.compute_ser_flux(

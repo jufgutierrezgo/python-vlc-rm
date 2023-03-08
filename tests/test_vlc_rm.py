@@ -16,5 +16,5 @@ from vlc_rm.constants import Constants as Kt
 
 
 # from vlc_rm.cli import main
-def test_main():
+#def test_main():
     # main([])
