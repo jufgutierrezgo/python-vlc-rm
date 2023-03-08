@@ -38,7 +38,6 @@ class TestHappyRM:
 
     CRI = np.array([[1.3921e+01]])
 
-
     transmitter = Transmitter(
             "Led1",
             position=[2.5, 2.5, 3],
@@ -97,6 +96,17 @@ class TestHappyRM:
                     "ChannelModelA",
                     options,
                     self.photodetector,
+                    self.indoor_env
+                    )
+    
+    def test_pd_error(self):
+        pd_errors = ['a', 1, [1, 2, 3], self.transmitter]
+        for options in pd_errors:
+            with pytest.raises(ValueError):
+                channel_model = Recursivemodel(
+                    "ChannelModelA",
+                    self.transmitter,
+                    options,
                     self.indoor_env
                     )
 
