@@ -87,13 +87,14 @@ class TestSER:
     
     def test_no_symbols_error(self):
         rm_errors = ['a', -10, [1, 2, 3], self.led1, self.pd1]
+
         for options in rm_errors:
             with pytest.raises(ValueError):
                 ser_wrong = SymbolErrorRate(
                     "SER-1",
                     recursivemodel=self.channel_model,
                     no_symbols=options
-                    )
+                    )  
 
     def test_ser_validation(self):        
         self.ser.compute_ser_flux(
@@ -107,3 +108,13 @@ class TestSER:
             self.SER_FLUX_VALUES,
             rtol=1e-1
                 )
+    
+    def test_min_flux_error(self):
+        min_flux_errors = ['a', 'other', [1, 1, 1]]
+        for options in min_flux_errors:
+            with pytest.raises(ValueError):
+                self.ser.compute_ser_flux(
+                    min_flux=options,
+                    max_flux=10e3,
+                    points_flux=8
+                    )
