@@ -79,12 +79,22 @@ class TestSER:
 
         for options in rm_errors:
             with pytest.raises(ValueError):
-                ser = SymbolErrorRate(
+                ser_wrong = SymbolErrorRate(
                     "SER-1",
                     recursivemodel=options,
                     no_symbols=5e6
                     )
-                
+    
+    def test_no_symbols_error(self):
+        rm_errors = ['a', -10, [1, 2, 3], self.led1, self.pd1]
+        for options in rm_errors:
+            with pytest.raises(ValueError):
+                ser_wrong = SymbolErrorRate(
+                    "SER-1",
+                    recursivemodel=self.channel_model,
+                    no_symbols=options
+                    )
+
     def test_ser_validation(self):        
         self.ser.compute_ser_flux(
             min_flux=10,

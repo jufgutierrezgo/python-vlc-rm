@@ -36,8 +36,11 @@ class SymbolErrorRate:
         no_symbols: int
             ) -> None:
 
-        self._no_symbols = int(no_symbols)
-        if self._no_symbols <= 0:
+        self._no_symbols = no_symbols
+        if not isinstance(self._no_symbols, (int, float)):
+            raise ValueError(
+                "No of symbols must be a positive integer.")
+        elif self._no_symbols <= 0:
             raise ValueError(
                 "No. of symbols must be greater than zero.")
 
