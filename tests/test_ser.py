@@ -110,7 +110,7 @@ class TestSER:
                 )
     
     def test_min_flux_error(self):
-        min_flux_errors = ['a', 'other', [1, 1, 1]]
+        min_flux_errors = ['a', 'other', [1, 1, 1], 20e3]
         for options in min_flux_errors:
             with pytest.raises(ValueError):
                 self.ser.compute_ser_flux(
