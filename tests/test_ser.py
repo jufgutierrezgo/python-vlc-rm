@@ -18,7 +18,7 @@ import numpy as np
 import pytest
 
 
-class TestHappySER:
+class TestSER:
 
     SER_FLUX_VALUES = np.array(
             [9.6921e-01, 3.2325e-01, 9.5142e-02, 1.5848e-02, 1.4954e-03,
@@ -73,7 +73,18 @@ class TestHappySER:
     def test_attributes(self):
         assert self.ser._recursivemodel == self.channel_model
         assert self.ser.no_symbols == 5e6
-        
+    
+    def test_rm_error(self):
+        rm_errors = ['a', 1, [1, 2, 3], self.led1, self.pd1]
+
+        for options in rm_errors:
+            with pytest.raises(ValueError):
+                ser = SymbolErrorRate(
+                    "SER-1",
+                    recursivemodel=options,
+                    no_symbols=5e6
+                    )
+                
     def test_ser_validation(self):        
         self.ser.compute_ser_flux(
             min_flux=10,
