@@ -16,7 +16,7 @@ import numpy as np
 import pytest
 
 
-class TestHappyRM:
+class TestRM:
 
     MIN_DC_GAIN = 2.43e-06
     MAX_DC_GAIN = 2.44e-06

@@ -9,9 +9,6 @@ import numpy as np
 # Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 
-# Library for logging
-import logging
-
 from scipy import stats
 
 import luxpy as lx
