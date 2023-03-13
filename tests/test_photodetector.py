@@ -79,36 +79,19 @@ class TestPhotodetector:
                         )       
     
     def test_fov_error(self):
-        with pytest.raises(ValueError):
-            photodetector = Photodetector(
-                "PD1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                area=self.AREA,
-                fov='a',
-                sensor=self.SENSOR,
-                idark=self.IDARK
-                    )
-        with pytest.raises(ValueError):
-            photodetector = Photodetector(
-                "PD1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                area=self.AREA,
-                fov=-5,
-                sensor=self.SENSOR,
-                idark=self.IDARK
-                    )
-        with pytest.raises(ValueError):
-            photodetector = Photodetector(
-                "PD1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                area=self.AREA,
-                fov=91,
-                sensor=self.SENSOR,
-                idark=self.IDARK
-                    )
+        fov_errors = [-20, 200,[0, 1], ['a', 0.5, 0], 'a', 'other', [1, 2, 3, 4]]
+
+        for options in fov_errors:
+            with pytest.raises(ValueError)            
+                photodetector = Photodetector(
+                    "PD1",
+                    position=self.POSITION,
+                    normal=self.NORMAL,
+                    area=self.AREA,
+                    fov=options,
+                    sensor=self.SENSOR,
+                    idark=self.IDARK
+                        )        
 
     def test_sensor_error(self):
         with pytest.raises(ValueError):
