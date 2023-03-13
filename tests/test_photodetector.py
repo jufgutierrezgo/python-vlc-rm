@@ -109,23 +109,16 @@ class TestPhotodetector:
                         )        
     
     def test_idark_error(self):
-        with pytest.raises(ValueError):
-            photodetector = Photodetector(
-                "PD1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                area=self.AREA,
-                fov=self.FOV,
-                sensor=self.SENSOR,
-                idark=-1
-                    )
-        with pytest.raises(ValueError):
-            photodetector = Photodetector(
-                "PD1",
-                position=self.POSITION,
-                normal=self.NORMAL,
-                area=self.AREA,
-                fov=self.FOV,
-                sensor=self.SENSOR,
-                idark='1e-a'
-                    )
+        idark_errors = [-1, -1e-6, 'a', [1, 1]]
+
+        for options in idark_errors:
+            with pytest.raises(ValueError):
+                photodetector = Photodetector(
+                    "PD1",
+                    position=self.POSITION,
+                    normal=self.NORMAL,
+                    area=self.AREA,
+                    fov=self.FOV,
+                    sensor=self.SENSOR,
+                    idark=options
+                        )
