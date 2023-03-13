@@ -47,7 +47,7 @@ class TestPhotodetector:
         assert self.photodetector.sensor == self.SENSOR
 
     def test_idark(self):
-        assert self.photodetector.idark == np.float32(self.IDARK)
+        assert self.photodetector.idark == np.float32(self.IDARK)    
 
     def test_position_error(self):
         position_errors = [[0, 1], ['a', 0.5, 0], 'a', 'other', [1, 2, 3, 4]]

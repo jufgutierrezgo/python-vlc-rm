@@ -237,6 +237,7 @@ class Transmitter:
             # Arrays to estimates the normalized spectrum of LEDs
             self._led_spd[:, i] = stats.norm.pdf(
                 self._array_wavelenghts, self._wavelengths[i], self._fwhm[i]/2)
+            
             self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         
     def plot_spd_at_1w(self):

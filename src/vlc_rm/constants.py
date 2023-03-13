@@ -20,6 +20,8 @@ class Constants:
     SENSOR_PATH = ROOT_DIR + "/sensors/"
     # directory to save histograms and graphs
     REPORT_PATH = ROOT_DIR + "/report/"
+    # directory of tests
+    TEST_PATH = ROOT_DIR + "/tests/"
     # Numbers of LED (Transmission channels)
     NO_LEDS = 3
     # Numbers of Photodetector Channels

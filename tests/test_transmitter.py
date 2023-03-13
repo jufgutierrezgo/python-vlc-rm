@@ -1,14 +1,13 @@
 import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
+sys.path.insert(0, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
+# Import Transmitter module
 from vlc_rm.transmitter import Transmitter
-
+# Import Constant module
 from vlc_rm.constants import Constants as Kt
-
 # Import Numpy
 import numpy as np
 # Import Pytest
-import pytest   
+import pytest
 
 
 class TestTransmitter:    
@@ -43,6 +42,11 @@ class TestTransmitter:
         modulation=MODULATION,
         luminous_flux=LUMINOUS_FLUX
                 )
+    
+    sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/')
+    SPD_REF = np.load(
+        sys.path[1]+'/SPD_REF.npy'
+        )
     
     print(transmitter)
    
@@ -80,7 +84,13 @@ class TestTransmitter:
             self.AVG_POWER_COLOR,
             rtol=1e-5
             )
-
+    
+    def test_led_spd(self):
+        assert np.allclose(
+            self.SPD_REF,
+            self.transmitter._spd_normalized
+        )
+        
     def test_position_error(self):          
         position_errors = [['a', 2, 3], [2.5, 2.5, 3, 4], 'a']
         
