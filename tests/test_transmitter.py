@@ -10,6 +10,7 @@ import numpy as np
 import pytest
 
 
+
 class TestTransmitter:    
 
     POSITION = [2.5, 2.5, 3]
@@ -41,7 +42,7 @@ class TestTransmitter:
         fwhm=FWHM,
         modulation=MODULATION,
         luminous_flux=LUMINOUS_FLUX
-                )
+                )    
     
     sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/')
     SPD_REF = np.load(
@@ -154,8 +155,7 @@ class TestTransmitter:
                     modulation=self.MODULATION,
                     luminous_flux=self.LUMINOUS_FLUX
                             )
-        
-            
+                    
     def test_fwhm_error(self):   
 
         fwdm_errors = [[-10, 50, 60], ['a', 2, 3], [40, 50, 60, 70], 'a'] 

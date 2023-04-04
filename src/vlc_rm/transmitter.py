@@ -193,7 +193,7 @@ class Transmitter:
             
         )
 
-    def led_pattern(self) -> None:
+    def plot_spatial_distribution(self) -> None:
         """Function to create a 3d radiation pattern of the LED source.
 
         The LED for recurse channel model is assumed as lambertian radiator.
@@ -234,8 +234,10 @@ class Transmitter:
 
         for i in range(Kt.NO_LEDS):
             # Arrays to estimates the normalized spectrum of LEDs
-            self._led_spd[:, i] = stats.norm.pdf(
-                self._array_wavelenghts, self._wavelengths[i], self._fwhm[i]/2)
+            self._led_spd[:, i] = self._gaussian_sprectrum(
+                self._array_wavelenghts, 
+                self._wavelengths[i], 
+                self._fwhm[i]/2)
             
             self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         
@@ -297,7 +299,7 @@ class Transmitter:
                     ])
                 )
 
-    def _avg_power_color(self):
+    def _avg_power_color(self) -> None:
         """
         This function computes the average radiometric power emmitted by 
         each color channel in the defined constellation.
@@ -317,3 +319,6 @@ class Transmitter:
         self._total_power = self._luminous_flux*np.sum(self._avg_power)
         # Manual setted of avg_power by each color channels
         #self._avg_power = np.array([1, 1, 1])
+
+    def _gaussian_sprectrum(self, x, mean, std) -> np.ndarray:
+        return (1 / (std * np.sqrt(2*np.pi))) * np.exp(-((x-mean)**2) / (2*std**2))
