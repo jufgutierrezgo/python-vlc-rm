@@ -1,9 +1,6 @@
 # import numpy library
 import numpy as np
 
-# import scipy library (cdist)
-import scipy
-
 import sys
 sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
 
@@ -399,7 +396,8 @@ class Indoorenv:
 
         # Computes pairwise-element distance using tensor
         # TODO: consider using Numpy only if possible
-        dist = scipy.spatial.distance.cdist(self.gridpoints, self.gridpoints)
+        # dist = scipy.spatial.distance.cdist(self.gridpoints, self.gridpoints)        
+        distances = np.linalg.norm(self.gridpoints[:, np.newaxis, :] - self.gridpoints[np.newaxis, :, :], axis=2)
 
         # Computes the pairwise-difference (vector) using tensor
         diff = -np.expand_dims(self.gridpoints, axis=1) + self.gridpoints
@@ -407,9 +405,9 @@ class Indoorenv:
         # Computes the unit vector from pairwise-difference usiing tensor
         unit_vector = np.divide(
             diff,
-            np.reshape(dist, (self.no_points, self.no_points, 1)),
+            np.reshape(distances, (self.no_points, self.no_points, 1)),
             np.zeros_like(diff),
-            where=np.reshape(dist, (self.no_points, self.no_points, 1)) != 0
+            where=np.reshape(distances, (self.no_points, self.no_points, 1)) != 0
             )
 
         # Computes the cosine of angle between unit vector and
@@ -430,5 +428,5 @@ class Indoorenv:
         array_tx[low_values_flags] = 0
 
         # Save in numpy array the results of tensor calculations
-        self.wall_parameters[0, :, :] = dist
+        self.wall_parameters[0, :, :] = distances
         self.wall_parameters[1, :, :] = cos_phi
