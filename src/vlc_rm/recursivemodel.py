@@ -469,8 +469,14 @@ class Recursivemodel:
 
         for i in range(Kt.NO_LEDS):
             # Arrays to estimate the RGBY gain spectrum
-            spd_data_dcgain[:, i] = self._channel_dcgain[i]*stats.norm.pdf(
-                self.wavelenght, self._led._wavelengths[i], self._led._fwhm[i]/2)             
+            spd_data_dcgain[:, i] = (
+                self._channel_dcgain[i] *
+                self._gaussian_sprectrum(
+                    self.wavelenght, 
+                    self._led._wavelengths[i], 
+                    self._led._fwhm[i]/2
+                    )             
+                )
 
         self._spd_data = np.multiply(
                 spd_data_dcgain,
@@ -556,3 +562,6 @@ class Recursivemodel:
         """ This function computes channel matrix normilized between 0 and 1."""
 
         self._norm_channelmatrix = self._channelmatrix/np.max(self._channelmatrix)
+
+    def _gaussian_sprectrum(self, x, mean, std) -> np.ndarray:
+        return (1 / (std * np.sqrt(2*np.pi))) * np.exp(-((x-mean)**2) / (2*std**2))

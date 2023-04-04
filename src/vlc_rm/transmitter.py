@@ -9,8 +9,7 @@ import numpy as np
 # Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 
-from scipy import stats
-
+# Library to computes the color and photometry parameters
 import luxpy as lx
 
 
@@ -235,9 +234,10 @@ class Transmitter:
         for i in range(Kt.NO_LEDS):
             # Arrays to estimates the normalized spectrum of LEDs
             self._led_spd[:, i] = self._gaussian_sprectrum(
-                self._array_wavelenghts, 
-                self._wavelengths[i], 
-                self._fwhm[i]/2)
+                self._array_wavelenghts,
+                self._wavelengths[i],
+                self._fwhm[i]/2
+                )
             
             self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         
