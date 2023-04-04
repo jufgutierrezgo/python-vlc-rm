@@ -80,7 +80,7 @@ class TestRM:
         photodetector,
         indoor_env
         )
-    channel_model.simulate_channel()
+    channel_model.simulate_channel()s    
     print(channel_model)
 
     def test_attributes(self):

@@ -242,6 +242,10 @@ class Transmitter:
             self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         
     def plot_spd_at_1w(self):
+        """
+        This funcion plots the spectral power distribution of the light source 
+        at 1w in each channel.
+        """
         # plot red spd data
         for i in range(Kt.NO_LEDS):
             plt.plot(self._array_wavelenghts, self._avg_power[i]*self._led_spd[:, i])
@@ -253,6 +257,9 @@ class Transmitter:
         plt.show()
     
     def plot_spd_normalized(self):
+        """
+        This funcion plots the normalized spectral power distribution of the light source.
+        """
         # plot red spd data
         for i in range(Kt.NO_LEDS):
             plt.plot(
@@ -321,4 +328,5 @@ class Transmitter:
         #self._avg_power = np.array([1, 1, 1])
 
     def _gaussian_sprectrum(self, x, mean, std) -> np.ndarray:
+        """ This function computes a normal SPD of a monochromatic LED. """
         return (1 / (std * np.sqrt(2*np.pi))) * np.exp(-((x-mean)**2) / (2*std**2))
