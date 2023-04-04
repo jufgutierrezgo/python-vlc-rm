@@ -166,7 +166,6 @@ class Transmitter:
             self._order_csk = 4
         else:
             print("Modulation name is not valid")
-    
 
     @property
     def luminous_flux(self) -> float:
