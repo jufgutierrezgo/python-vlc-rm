@@ -250,6 +250,7 @@ class Indoorenv:
         tx_normal: np.ndarray,
         rx_normal: np.ndarray
     ) -> None:
+        """ This function creates a grid of points on every wall. """
 
         no_xtick = int(self._size[0]/self._resolution)
         no_ytick = int(self._size[1]/self._resolution)

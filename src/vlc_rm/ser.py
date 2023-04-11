@@ -93,7 +93,7 @@ class SymbolErrorRate:
             raise ValueError(
                 "Points for SER curve must be int and non-negative.")            
 
-        print("\nComputing the Symbol Error Rate curves ...")      
+        print("\n Computing the Symbol Error Rate curves ...")      
         
         self._create_symbols()
         self._transmit_symbols()
@@ -269,6 +269,7 @@ class SymbolErrorRate:
             self._noise_symbols[color_channel, :] = signal_noise
 
     def _add_dark_current(self, flux, idark) -> None:
+        """ This function adds dark current to the photodetected current """
 
         # Create an empty numpy-array equal to self._symbols_rx_1lm
         self._noise_symbols = np.empty_like(self._symbols_rx_1lm)
@@ -319,12 +320,14 @@ class SymbolErrorRate:
                 self._rx_payload
             )
 
-        # cdistance
+        # Distance between constellation and received                
         self._distance = scipy.spatial.distance.cdist(
                 np.transpose(self._inverse_rx_symbols),
                 np.transpose(self._constellation)
-                )       
-                
+                )
+
+        print(size(self._distance))
+
         self._index_min = np.empty_like(self._symbols_decimal)
 
         for symbol in range(self._no_symbols):
