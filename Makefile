@@ -7,6 +7,10 @@ FILES = your_package_name/*.py your_package_name/data/*
 # Define the list of dependencies required to build and test your package
 DEPS = requirements.txt
 
+# Define variables
+PYTHON := python
+COVERAGE := coverage
+
 # Define the list of commands to run when building and testing your package
 .PHONY: all
 all: build test
@@ -15,9 +19,23 @@ all: build test
 build:
 	python setup.py sdist bdist_wheel
 
-.PHONY: test
-test:
-	pytest tests/
+.PHONY: test 
+test:	 	
+
+transmitter:
+	pytest -s tests/test_transmitter.py
+
+photodetector:
+	pytest -s tests/test_photodetector.py
+
+indoorenv:
+	pytest -s tests/test_indoorenv.py
+
+recursivemodel:
+	pytest -s tests/test_recursivemodel.py
+
+ser:
+	pytest -s tests/test_ser.py
 
 .PHONY: install
 install:
@@ -35,3 +53,16 @@ lint:
 .PHONY: mypy
 mypy:
 	mypy $(FILES)
+
+
+.PHONY: coverage
+coverage:
+	coverage run -m pytest tests/ 
+	coverage report -m
+
+.PHONY: coverage-html
+coverage: 
+	coverage run -m pytest tests/ 
+	
+html:	
+	coverage html
