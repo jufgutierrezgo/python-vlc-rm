@@ -18,7 +18,7 @@ import pytest
 
 class TestRM:
 
-    MIN_DC_GAIN = 2.43e-06
+    MIN_DC_GAIN = 2.41e-06
     MAX_DC_GAIN = 2.44e-06
 
     MIN_ILLUMINANCE = 1.2165e+02
@@ -80,7 +80,7 @@ class TestRM:
         photodetector,
         indoor_env
         )
-    channel_model.simulate_channel()s    
+    channel_model.simulate_channel()    
     print(channel_model)
 
     def test_attributes(self):

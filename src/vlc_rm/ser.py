@@ -320,8 +320,8 @@ class SymbolErrorRate:
                 self._rx_payload
             )
 
-        # Distance between constellation and received                
-        self._distance = scipy.spatial.distance.cdist(
+        # Distance between constellation and received                        
+        self._distance = self._cdist(
                 np.transpose(self._inverse_rx_symbols),
                 np.transpose(self._constellation)
                 )        
@@ -363,6 +363,12 @@ class SymbolErrorRate:
         else:
             raise ValueError(
                 "Mode for SER curve is not valid.")
+    
+    def _cdist(self, XA, XB) -> np.ndarray:
+        # Calculate the Euclidean distance between each pair of points in XA and XB
+        D = np.sqrt(((XA[:, None] - XB) ** 2).sum(axis=2))
+
+        return D
     
     def __str__(self) -> str:
         return (
