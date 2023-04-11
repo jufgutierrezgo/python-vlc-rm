@@ -20,8 +20,6 @@ import numpy as np
 # Library to plot the LED patter, SPD and responsivity
 import matplotlib.pyplot as plt
 
-# import scipy library (cdist)
-import scipy
 
 
 class SymbolErrorRate:
