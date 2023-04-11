@@ -324,9 +324,7 @@ class SymbolErrorRate:
         self._distance = scipy.spatial.distance.cdist(
                 np.transpose(self._inverse_rx_symbols),
                 np.transpose(self._constellation)
-                )
-
-        print(size(self._distance))
+                )        
 
         self._index_min = np.empty_like(self._symbols_decimal)
 
