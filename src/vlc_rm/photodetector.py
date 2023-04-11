@@ -159,7 +159,6 @@ class Photodetector:
         )
 
     def plot_responsivity(self) -> None:
-        """ This function plots the spectral responsiity of the color sensor. """
         plt.plot(
             self._responsivity[:, 0],
             self._responsivity[:, 1],
