@@ -56,10 +56,15 @@ class SymbolErrorRate:
 
     @no_symbols.setter
     def no_symbols(self, no_symbols):
-        self._no_symbols = no_symbols
+        if isinstance(no_symbols, (int, float)):
+            self._no_symbols = int(no_symbols)        
+        else:
+            raise ValueError(
+                "No of symbols must be a positive integer.")
+        
         if self._no_symbols <= 0:
             raise ValueError(
-                "Number of symbols must be greater than zero.")    
+                "No. of symbols must be greater than zero.")
 
     def compute_ser_flux(
             self,
@@ -127,19 +132,10 @@ class SymbolErrorRate:
         if not (isinstance(self._max_snr, (int))) or self._points_snr <= 0:
             raise ValueError(
                 "Points for SER curve must be int and non-negative.")
-
-        loader = Loader(
-            "Computing the Symbol Error Rate curves ...", 
-            "SER computation done!", 
-            0.05
-            ).start()
-
         
         self._create_symbols()
         self._transmit_symbols()
         self._compute_ser_curve("snr")
-
-        loader.stop()
 
     def plot_ser(self, mode) -> None:
         """

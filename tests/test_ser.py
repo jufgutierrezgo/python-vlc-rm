@@ -29,6 +29,8 @@ class TestSER:
         [1.0000e+01, 1.2588e+03, 2.5075e+03, 3.7562e+03, 5.0050e+03,
        6.2538e+03, 7.5025e+03, 8.7512e+03, 1.0000e+04]
     )
+    
+    NO_SYMBOLS = 16
 
     led1 = Transmitter(
         "Led1",
@@ -72,13 +74,13 @@ class TestSER:
     ser = SymbolErrorRate(
             "SER-1",
             recursivemodel=channel_model,
-            no_symbols=1e6
+            no_symbols=NO_SYMBOLS
             )
     
     def test_attributes(self):
         assert self.ser._recursivemodel == self.channel_model
-        assert self.ser.no_symbols == 1e6   
-    
+        assert self.ser.no_symbols == self.NO_SYMBOLS
+
     def test_ser_validation(self):        
         self.ser.compute_ser_flux(
             min_flux=10,
@@ -118,7 +120,9 @@ class TestSER:
                     "SER-1",
                     recursivemodel=self.channel_model,
                     no_symbols=options
-                    )  
+                    )
+            with pytest.raises(ValueError):
+                self.ser.no_symbols = options
 
     def test_min_flux_error(self):
         min_flux_errors = ['a', 'other', [1, 1, 1], 20e3]
@@ -148,4 +152,34 @@ class TestSER:
                     min_flux=10,
                     max_flux=10e3,
                     points_flux=options
+                    )
+
+    def test_min_snr_error(self):
+        min_snr_errors = ['a', 'other', [1, 1, 1], 20e3]
+        for options in min_snr_errors:
+            with pytest.raises(ValueError):
+                self.ser.compute_ser_snr(
+                    min_snr=options,
+                    max_snr=10e3,
+                    points_snr=8
+                    )
+
+    def test_max_snr_error(self):
+        max_snr_errors = ['a', 'other', [1, 1, 1], 1]
+        for options in max_snr_errors:
+            with pytest.raises(ValueError):
+                self.ser.compute_ser_snr(
+                    min_snr=10,
+                    max_snr=options,
+                    points_snr=8
+                    )
+
+    def test_points_snr_error(self):
+        points_snr_errors = ['a', 'other', [1, 1, 1], -10]
+        for options in points_snr_errors:
+            with pytest.raises(ValueError):
+                self.ser.compute_ser_snr(
+                    min_snr=10,
+                    max_snr=10e3,
+                    points_snr=options
                     )
