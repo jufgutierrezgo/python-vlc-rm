@@ -1,21 +1,19 @@
+# Import Symbol Constants
+from vlc_rm.constants import Constants as Kt
+# Import Transmitter
+from vlc_rm.transmitter import Transmitter
+# Import Photodetector
+from vlc_rm.photodetector import Photodetector
+# Import Indoor Environment
+from vlc_rm.indoorenv import Indoorenv
+
+# Import numpy library
 import numpy as np
-
 # Library to plot SPD and responsivity
-import matplotlib.pyplot as plt
-
+import matplotlib.pyplot as pl
 # Library to compute color and photometry parameters
 import luxpy as lx
 
-import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
-from vlc_rm.constants import Constants as Kt
-
-from vlc_rm.transmitter import Transmitter
-
-from vlc_rm.photodetector import Photodetector
-
-from vlc_rm.indoorenv import Indoorenv
 
 
 class Recursivemodel:

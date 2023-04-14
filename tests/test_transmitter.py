@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(0, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
 # Import Transmitter module
 from vlc_rm.transmitter import Transmitter
 # Import Constant module
@@ -42,12 +40,9 @@ class TestTransmitter:
         fwhm=FWHM,
         modulation=MODULATION,
         luminous_flux=LUMINOUS_FLUX
-                )    
+                )        
     
-    sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/tests/')
-    SPD_REF = np.load(
-        sys.path[1]+'/SPD_REF.npy'
-        )
+    SPD_REF = np.load('SPD_REF.npy')
     
     print(transmitter)
    

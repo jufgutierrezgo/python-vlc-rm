@@ -1,6 +1,3 @@
-import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
 # Import Transmitter
 from vlc_rm.transmitter import Transmitter
 # Import Photodetector
@@ -12,6 +9,7 @@ from vlc_rm.recursivemodel import Recursivemodel
 # Import Symbol Constants
 from vlc_rm.constants import Constants as Kt
 
+import sys
 import numpy as np
 import pytest
 

@@ -1,22 +1,11 @@
-import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
 from vlc_rm.constants import Constants as Kt
-
-from vlc_rm.transmitter import Transmitter
-
-from vlc_rm.photodetector import Photodetector
-
-from vlc_rm.indoorenv import Indoorenv
-
+# Import REcursiveModel
 from vlc_rm.recursivemodel import Recursivemodel
-
-# Library to compute color and photometry parameters
-import luxpy as lx
 
 # Numeric Numpy library
 import numpy as np
-
+# Library to compute color and photometry parameters
+import luxpy as lx
 # Library to plot SER
 import matplotlib.pyplot as plt
 

@@ -1,6 +1,3 @@
-import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
 # Import Constants Transmitter
 from vlc_rm.transmitter import Transmitter
 # Import Constants Photodetector

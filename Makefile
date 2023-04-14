@@ -17,6 +17,9 @@ build:
 .PHONY: test 
 test:	 	
 
+all:
+	pytest -s tests/
+
 transmitter:
 	pytest -s tests/test_transmitter.py
 
@@ -38,8 +41,7 @@ clean:
 
 .PHONY: coverage
 coverage:
-	coverage run -m pytest tests/ 
-	coverage report -m
+	coverage run -a --branch --source src/vlc_rm -m pytest tests --junit-xml=./test-results/tests-python.xml --verbose --durations=15
 
 html:	
 	coverage html

@@ -1,14 +1,16 @@
+# Import Transmitter
+from vlc_rm.transmitter import Transmitter
+# Import Photodetector
+from vlc_rm.photodetector import Photodetector
+# Import REcursiveModel
+from vlc_rm.constants import Constants as Kt
+
 # import numpy library
 import numpy as np
 
 import sys
 sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
 
-from vlc_rm.constants import Constants as Kt
-
-from vlc_rm.transmitter import Transmitter
-
-from vlc_rm.photodetector import Photodetector
 
 
 class Indoorenv:

@@ -1,8 +1,5 @@
-import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
+# Import Photodetector
 from vlc_rm.photodetector import Photodetector
-
 # Import Numpy
 import numpy as np
 # Import Pytest
