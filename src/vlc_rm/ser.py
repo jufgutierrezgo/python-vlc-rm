@@ -162,14 +162,14 @@ class SymbolErrorRate:
             raise ValueError(
                 "Mode for plottig SER curve is not valid.")
 
-    def save_SerFLux_data(self) -> None:
+    def save_to_file(self, name: str = 'SER-Flux') -> None:
         """
         This function save in txt the numpy arrays with the
         symbol erro rate data.
         """
 
         np.savetxt(
-            f'SER-Flux_data{self._recursivemodel._photodetector._name}.txt',
+            f'{name}.txt',
             (self._flux_values, self._ser_values),
             delimiter=' '
             )

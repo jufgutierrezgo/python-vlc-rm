@@ -8,10 +8,6 @@ from vlc_rm.constants import Constants as Kt
 # import numpy library
 import numpy as np
 
-import sys
-sys.path.insert(1, '/home/juanpc/python_phd/cruft_sample/python-vlc-rm/src/')
-
-
 
 class Indoorenv:
     """
