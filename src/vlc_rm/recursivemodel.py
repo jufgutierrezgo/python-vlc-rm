@@ -10,7 +10,9 @@ from vlc_rm.indoorenv import Indoorenv
 # Import numpy library
 import numpy as np
 # Library to plot SPD and responsivity
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt
+
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 # Library to compute color and photometry parameters
 import luxpy as lx
 
@@ -52,6 +54,8 @@ class Recursivemodel:
             (Kt.NO_DETECTORS, Kt.NO_LEDS),
             dtype=np.float32
             )
+        self._rx_constellation = np.empty_like(self._led._constellation) 
+        self._min_distance = 0  
         self._illuminance = 0
         self._cri = 0
         self._cct = 0
@@ -88,6 +92,7 @@ class Recursivemodel:
             f'CIExyz: {self._xyz} \n'
             f'CCT: {self._cct} \n'
             f'CRI: {self._cri} \n'
+            f'Min-Distance: {self._min_distance} \n'
         )
 
     def simulate_channel(self) -> None:
@@ -105,7 +110,9 @@ class Recursivemodel:
         self._compute_illuminance()
         self._compute_channelmatrix()
         self._compute_normalized_channelmatrix()
-
+        self._compute_rx_constellation()
+        self._compute_min_distance()
+        
         print("Simulation done! \n")
         
 
@@ -411,9 +418,97 @@ class Recursivemodel:
                     self._spd_data[:, j], self._photodetector._responsivity[:, i+1])
     
     def _compute_normalized_channelmatrix(self) -> None:
-        """ This function computes channel matrix normilized between 0 and 1."""
+        """ This function computes channel matrix normalized between 0 and 1."""
 
         self._norm_channelmatrix = self._channelmatrix/np.max(self._channelmatrix)
 
     def _gaussian_sprectrum(self, x, mean, std) -> np.ndarray:
         return (1 / (std * np.sqrt(2*np.pi))) * np.exp(-((x-mean)**2) / (2*std**2))
+    
+    def _compute_rx_constellation(self) -> None:
+        """ This function computes the received constellation using the channel matrix """
+
+        self._rx_constellation = np.dot(
+            self._norm_channelmatrix,
+            self._led._constellation
+            )
+        # print(self._led._constellation)
+
+    def _compute_min_distance(self) -> None:
+        """ This function computes the min distance of the received constellation """
+
+        zero_distance = self._cdist(self._rx_constellation.T, self._rx_constellation.T)
+                
+        self._min_distance = np.min(zero_distance[zero_distance > 0])
+
+    def plot_constellation(self, mode='rx'):
+        """ This function plots the received and transmitted constellations """    
+        # Create 3D scatter plot
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+
+        # Draw a triangle of the received constellation
+        p1 = self._rx_constellation[:, np.argmax(self._rx_constellation[0, :])]
+        p2 = self._rx_constellation[:, np.argmax(self._rx_constellation[1, :])]
+        p3 = self._rx_constellation[:, np.argmax(self._rx_constellation[2, :])]
+
+        ax.scatter([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]])
+        # Define the vertices for the polygon
+        verts = [p1, p2, p3]
+        # Create the polygon
+        poly = Poly3DCollection([verts], alpha=0.25, facecolor='g')
+        # Add the polygon to the plot
+        ax.add_collection3d(poly)
+
+        # Draw a triangle of the transmitted
+        p1 = self._led._constellation[:, np.argmax(self._led._constellation[0, :])]
+        p2 = self._led._constellation[:, np.argmax(self._led._constellation[1, :])]
+        p3 = self._led._constellation[:, np.argmax(self._led._constellation[2, :])]
+
+        ax.scatter([p1[0], p2[0], p3[0]], [p1[1], p2[1], p3[1]], [p1[2], p2[2], p3[2]])
+        # Define the vertices for the polygon
+        verts = [p1, p2, p3]
+        # Create the polygon
+        poly = Poly3DCollection([verts], alpha=0.25, facecolor='g')
+        # Add the polygon to the plot
+        ax.add_collection3d(poly)
+
+        ax.scatter(
+            self._rx_constellation[0, :],
+            self._rx_constellation[1, :],
+            self._rx_constellation[2, :]
+        )
+        ax.scatter(
+            self._led._constellation[0, :],
+            self._led._constellation[1, :],
+            self._led._constellation[2, :]
+        )
+
+        # Set font size for axis labels and title
+        plt.rcParams['font.size'] = 14
+
+        # Define the coordinates for the plane
+        xx, yy = np.meshgrid(range(1), range(1))
+        zz = 2 * xx + 3 * yy
+
+        # Plot the plane
+        ax.plot_surface(xx, yy, zz, alpha=0.5)
+
+        # Set limits for the axes
+        ax.set_xlim3d([0, 1])
+        ax.set_ylim3d([0, 1])
+        ax.set_zlim3d([0, 1])
+        # Add labels and title
+        ax.set_xlabel('R-axis')
+        ax.set_ylabel('G-axis')
+        ax.set_zlabel('B-axis')
+        plt.title('Constellation in Radiometric Signal Space')
+
+        # Display plot
+        plt.show()
+
+    def _cdist(self, XA, XB) -> np.ndarray:
+        # Calculate the Euclidean distance between each pair of points in XA and XB
+        D = np.sqrt(((XA[:, None] - XB) ** 2).sum(axis=2))
+
+        return D

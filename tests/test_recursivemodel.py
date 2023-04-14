@@ -9,7 +9,7 @@ from vlc_rm.recursivemodel import Recursivemodel
 # Import Symbol Constants
 from vlc_rm.constants import Constants as Kt
 
-import sys
+
 import numpy as np
 import pytest
 
@@ -79,6 +79,7 @@ class TestRM:
         indoor_env
         )
     channel_model.simulate_channel()    
+    channel_model.plot_constellation()
     print(channel_model)
 
     def test_attributes(self):
