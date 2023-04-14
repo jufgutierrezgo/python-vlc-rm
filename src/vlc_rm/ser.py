@@ -11,13 +11,13 @@ from vlc_rm.indoorenv import Indoorenv
 
 from vlc_rm.recursivemodel import Recursivemodel
 
-
+# Library to compute color and photometry parameters
 import luxpy as lx
 
 # Numeric Numpy library
 import numpy as np
 
-# Library to plot the LED patter, SPD and responsivity
+# Library to plot SER
 import matplotlib.pyplot as plt
 
 

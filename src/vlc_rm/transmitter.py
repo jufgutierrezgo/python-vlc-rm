@@ -6,10 +6,10 @@ from vlc_rm.constants import Constants as Kt
 # Numeric Numpy library
 import numpy as np
 
-# Library to plot the LED patter, SPD and responsivity
+# Library to plot SPD and responsivity
 import matplotlib.pyplot as plt
 
-# Library to computes the color and photometry parameters
+# Library to compute color and photometry parameters
 import luxpy as lx
 
 

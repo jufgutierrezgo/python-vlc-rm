@@ -183,3 +183,4 @@ class TestSER:
                     max_snr=10e3,
                     points_snr=options
                     )
+                    

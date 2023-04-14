@@ -1,10 +1,9 @@
 import numpy as np
-from numpy.core.function_base import linspace
 
-from scipy import stats
-
+# Library to plot SPD and responsivity
 import matplotlib.pyplot as plt
 
+# Library to compute color and photometry parameters
 import luxpy as lx
 
 import sys
