@@ -14,6 +14,10 @@ all: build test
 build:
 	python setup.py sdist bdist_wheel
 
+.PHONY: install
+install:
+	pip install -e ./
+
 .PHONY: test 
 test:	 	
 

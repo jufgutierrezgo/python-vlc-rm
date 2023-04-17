@@ -247,7 +247,7 @@ class Transmitter:
         for i in range(Kt.NO_LEDS):
             plt.plot(self._array_wavelenghts, self._avg_power[i]*self._led_spd[:, i])
         
-        plt.title("Spectral Power Distribution at 1W/channel")
+        plt.title("Spectral Power Distribution at 1 Lumen/Channel")
         plt.xlabel("Wavelength [nm]")
         plt.ylabel("Power [W]")
         plt.grid()
