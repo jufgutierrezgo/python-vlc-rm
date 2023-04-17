@@ -212,6 +212,7 @@ class Transmitter:
             X, Y, Z, rstride=1, cstride=1, cmap=plt.get_cmap('jet'),
             linewidth=0, antialiased=False, alpha=0.5)
 
+        plt.title("Spatial Power Disstribution of the LED")
         plt.show()
 
     def _create_led_spd(self):
@@ -226,6 +227,7 @@ class Transmitter:
         self._led_spd = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
         self._spd_normalized = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
 
+        
         for i in range(Kt.NO_LEDS):
             # Arrays to estimates the normalized spectrum of LEDs
             self._led_spd[:, i] = self._gaussian_sprectrum(
@@ -236,7 +238,7 @@ class Transmitter:
             
             self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         
-    def plot_spd_at_1w(self):
+    def plot_spd_at_1lm(self):
         """
         This funcion plots the spectral power distribution of the light source 
         at 1w in each channel.
@@ -264,7 +266,7 @@ class Transmitter:
         
         plt.title("Normalized Spectral Power Distribution")
         plt.xlabel("Wavelength [nm]")
-        plt.ylabel("Normalied Power [W]")
+        plt.ylabel("Normalized Power")
         plt.grid()
         plt.show()
     
