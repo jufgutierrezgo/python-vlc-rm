@@ -118,7 +118,7 @@ class Recursivemodel:
 
     def print_Hk(self) -> None:
         """
-        This function calculates the DC-Gain for each reflection.
+        This function prints the DC-Gain for each reflection.
         """
         for i in range(0, self._room.no_reflections+1):
             print("\n DC-gain for H{} response [W] respect to 1W:\n {}".format(i, self.h_dcgain[i, :]))

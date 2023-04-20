@@ -70,7 +70,7 @@ class TestRM:
             floor=[0.3, 0.3, 0.3]
                 )
 
-    indoor_env.create_envirorment(transmitter, photodetector)
+    indoor_env.create_environment(transmitter, photodetector)
     
     channel_model = Recursivemodel(
         "ChannelModelA",

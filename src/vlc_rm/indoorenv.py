@@ -202,6 +202,8 @@ class Indoorenv:
             raise ValueError(
                 "Dimension of ceiling reflectance array must be equal to the number of LEDs.")
 
+
+    
     def __str__(self) -> str:
         return (
             f'\n List of parameters for indoor envirionment {self._name}: \n'
@@ -213,10 +215,11 @@ class Indoorenv:
             f'Number of points: {self.no_points}\n'
         )    
 
-    def create_envirorment(
+    def create_environment(
         self,
         tx: Transmitter,
-        rx: Photodetector
+        rx: Photodetector,
+        mode: str = 'new'
             ) -> None:
 
         self._tx = tx
@@ -229,6 +232,11 @@ class Indoorenv:
             raise ValueError(
                 "Receiver attribute must be an object type Photodetector.")
 
+        self._mode = mode
+        if (mode != 'new') and (mode != 'modified'):
+            raise ValueError(
+                "Mode attribute must be 'new' or 'modified'.")
+
         print("\n Creating parameters of indoor environment ...")
 
         self._create_grid(
@@ -238,7 +246,7 @@ class Indoorenv:
             self._rx._normal
             )
         
-        self._compute_parameters(self._rx._fov)
+        self._compute_parameters(self._rx._fov, self._mode)
         print("Parameters created!\n")
 
     def _create_grid(
@@ -360,7 +368,7 @@ class Indoorenv:
             2*self._size[1]*self._size[2]
         )/(self.no_points-2)
 
-    def _compute_parameters(self, fov: float) -> None:
+    def _compute_parameters(self, fov: float, mode) -> None:
         """This function creates an 3d-array with cross-parametes between
             points.
 
@@ -390,42 +398,83 @@ class Indoorenv:
 
         """
 
-        self.wall_parameters = np.zeros(
-            (2, self.no_points, self.no_points), dtype=np.float32)
+        if mode == 'new':
+            self.wall_parameters = np.zeros(
+                (2, self.no_points, self.no_points), dtype=np.float32)
 
-        # Computes pairwise-element distance using tensor
-        # TODO: consider using Numpy only if possible
-        # dist = scipy.spatial.distance.cdist(self.gridpoints, self.gridpoints)        
-        distances = np.linalg.norm(self.gridpoints[:, np.newaxis, :] - self.gridpoints[np.newaxis, :, :], axis=2)
+            # Computes pairwise-element distance using tensor
+            # TODO: consider using Numpy only if possible
+            # dist = scipy.spatial.distance.cdist(self.gridpoints, self.gridpoints)        
+            distances = np.linalg.norm(self.gridpoints[:, np.newaxis, :] - self.gridpoints[np.newaxis, :, :], axis=2)
 
-        # Computes the pairwise-difference (vector) using tensor
-        diff = -np.expand_dims(self.gridpoints, axis=1) + self.gridpoints
+            # Computes the pairwise-difference (vector) using tensor
+            diff = -np.expand_dims(self.gridpoints, axis=1) + self.gridpoints
 
-        # Computes the unit vector from pairwise-difference usiing tensor
-        unit_vector = np.divide(
-            diff,
-            np.reshape(distances, (self.no_points, self.no_points, 1)),
-            np.zeros_like(diff),
-            where=np.reshape(distances, (self.no_points, self.no_points, 1)) != 0
-            )
+            # Computes the unit vector from pairwise-difference usiing tensor
+            unit_vector = np.divide(
+                diff,
+                np.reshape(distances, (self.no_points, self.no_points, 1)),
+                np.zeros_like(diff),
+                where=np.reshape(distances, (self.no_points, self.no_points, 1)) != 0
+                )
 
-        # Computes the cosine of angle between unit vector and
-        # normal vector using tensor.
-        cos_phi = np.sum(
-            unit_vector*np.reshape(
-                self.normal_vectors,
-                (self.no_points, 1, 3)),
-            axis=2
-            )
+            # Computes the cosine of angle between unit vector and
+            # normal vector using tensor.
+            cos_phi = np.sum(
+                unit_vector*np.reshape(
+                    self.normal_vectors,
+                    (self.no_points, 1, 3)),
+                axis=2
+                )
 
-        array_rx = cos_phi[-1, :]
-        low_values_flags = array_rx < np.cos(fov*np.pi/180)
-        array_rx[low_values_flags] = 0
+            array_rx = cos_phi[-1, :]
+            low_values_flags = array_rx < np.cos(fov*np.pi/180)
+            array_rx[low_values_flags] = 0
 
-        array_tx = cos_phi[-2, :]
-        low_values_flags = array_tx < np.cos(90*np.pi/180)
-        array_tx[low_values_flags] = 0
+            array_tx = cos_phi[-2, :]
+            low_values_flags = array_tx < np.cos(90*np.pi/180)
+            array_tx[low_values_flags] = 0
 
-        # Save in numpy array the results of tensor calculations
-        self.wall_parameters[0, :, :] = distances
-        self.wall_parameters[1, :, :] = cos_phi
+            # Save in numpy array the results of tensor calculations
+            self.wall_parameters[0, :, :] = distances
+            self.wall_parameters[1, :, :] = cos_phi
+        
+        elif mode == 'modified':
+
+            tx_diff = self.gridpoints - self.gridpoints[-2, :]
+            rx_diff = self.gridpoints - self.gridpoints[-1, :]
+
+            tx_distance = np.linalg.norm(tx_diff, axis=1)
+            rx_distance = np.linalg.norm(rx_diff, axis=1)
+
+            tx_unit_vector = np.divide(
+                tx_diff,
+                np.reshape(tx_distance, (self.no_points, 1)),
+                np.zeros_like(tx_diff),
+                where=np.reshape(tx_distance, (self.no_points, 1)) != 0
+                )
+
+            rx_unit_vector = np.divide(
+                rx_diff,
+                np.reshape(rx_distance, (self.no_points, 1)),
+                np.zeros_like(rx_diff),
+                where=np.reshape(rx_distance, (self.no_points, 1)) != 0
+                )
+            
+            tx_cos_phi = np.dot(
+                tx_unit_vector,
+                self.normal_vectors[-2, :].T
+                )
+            
+            rx_cos_phi = np.dot(
+                rx_unit_vector,
+                self.normal_vectors[-1, :].T
+                )           
+
+            self.wall_parameters[0, -2, :] = tx_cos_phi
+            self.wall_parameters[0, -1, :] = rx_cos_phi
+
+            print(tx_cos_phi)
+            print(rx_cos_phi)
+            print(self.wall_parameters[0, -2, :])
+            print(self.wall_parameters[0, -1, :])

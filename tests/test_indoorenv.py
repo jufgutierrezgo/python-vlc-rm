@@ -139,9 +139,16 @@ class TestIndoorEnv:
             floor=[1, 1, 1]
                 )
 
-        basic_env.create_envirorment(led1, pd1)
+        basic_env.create_environment(led1, pd1)
         print(repr(basic_env.wall_parameters))
         
+        assert np.allclose(
+            basic_env.wall_parameters,
+            self.DIST_COSINE
+        )
+
+        basic_env.create_environment(led1, pd1, mode='modified')        
+
         assert np.allclose(
             basic_env.wall_parameters,
             self.DIST_COSINE

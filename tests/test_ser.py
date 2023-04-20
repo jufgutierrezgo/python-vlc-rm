@@ -63,7 +63,7 @@ class TestSER:
         south=[0.82, 0.71, 0.64],
         floor=[0.635, 0.61, 0.58]
             )
-    room.create_envirorment(led1, pd1)
+    room.create_environment(led1, pd1)
     
     channel_model = Recursivemodel("ChannelModelA", led1, pd1, room)
     channel_model.simulate_channel()

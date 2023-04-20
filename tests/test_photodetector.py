@@ -76,7 +76,7 @@ class TestPhotodetector:
                         )       
     
     def test_fov_error(self):
-        fov_errors = [-20, 200,[0, 1], ['a', 0.5, 0], 'a', 'other', [1, 2, 3, 4]]
+        fov_errors = [-20, 200, [0, 1], ['a', 0.5, 0], 'a', 'other', [1, 2, 3, 4]]
 
         for options in fov_errors:
             with pytest.raises(ValueError):
