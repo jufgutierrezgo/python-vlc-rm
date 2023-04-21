@@ -231,8 +231,7 @@ class Indoorenv:
         if not type(self._rx) is Photodetector:
             raise ValueError(
                 "Receiver attribute must be an object type Photodetector.")
-
-        self._mode = mode
+        
         if (mode != 'new') and (mode != 'modified'):
             raise ValueError(
                 "Mode attribute must be 'new' or 'modified'.")
@@ -246,7 +245,7 @@ class Indoorenv:
             self._rx._normal
             )
         
-        self._compute_parameters(self._rx._fov, self._mode)
+        self._compute_parameters(self._rx._fov, mode)
         print("Parameters created!\n")
 
     def _create_grid(
@@ -469,7 +468,15 @@ class Indoorenv:
             rx_cos_phi = np.dot(
                 rx_unit_vector,
                 self.normal_vectors[-1, :].T
-                )           
+                )    
+
+            array_rx = rx_cos_phi
+            low_values_flags = array_rx < np.cos(fov*np.pi/180)
+            array_rx[low_values_flags] = 0
+
+            array_tx = tx_cos_phi
+            low_values_flags = array_tx < np.cos(90*np.pi/180)
+            array_tx[low_values_flags] = 0       
 
             self.wall_parameters[0, -2, :] = tx_distance
             self.wall_parameters[0, -1, :] = rx_distance

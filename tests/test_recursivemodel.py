@@ -70,8 +70,7 @@ class TestRM:
             floor=[0.3, 0.3, 0.3]
                 )
 
-    indoor_env.create_environment(transmitter, photodetector)
-    indoor_env.create_environment(transmitter, photodetector, mode='modified')
+    indoor_env.create_environment(transmitter, photodetector)    
     
     channel_model = Recursivemodel(
         "ChannelModelA",
@@ -82,6 +81,14 @@ class TestRM:
     channel_model.simulate_channel()    
     channel_model.plot_constellation()
     print(channel_model)
+
+    photodetector.position = np.array([0.5, 1, 0])
+    photodetector.fov = 85 
+    indoor_env.create_environment(transmitter, photodetector, mode='modified')
+    channel_model.simulate_channel()    
+    channel_model.plot_constellation()
+    print(channel_model)
+
 
     def test_attributes(self):
         assert self.channel_model._led == self.transmitter
