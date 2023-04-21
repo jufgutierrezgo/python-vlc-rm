@@ -146,7 +146,8 @@ class TestIndoorEnv:
             basic_env.wall_parameters,
             self.DIST_COSINE
         )
-
+        
+        pd1.position= np.array([0.5, 0.5, 0])
         basic_env.create_environment(led1, pd1, mode='modified')        
 
         assert np.allclose(

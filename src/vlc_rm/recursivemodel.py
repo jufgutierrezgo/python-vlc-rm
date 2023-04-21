@@ -59,6 +59,7 @@ class Recursivemodel:
         self._illuminance = 0
         self._cri = 0
         self._cct = 0
+        self._min_distance = 0
 
     @property
     def channel_dcgain(self):
@@ -79,6 +80,10 @@ class Recursivemodel:
     @property
     def cct(self):
         return self._cct
+    
+    @property
+    def min_distance(self):
+        return self._min_distance
 
     def __str__(self) -> str:        
         return (

@@ -78,10 +78,10 @@ class Photodetector:
         return self._position
 
     @position.setter
-    def position(self, position):
+    def position(self, position):        
         if self._position.size != 3:
-            raise ValueError("Position must be a 3d-numpy array.")
-        self._position = position
+            raise ValueError("Position must be a 3d-numpy array.")        
+        self._position = np.array(position)
 
     @property
     def normal(self) -> np.ndarray:
@@ -89,9 +89,9 @@ class Photodetector:
 
     @normal.setter
     def normal(self, normal):
-        if self._normal.size != 3:
-            raise ValueError("Normal must be a 3d-numpy array.")
         self._normal = np.array(normal)
+        if self._normal.size != 3:
+            raise ValueError("Normal must be a 3d-numpy array.")        
 
     @property
     def area(self) -> float:

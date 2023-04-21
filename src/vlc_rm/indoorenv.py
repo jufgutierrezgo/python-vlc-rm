@@ -471,10 +471,8 @@ class Indoorenv:
                 self.normal_vectors[-1, :].T
                 )           
 
-            self.wall_parameters[0, -2, :] = tx_cos_phi
-            self.wall_parameters[0, -1, :] = rx_cos_phi
+            self.wall_parameters[0, -2, :] = tx_distance
+            self.wall_parameters[0, -1, :] = rx_distance
 
-            print(tx_cos_phi)
-            print(rx_cos_phi)
-            print(self.wall_parameters[0, -2, :])
-            print(self.wall_parameters[0, -1, :])
+            self.wall_parameters[1, -2, :] = tx_cos_phi
+            self.wall_parameters[1, -1, :] = rx_cos_phi

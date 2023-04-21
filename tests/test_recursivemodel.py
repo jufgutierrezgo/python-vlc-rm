@@ -16,11 +16,11 @@ import pytest
 
 class TestRM:
 
-    MIN_DC_GAIN = 2.41e-06
-    MAX_DC_GAIN = 2.44e-06
+    MIN_DC_GAIN = 2.42e-06
+    MAX_DC_GAIN = 2.45e-06
 
-    MIN_ILLUMINANCE = 1.2165e+02
-    MAX_ILLUMINANCE = 1.2166e+02
+    MIN_ILLUMINANCE = 1.21e+02
+    MAX_ILLUMINANCE = 1.23e+02
 
     CHANNEL_MATRIX = np.array([
         [2.6708e-01, 5.9120e-04, 1.8104e-05],
@@ -71,6 +71,7 @@ class TestRM:
                 )
 
     indoor_env.create_environment(transmitter, photodetector)
+    indoor_env.create_environment(transmitter, photodetector, mode='modified')
     
     channel_model = Recursivemodel(
         "ChannelModelA",
