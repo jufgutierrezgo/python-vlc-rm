@@ -468,7 +468,23 @@ class Indoorenv:
             rx_cos_phi = np.dot(
                 rx_unit_vector,
                 self.normal_vectors[-1, :].T
-                )    
+                )
+                
+            tx_wall_cos_theta = np.sum(
+                np.multiply(
+                    -tx_unit_vector,
+                    self.normal_vectors
+                ),
+                axis=1
+            )
+
+            rx_wall_cos_theta = np.sum(
+                np.multiply(
+                    -rx_unit_vector,
+                    self.normal_vectors
+                ),
+                axis=1
+            )
 
             array_rx = rx_cos_phi
             low_values_flags = array_rx < np.cos(fov*np.pi/180)
@@ -476,10 +492,17 @@ class Indoorenv:
 
             array_tx = tx_cos_phi
             low_values_flags = array_tx < np.cos(90*np.pi/180)
-            array_tx[low_values_flags] = 0       
+            array_tx[low_values_flags] = 0
 
-            self.wall_parameters[0, -2, :] = tx_distance
+            self.wall_parameters[0, -2, :] = tx_distance            
             self.wall_parameters[0, -1, :] = rx_distance
+            self.wall_parameters[0, :, -2] = tx_distance
+            self.wall_parameters[0, :, -1] = rx_distance
 
             self.wall_parameters[1, -2, :] = tx_cos_phi
             self.wall_parameters[1, -1, :] = rx_cos_phi
+            self.wall_parameters[1, :, -2] = tx_wall_cos_theta
+            self.wall_parameters[1, :, -1] = rx_wall_cos_theta
+
+            # print(tx_cos_phi, rx_cos_phi)
+            # print(tx_distance, rx_distance)

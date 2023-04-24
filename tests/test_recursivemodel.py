@@ -49,7 +49,7 @@ class TestRM:
 
     photodetector = Photodetector(
             "PD2",
-            position=[0.5, 1, 0],
+            position=[0.5, 1.0, 0],
             normal=[0, 0, 1],
             area=1e-4,            
             fov=85,
@@ -80,15 +80,7 @@ class TestRM:
         )
     channel_model.simulate_channel()    
     channel_model.plot_constellation()
-    print(channel_model)
-
-    photodetector.position = np.array([0.5, 1, 0])
-    photodetector.fov = 85 
-    indoor_env.create_environment(transmitter, photodetector, mode='modified')
-    channel_model.simulate_channel()    
-    channel_model.plot_constellation()
-    print(channel_model)
-
+    print(channel_model)   
 
     def test_attributes(self):
         assert self.channel_model._led == self.transmitter
@@ -158,3 +150,19 @@ class TestRM:
             self.CRI,
             rtol=1e-4
         )
+
+    def test_modified_option(self):
+        self.photodetector.position = np.array([2.5, 2.5, 0])    
+        self.indoor_env.create_environment(
+            self.transmitter, 
+            self.photodetector, 
+            mode='modified')
+        self.channel_model.simulate_channel()            
+        print(self.channel_model)
+        
+        for channel in range(Kt.NO_LEDS):
+            assert (
+                self.channel_model.channel_dcgain[channel] > 4.67e-6 and                
+                self.channel_model.channel_dcgain[channel] < 4.68e-6 
+            )
+            
