@@ -60,6 +60,7 @@ class Recursivemodel:
         self._cri = 0
         self._cct = 0
         self._min_distance = 0
+        self._xyz = np.array((1, 3))
 
     @property
     def channel_dcgain(self):
@@ -76,6 +77,10 @@ class Recursivemodel:
     @property
     def cri(self):
         return self._cri
+
+    @property
+    def xyz(self):
+        return self._xyz
 
     @property
     def cct(self):
