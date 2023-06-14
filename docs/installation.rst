@@ -4,4 +4,4 @@ Installation
 
 At the command line::
 
-    pip install vlc-rm
+    pip install vlc-rm 
