@@ -439,7 +439,7 @@ class Recursivemodel:
         """ This function computes the received constellation using the channel matrix """
 
         self._rx_constellation = np.dot(
-            self._norm_channelmatrix,
+            self._channelmatrix,
             self._led._constellation
             )
         # print(self._led._constellation)
