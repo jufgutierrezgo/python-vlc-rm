@@ -43,7 +43,13 @@ Overview
 
 .. end-badges
 
-The package implements a recursive model to simulate a VLC system inside of rectangular empty room.
+What is VLC-RM ?
+============
+
+VLC-RM is a package designed to simulated Visible Light Communication systems 
+based on Color Shift Keying modulation inside of indoor environments. The package 
+computes the propagation for multiple light wavelengths in a rectagular empty room, from a 
+recursive model presented [1].   
 
 * Free software: BSD 3-Clause License
 
@@ -89,3 +95,9 @@ Note, to combine the coverage data from all the tox environments run:
       - ::
 
             PYTEST_ADDOPTS=--cov-append tox
+
+References
+===========
+
+[1] Barry, J. R., Kahn, J. M., Krause, W. J., Lee, E. A., & Messerschmitt, D. G. (1993). 
+Simulation of multipath impulse response for indoor wireless optical channels. IEEE journal on selected areas in communications, 11(3), 367-379.
