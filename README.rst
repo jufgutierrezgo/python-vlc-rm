@@ -56,15 +56,25 @@ color detectors, and the room's walls reflectance at central wavelengths.
 
 VLC-RM is composed of 5 modules:
 
-#. Transmitter module:
+* Transmitter module: 
+    The module has a set of attributes to define the LED-based transmitter characteristics:
+    * Name
+    * Position
+    * Normal vector
+    * Central wavelengths
+    * Full width at half maximum
+    * Number of Lambertian radiator
+    * Luminous flux
+    * Luminous efficacy of radiation
+    * Average power per channel
 
-#. Photodetector module:
+* Photodetector module:
 
-#. Room module:
+* Indoor Environment module:
 
-#. Recursive-model module:
+* Recursive Model module:
 
-#. Symbols Error Rate module: 
+* Symbols-Error-Rate (SER) module: 
 
 
 
