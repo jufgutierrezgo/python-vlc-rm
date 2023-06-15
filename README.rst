@@ -46,10 +46,28 @@ Overview
 What is VLC-RM ?
 ============
 
-VLC-RM is a package designed to simulated Visible Light Communication systems 
+VLC-RM is a package designed to simulated Visible Light Communication (VLC) systems 
 based on Color Shift Keying modulation inside of indoor environments. The package 
-computes the propagation for multiple light wavelengths in a rectagular empty room, from a 
-recursive model presented [1].   
+computes the light propagation for multiple wavelengths in a rectagular empty room. From a 
+modified version of the Recursive Model (RM) presented [1], this package reports 
+the DC gain at each central wavelengths. To compute this propagation, VLC-RM considers 
+the spectral power distribution of multiple LEDs, the spectral response of the multiple 
+color detectors, and the room's walls reflectance at central wavelengths. 
+
+VLC-RM is composed of 5 modules:
+
+#. Transmitter module:
+
+#. Photodetector module:
+
+#. Room module:
+
+#. Recursive-model module:
+
+#. Symbols Error Rate module: 
+
+
+
 
 * Free software: BSD 3-Clause License
 
