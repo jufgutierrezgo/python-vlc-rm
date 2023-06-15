@@ -80,8 +80,7 @@ VLC-RM is composed of 5 modules:
     | ├── String representation of the object
 
 * Photodetector module:
-    The module has a set of attributes to define the photodetector characteristics.
-    The photodetector plots 
+    The module has a set of attributes to define the photodetector characteristics.    
 
     | Properties:    
     | ├── Name 
@@ -100,8 +99,8 @@ VLC-RM is composed of 5 modules:
 * Indoor Environment module:
     The module has a set of attributes to define the empty rectangular room where the
     light wave propagates. The module calculates a grid of points to discretize the surface of 
-    walls into square smaller areas. It alsa computes the pairwise distance and the cosine angle between 
-    grid of points.   
+    walls into square smaller areas. It also computes the pairwise distance and the cosine angle between 
+    the points of the grid.   
 
     | Properties:    
     | ├── Name 
@@ -111,10 +110,34 @@ VLC-RM is composed of 5 modules:
     | ├── Number of reflection order.
     |
     | Functions:    
-    | ├── Create grid and pairwaise parameters
+    | ├── Create grid 
+    | ├── Compute pirwise parameters 
     | ├── String representation of the object
-    
+
 * Recursive Model module:
+    The module has a set of attributes to execute a recursive algorithm by gettig a DC gain 
+    at each central wavelength, and the minimum distance of the constellation. 
+    Based on DC gain computation, the interchannel interferce of the 
+    CSK-VLC system is estimated, as well as lighting parameters. The recursive model assummes 
+    that room's walls are perfect diffusse reflectors and a transmitter a point light source.
+    
+    | Properties:    
+    | ├── Name 
+    | ├── DC gain at central wavelengths
+    | ├── Interchannel interference matrix
+    | ├── Minimum distance
+    | ├── Lighting parameters at detector position  
+    |       ├── Illuminance
+    |       ├── Correlated color temperature
+    |       ├── Color rendering index
+    |       ├── CIExy coordinates
+    |
+    | Functions:    
+    | ├── Simulate channel
+    | ├── Print DC gain at each reflection order
+    | ├── Print DC gain at each central wavelength
+    | ├── String representation of the object
+
 
 * Symbols-Error-Rate (SER) module: 
 
