@@ -58,8 +58,10 @@ VLC-RM is composed of 5 modules:
 
 * Transmitter module: 
     The module has a set of attributes to define the LED-based transmitter characteristics.
+    The module computes the spectral power distribution assuming a gaussian shape, and the 
+    spatial intensity distribution according to a Lambertian radiator.
 
-    | Attributes:    
+    | Properties:    
     | ├── Name 
     | ├── Position 
     | ├── Normal vector 
@@ -69,8 +71,30 @@ VLC-RM is composed of 5 modules:
     | ├── Luminous flux 
     | ├── Luminous efficacy of radiation 
     | ├── Average power per channel 
+    | ├── Spectral power distribution 
+
+    | Functions:    
+    | ├── Plot spatial distribution
+    | ├── Plot SPD at 1 lumen
+    | ├── Plot normalized SPD
+    | ├── Print string representation of the object
 
 * Photodetector module:
+    The module has a set of attributes to define the photodetector characteristics.
+    The photodetector plots 
+
+    | Attributes:    
+    | ├── Name 
+    | ├── Position 
+    | ├── Normal vector 
+    | ├── Active area 
+    | ├── Full width at half maximum 
+    | ├── Spectral responsivity
+    | ├── Field of view
+    | ├── Dark current
+    
+    | Functions:    
+    | ├── Plot spectral responsivity
 
 * Indoor Environment module:
 
