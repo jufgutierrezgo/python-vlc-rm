@@ -72,18 +72,18 @@ VLC-RM is composed of 5 modules:
     | ├── Luminous efficacy of radiation 
     | ├── Average power per channel 
     | ├── Spectral power distribution 
-
+    |
     | Functions:    
     | ├── Plot spatial distribution
     | ├── Plot SPD at 1 lumen
     | ├── Plot normalized SPD
-    | ├── Print string representation of the object
+    | ├── String representation of the object
 
 * Photodetector module:
     The module has a set of attributes to define the photodetector characteristics.
     The photodetector plots 
 
-    | Attributes:    
+    | Properties:    
     | ├── Name 
     | ├── Position 
     | ├── Normal vector 
@@ -92,12 +92,28 @@ VLC-RM is composed of 5 modules:
     | ├── Spectral responsivity
     | ├── Field of view
     | ├── Dark current
-    
+    |
     | Functions:    
     | ├── Plot spectral responsivity
+    | ├── String representation of the object
 
 * Indoor Environment module:
+    The module has a set of attributes to define the empty rectangular room where the
+    light wave propagates. The module calculates a grid of points to discretize the surface of 
+    walls into square smaller areas. It alsa computes the pairwise distance and the cosine angle between 
+    grid of points.   
 
+    | Properties:    
+    | ├── Name 
+    | ├── Size of the room
+    | ├── Resolution for grid of points
+    | ├── Reflectace at each wall at central wavelengths
+    | ├── Number of reflection order.
+    |
+    | Functions:    
+    | ├── Create grid and pairwaise parameters
+    | ├── String representation of the object
+    
 * Recursive Model module:
 
 * Symbols-Error-Rate (SER) module: 
