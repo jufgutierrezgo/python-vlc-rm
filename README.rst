@@ -77,7 +77,7 @@ VLC-RM is composed of 5 modules:
     | ├── Plot spatial distribution
     | ├── Plot SPD at 1 lumen
     | ├── Plot normalized SPD
-    | ├── String representation of the object
+    | ├── Print properties
 
 * Photodetector module:
     The module has a set of attributes to define the photodetector characteristics.    
@@ -94,7 +94,7 @@ VLC-RM is composed of 5 modules:
     |
     | Functions:    
     | ├── Plot spectral responsivity
-    | ├── String representation of the object
+    | ├── Print properties
 
 * Indoor Environment module:
     The module has a set of attributes to define the empty rectangular room where the
@@ -112,7 +112,7 @@ VLC-RM is composed of 5 modules:
     | Functions:    
     | ├── Create grid 
     | ├── Compute pirwise parameters 
-    | ├── String representation of the object
+    | ├── Print properties
 
 * Recursive Model module:
     The module has a set of attributes to execute a recursive algorithm by gettig a DC gain 
@@ -136,12 +136,26 @@ VLC-RM is composed of 5 modules:
     | ├── Simulate channel
     | ├── Print DC gain at each reflection order
     | ├── Print DC gain at each central wavelength
-    | ├── String representation of the object
+    | ├── Plot the receive constellation
+    | ├── Print properties
 
 
 * Symbols-Error-Rate (SER) module: 
+    The module has a set of attributes to simulated a transmission of CSK symbols 
+    through an AWGN channel. Using the interchannel interference matrix estimated 
+    with the Recursive Model module, this module computes the received symbols in the current space, 
+    adds gaussian noise and calculates the symbols error rate of the tranmission.  
 
-
+    | Properties:    
+    | ├── Name 
+    | ├── Number of symbols to transmit
+    | ├── Symbol error rate
+    |
+    | Functions:    
+    | ├── Computes symbol error rate
+    | ├── Plot symbol error rate vs. transmitter's luminous flux 
+    | ├── Save data to file
+    
 
 
 * Free software: BSD 3-Clause License
