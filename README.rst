@@ -60,15 +60,15 @@ VLC-RM is composed of 5 modules:
     The module has a set of attributes to define the LED-based transmitter characteristics.
 
     Attributes:    
-        ├── Name
-        ├── Position
-        ├── Normal vector
-        ├── Central wavelengths
-        ├── Full width at half maximum
-        ├── Number of Lambertian radiator
-        ├── Luminous flux
-        ├── Luminous efficacy of radiation
-        ├── Average power per channel
+        ├── Name \
+        ├── Position \
+        ├── Normal vector \
+        ├── Central wavelengths \
+        ├── Full width at half maximum \
+        ├── Number of Lambertian radiator \
+        ├── Luminous flux \
+        ├── Luminous efficacy of radiation \
+        ├── Average power per channel \
 
 * Photodetector module:
 
