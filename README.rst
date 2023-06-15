@@ -52,109 +52,22 @@ computes the light propagation for multiple wavelengths in a rectagular empty ro
 modified version of the Recursive Model (RM) presented [1], this package reports 
 the DC gain at each central wavelengths. To compute this propagation, VLC-RM considers 
 the spectral power distribution of multiple LEDs, the spectral response of the multiple 
-color detectors, and the room's walls reflectance at central wavelengths. 
-
-VLC-RM is composed of 5 modules:
-
-* Transmitter module: 
-    The module has a set of attributes to define the LED-based transmitter characteristics.
-    The module computes the spectral power distribution assuming a gaussian shape, and the 
-    spatial intensity distribution according to a Lambertian radiator.
-
-    | Properties:    
-    | ├── Name 
-    | ├── Position 
-    | ├── Normal vector 
-    | ├── Central wavelengths 
-    | ├── Full width at half maximum 
-    | ├── Number of Lambertian radiator 
-    | ├── Luminous flux 
-    | ├── Luminous efficacy of radiation 
-    | ├── Average power per channel 
-    | ├── Spectral power distribution 
-    |
-    | Functions:    
-    | ├── Plot spatial distribution
-    | ├── Plot SPD at 1 lumen
-    | ├── Plot normalized SPD
-    | ├── Print properties
-
-* Photodetector module:
-    The module has a set of attributes to define the photodetector characteristics.    
-
-    | Properties:    
-    | ├── Name 
-    | ├── Position 
-    | ├── Normal vector 
-    | ├── Active area 
-    | ├── Full width at half maximum 
-    | ├── Spectral responsivity
-    | ├── Field of view
-    | ├── Dark current
-    |
-    | Functions:    
-    | ├── Plot spectral responsivity
-    | ├── Print properties
-
-* Indoor Environment module:
-    The module has a set of attributes to define the empty rectangular room where the
-    light wave propagates. The module calculates a grid of points to discretize the surface of 
-    walls into square smaller areas. It also computes the pairwise distance and the cosine angle between 
-    the points of the grid.   
-
-    | Properties:    
-    | ├── Name 
-    | ├── Size of the room
-    | ├── Resolution for grid of points
-    | ├── Reflectace at each wall at central wavelengths
-    | ├── Number of reflection order.
-    |
-    | Functions:    
-    | ├── Create grid 
-    | ├── Compute pirwise parameters 
-    | ├── Print properties
-
-* Recursive Model module:
-    The module has a set of attributes to execute a recursive algorithm by gettig a DC gain 
-    at each central wavelength, and the minimum distance of the constellation. 
-    Based on DC gain computation, the interchannel interferce of the 
-    CSK-VLC system is estimated, as well as lighting parameters. The recursive model assummes 
-    that room's walls are perfect diffusse reflectors and a transmitter a point light source.
-    
-    | Properties:    
-    | ├── Name 
-    | ├── DC gain at central wavelengths
-    | ├── Interchannel interference matrix
-    | ├── Minimum distance
-    | ├── Lighting parameters at detector position  
-    |       ├── Illuminance
-    |       ├── Correlated color temperature
-    |       ├── Color rendering index
-    |       ├── CIExy coordinates
-    |
-    | Functions:    
-    | ├── Simulate channel
-    | ├── Print DC gain at each reflection order
-    | ├── Print DC gain at each central wavelength
-    | ├── Plot the receive constellation
-    | ├── Print properties
+color detectors, and the room's walls reflectance at central wavelengths. The spectral power 
+distribution emitted at LED-based transmitter is assumed as a gaussian shape, and the     
+spatial intensity distribution is assumed as a Lambertian radiator. A grid of points is 
+used to discretize the room's walls into square smaller areas. 
 
 
-* Symbols-Error-Rate (SER) module: 
-    The module has a set of attributes to simulated a transmission of CSK symbols 
-    through an AWGN channel. Using the interchannel interference matrix estimated 
-    with the Recursive Model module, this module computes the received symbols in the current space, 
-    adds gaussian noise and calculates the symbols error rate of the tranmission.  
+The package runs a recursive algorithm by gettig a DC gain 
+at each central wavelength, and the minimum distance of the constellation. 
+Based on DC gain computation, the interchannel interferce of the 
+CSK-VLC system is estimated, as well as lighting parameters. The recursive algorithm assummes 
+that room's walls are perfect diffusse reflectors and the transmitter is a point light source
+The package simulates a transmission of CSK symbols 
+through an AWGN channel. Using the interchannel interference matrix estimated 
+with the recursive algorithm, the received symbols in the current space can be computed, 
+by adding gaussian noise and calculates the symbols error rate of the tranmission.  
 
-    | Properties:    
-    | ├── Name 
-    | ├── Number of symbols to transmit
-    | ├── Symbol error rate
-    |
-    | Functions:    
-    | ├── Computes symbol error rate
-    | ├── Plot symbol error rate vs. transmitter's luminous flux 
-    | ├── Save data to file
     
 
 
