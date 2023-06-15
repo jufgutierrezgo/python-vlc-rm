@@ -56,7 +56,8 @@ color detectors, and the room's walls reflectance at central wavelengths.
 
 VLC-RM is composed of 5 modules:
 
-* Transmitter module: The module has a set of attributes to define the LED-based transmitter characteristics.    
+* Transmitter module: 
+The module has a set of attributes to define the LED-based transmitter characteristics.    
     * Name
     * Position
     * Normal vector
