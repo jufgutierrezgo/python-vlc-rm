@@ -1,14 +1,16 @@
-[build-system]
-requires = [
-    "setuptools>=30.3.0",
-    "wheel",
-    "setuptools_scm>=3.3.1",
-    "numpy>=1.23.3",
+[project]
+name = "vlc_rm"
+version = "0.0.1"
+
+dependencies = [
+	"numpy>=1.23.3",
     "luxpy>=1.9.8",
     "scipy>=1.9.3"
 ]
 
-[tool.blue]
-line-length = 140
-target-version = ['py37']
-skip-string-normalization = true
+[build-system]
+requires = [
+    "setuptools>=30.3.0",
+    "wheel",
+    "setuptools_scm>=3.3.1"    
+]
