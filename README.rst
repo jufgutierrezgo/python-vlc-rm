@@ -59,7 +59,7 @@ VLC-RM is composed of 5 modules:
 * Transmitter module: 
     The module has a set of attributes to define the LED-based transmitter characteristics.
 
-    Attributes:    
+    | Attributes:    
     | ├── Name 
     | ├── Position 
     | ├── Normal vector 
