@@ -81,7 +81,32 @@ You can also install the in-development version with::
 An example of VLC simualtion
 ============================
 
-In this example is described VLC-RM package usage. 
+This example describes the usage of the VLC-RM package for characterizing a VLC system 
+based on IEEE 16-CSK modulation within an empty rectangular space. The modulation 
+is defined in [2]. 
+
+Defining basic elements
+------------------------
+
+The VLC system is composed by three elements: the LED-based transmitter, the photodetector, 
+and the indoor environment (empty rectangular room). To defined the LED-based transmitter 
+is used the transmitter-module. The module must be imported and creating a transmitter-type object:
+
+.. code-block:: python
+
+    # Import Transmitter
+    from vlc_rm.transmitter import Transmitter
+
+    transmitter = Transmitter(
+            "Led1",
+            position=[2.5, 2.5, 3],
+            normal=[0, 0, -1],
+            mlambert=1,
+            wavelengths=[620, 530, 475],
+            fwhm=[20, 30, 20],
+            modulation='ieee16',
+            luminous_flux=5000
+                    )
 
 Documentation
 =============
@@ -119,3 +144,7 @@ References
 
 [1] Barry, J. R., Kahn, J. M., Krause, W. J., Lee, E. A., & Messerschmitt, D. G. (1993). 
 Simulation of multipath impulse response for indoor wireless optical channels. IEEE journal on selected areas in communications, 11(3), 367-379.
+
+[2] IEEE Standards Association. (2019). IEEE Standard for Local and metropolitan area networks—Part 15.7: 
+Short-Range Optical Wireless Communications (IEEE Std 802.15.7-2018, Revision of IEEE Std 802.15.7-2011) (pp. 1-407). 
+https://ieeexplore.ieee.org/document/8697198
