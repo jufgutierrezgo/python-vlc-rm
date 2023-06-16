@@ -78,7 +78,7 @@ You can also install the in-development version with::
 
 
 
-An example of VLC simualtion
+An example of a VLC simulation
 ============================
 
 This example describes the usage of the VLC-RM package for characterizing a VLC system 
@@ -90,13 +90,15 @@ Defining basic elements
 
 The VLC system is composed by three elements: the LED-based transmitter, the photodetector, 
 and the indoor environment (empty rectangular room). To defined the LED-based transmitter 
-is used the transmitter-module. The module must be imported and creating a transmitter-type object:
+is used the transmitter-module. The module must be imported and creating a transmitter-type object 
+as follows:
 
 .. code-block:: python
 
     # Import Transmitter
     from vlc_rm.transmitter import Transmitter
 
+    # Create a transmitter-type object 
     transmitter = Transmitter(
             "Led1",
             position=[2.5, 2.5, 3],
@@ -107,6 +109,11 @@ is used the transmitter-module. The module must be imported and creating a trans
             modulation='ieee16',
             luminous_flux=5000
                     )
+
+'transmitter' object is defined from seven parameters. The position and normal are defined by the 
+3D-cartesian coordinates. Three central wavelengths (in nanometers) are fixed as '[620, 530, 475]', 
+which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The full width at half maximum 
+for each color LED are fixed '[20, 30, 20]'.  
 
 Documentation
 =============
