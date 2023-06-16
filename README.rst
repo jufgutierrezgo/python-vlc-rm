@@ -44,31 +44,23 @@ Overview
 .. end-badges
 
 What is VLC-RM ?
-============
+================
 
-VLC-RM is a package designed to simulated Visible Light Communication (VLC) systems 
-based on Color Shift Keying modulation inside of indoor environments. The package 
-computes the light propagation for multiple wavelengths in a rectagular empty room. From a 
-modified version of the Recursive Model (RM) presented [1], this package reports 
-the DC gain at each central wavelengths. To compute this propagation, VLC-RM considers 
-the spectral power distribution of multiple LEDs, the spectral response of the multiple 
-color detectors, and the room's walls reflectance at central wavelengths. The spectral power 
-distribution emitted at LED-based transmitter is assumed as a gaussian shape, and the     
-spatial intensity distribution is assumed as a Lambertian radiator. A grid of points is 
-used to discretize the room's walls into square smaller areas. 
+VLC-RM is a package designed to simulate Visible Light Communication (VLC) systems based on Color Shift Keying 
+modulation within indoor environments. The package calculates the propagation of light for multiple wavelengths 
+in a rectangular empty room. Building upon a modified version of the Recursive Model (RM) presented in [1], 
+this package provides the DC gain at each central wavelength. In order to compute this propagation, VLC-RM 
+takes into account the spectral power distribution of multiple LEDs, the spectral response of the multiple 
+color detectors, and the reflectance of the room's walls at central wavelengths. The spectral power distribution 
+emitted by the LED-based transmitter is assumed to have a Gaussian shape, and the spatial intensity distribution 
+is assumed to be a Lambertian radiator. A grid of points is used to discretize the room's walls into smaller square areas.
 
-
-The package runs a recursive algorithm by gettig a DC gain 
-at each central wavelength, and the minimum distance of the constellation. 
-Based on DC gain computation, the interchannel interferce of the 
-CSK-VLC system is estimated, as well as lighting parameters. The recursive algorithm assummes 
-that room's walls are perfect diffusse reflectors and the transmitter is a point light source
-The package simulates a transmission of CSK symbols 
-through an AWGN channel. Using the interchannel interference matrix estimated 
-with the recursive algorithm, the received symbols in the current space can be computed, 
-by adding gaussian noise and calculates the symbols error rate of the tranmission.  
-
-    
+The package executes a recursive algorithm to obtain the DC gain at each central wavelength and the minimum 
+distance of the constellation. Based on the computation of the DC gain, the interchannel interference of the CSK-VLC 
+system is estimated, along with the lighting parameters. The recursive algorithm assumes that the room's walls are 
+perfect diffuse reflectors and that the transmitter is a point light source. The package simulates the transmission 
+of CSK symbols through an Additive White Gaussian Noise (AWGN) channel. The received symbols are computed in the 
+photodetected current space using the interchannel interference matrix and adding a gaussian noise.     
 
 
 * Free software: BSD 3-Clause License
@@ -84,6 +76,12 @@ You can also install the in-development version with::
 
     pip install https://github.com/jufgutierrezgo/python-vlc-rm/archive/main.zip
 
+
+
+An example of VLC simualtion
+============================
+
+In this example is described VLC-RM package usage. 
 
 Documentation
 =============
