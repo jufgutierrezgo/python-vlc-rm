@@ -89,9 +89,9 @@ class Photodetector:
 
     @normal.setter
     def normal(self, normal):
-        self._normal = np.array(normal)
+        self._normal = np.array([normal], dtype=np.float32)
         if self._normal.size != 3:
-            raise ValueError("Normal must be a 3d-numpy array.")        
+            raise ValueError("Normal must be an 1d-numpy array [x y z].")
 
     @property
     def area(self) -> float:

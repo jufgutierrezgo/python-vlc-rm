@@ -13,6 +13,12 @@ class Transmitter:
     This class defines the transmitter features
     """
 
+    CSK_LIST = {
+        'ieee16',
+        'ieee8',
+        'ieee4'
+        }
+
     def __init__(
         self,
         name: str,
@@ -186,6 +192,14 @@ class Transmitter:
             f'Total Power emmited by the Transmitter [W]: \n {self._total_power} \n'
             
         )
+    
+    def list_csk(self) -> None:
+        """ Function to print the list of Color Shift Keying modulation formats."""
+        
+        print("List of CSK modulations:")
+        print(self.CSK_LIST)
+
+
 
     def plot_spatial_distribution(self) -> None:
         """Function to create a 3d radiation pattern of the LED source.

@@ -113,7 +113,10 @@ as follows:
 'transmitter' object is defined from seven parameters. The position and normal are defined by the 
 3D-cartesian coordinates. Three central wavelengths (in nanometers) are fixed as **[620, 530, 475]**, 
 which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The full width at half maximum 
-for each color LED is fixed as **[20, 30, 20]**.  
+(in nanometers) for each color LED is fixed as **[20, 30, 20]**. The modulation parameter defines the type of CSK modulation 
+that can be simulated. Modulation parameter is 'ieee16' as default. The luminous_flux (in Lumens) defines the average luminous flux emmited by
+the transmitter.
+
 
 Documentation
 =============
