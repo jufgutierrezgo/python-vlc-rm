@@ -79,14 +79,14 @@ You can also install the in-development version with::
 
 
 An example of a VLC simulation
-============================
+===============================
 
 This example describes the usage of the VLC-RM package for characterizing a VLC system 
 based on IEEE 16-CSK modulation within an empty rectangular space. The modulation 
 is defined in [2]. 
 
-Defining basic elements
-------------------------
+Defining the VLC transmitter
+----------------------------
 
 The VLC system is composed by three elements: the LED-based transmitter, the photodetector, 
 and the indoor environment (empty rectangular room). To defined the LED-based transmitter 
@@ -112,10 +112,84 @@ as follows:
 
 'transmitter' object is defined from seven parameters. The position and normal are defined by the 
 3D-cartesian coordinates. Three central wavelengths (in nanometers) are fixed as **[620, 530, 475]**, 
-which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The full width at half maximum 
-(in nanometers) for each color LED is fixed as **[20, 30, 20]**. The modulation parameter defines the type of CSK modulation 
-that can be simulated. Modulation parameter is 'ieee16' as default. The luminous_flux (in Lumens) defines the average luminous flux emmited by
-the transmitter.
+which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The full 
+width at half maximum (in nanometers) for each color LED is fixed as **[20, 30, 20]**. The modulation 
+parameter defines the type of CSK modulation that can be simulated. Modulation parameter is 'ieee16' 
+as default. The luminous_flux (in Lumens) defines the average luminous flux emmited by the transmitter.
+After defining the 'transmitter' module, the string representation of the object can be realized as follows:  
+
+.. code-block:: python
+    
+    # Print the 'transmitter' object
+    print(transmitter)
+    
+
+which produces an output similar to::
+
+    List of parameters for LED transmitter: 
+    Name: Led1
+    Position [x y z]: [2.5000e+00 2.5000e+00 3.0000e+00] 
+    Normal Vector [x y z]: [[0.0000e+00 0.0000e+00 -1.0000e+00]] 
+    Lambert Number: 1.0 
+    Central Wavelengths [nm]: [6.2000e+02 5.3000e+02 4.7500e+02] 
+    FWHM [nm]: [2.0000e+01 3.0000e+01 2.0000e+01]
+    Luminous Flux [lm]: 5000.0
+    ILER [W/lm]: 
+    [[3.8001e-03 0.0000e+00 0.0000e+00]
+    [0.0000e+00 1.8197e-03 0.0000e+00]
+    [0.0000e+00 0.0000e+00 1.1960e-02]] 
+    Average Power per Channel Color: 
+    [6.3336e+00 3.0328e+00 1.9934e+01] 
+    Total Power emmited by the Transmitter [W]: 
+    29.30032767693627 
+
+The spectral power distribution of the LED-transmitter according to the central wavelengths,
+the FWDM, and the luminous flux can be plotted with:
+
+.. code-block:: python
+    
+    # Plot the normalized spectral power distribution 
+    transmitter.plot_spd_normalized()
+    
+The output image is:
+
+.. image:: images_example/spd_norm.png
+
+'transmitter' object is defined from seven parameters. The **position** and **normal** parameters are defined by the 
+3D-cartesian coordinates. It means that the transmitter will be located in the *[x=2.5, y=2.5, z=3]*.
+Through the wavelengths parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, 
+which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The **fwhm** parameter set 
+full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation**
+parameter defines the type of CSK modulation that can be simulated. **modulation** parameter is 'ieee16' 
+as default. The **luminous_flux** (in Lumens) defines the average luminous flux emmited by the transmitter.
+After defining the 'transmitter' module, the string representation of the object can be realized as follows:  
+
+
+Defining the VLC photodetector
+------------------------------
+
+To defined the photodetector is used the photodetector-module. The module must be imported 
+and creating a photodetector-type object as follows:
+
+.. code-block:: python
+
+    pd = Photodetector(
+        "PD1",
+        position=[1.5, 1.5, 0.85],
+        normal=[0, 0, 1],
+        area=(1e-6)/3,
+        #area=1e-4,
+        fov=85,
+        sensor='S10917-35GT',
+        idark=1e-12
+                )
+
+'photodetector' object is defined from six parameters. The **photodetector's position**
+is defined at the 3D-cartesian coordinate equal to *[x=1.5, y=1.5, z=0.85]*, and a normal 
+vector equal to *[0, 0, 1]*. The **area** parameter is configured equal to *(1e-6)/3* 
+(square meters), and it represents the active area of the photodetector. The **field-of-view** 
+parameter defines the solid angle through which a detector is sensitive, and for this example is 85.  
+
 
 
 Documentation
