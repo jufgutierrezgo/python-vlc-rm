@@ -184,12 +184,15 @@ and creating a photodetector-type object as follows:
         idark=1e-12
                 )
 
-'photodetector' object is defined from six parameters. The **photodetector's position**
-is defined at the 3D-cartesian coordinate equal to *[x=1.5, y=1.5, z=0.85]*, and a normal 
-vector equal to *[0, 0, 1]*. The **area** parameter is configured equal to *(1e-6)/3* 
-(square meters), and it represents the active area of the photodetector. The **field-of-view** 
-parameter defines the solid angle through which a detector is sensitive, and for this example is 85.  
-
+'photodetector' object is defined from six parameters. The photodetector's position 
+is defined in the 3D-cartesian coordinate equal to *[x=1.5, y=1.5, z=0.85]*, and a normal 
+vector equal to **[0, 0, 1]**. The area parameter is configured the active area 
+(in square meters) at the detector equal to *(1e-6)/3*. The **fov** parameter represents the 
+field-of-view of the photodetector in degrees, and it is setted at *85*. The **sensor** parameter 
+is defined as the reference of the sensor that are available in the package. According to the sensor's
+reference is the spectral response of the photodetector. The **idark** parameter defines the dark current
+(in Amperes) of the photodetector. This current is setted as *1e-12*. 
+To get the string representation of the object can be realized as follows:   
 
 
 Documentation

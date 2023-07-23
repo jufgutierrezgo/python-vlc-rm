@@ -327,14 +327,14 @@ class Transmitter:
                     self._constellation,
                     axis=1
                     )
-        self._avg_power = np.transpose(
+        self._avg_power = self._luminous_flux*np.transpose(
             np.matmul(
                 self._iler_matrix,
                 self._avg_lm
                 )
             )
 
-        self._total_power = self._luminous_flux*np.sum(self._avg_power)
+        self._total_power = np.sum(self._avg_power)
         # Manual setted of avg_power by each color channels
         #self._avg_power = np.array([1, 1, 1])
 
