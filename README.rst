@@ -184,15 +184,161 @@ and creating a photodetector-type object as follows:
         idark=1e-12
                 )
 
-'photodetector' object is defined from six parameters. The photodetector's position 
-is defined in the 3D-cartesian coordinate equal to *[x=1.5, y=1.5, z=0.85]*, and a normal 
-vector equal to **[0, 0, 1]**. The area parameter is configured the active area 
-(in square meters) at the detector equal to *(1e-6)/3*. The **fov** parameter represents the 
-field-of-view of the photodetector in degrees, and it is setted at *85*. The **sensor** parameter 
-is defined as the reference of the sensor that are available in the package. According to the sensor's
-reference is the spectral response of the photodetector. The **idark** parameter defines the dark current
-(in Amperes) of the photodetector. This current is setted as *1e-12*. 
-To get the string representation of the object can be realized as follows:   
+
+'photodetector' object is defined from six parameters. The **photodetector's position**
+is defined at the 3D-cartesian coordinate equal to *[x=0.5, y=1.0, z=0.85]*, and a normal 
+vector equal to *[0, 0, 1]*. The **area** parameter is configured equal to *(1e-6)/3* 
+(square meters), and it represents the active area of the photodetector. The **field-of-view** 
+parameter defines the solid angle through which a detector is sensitive, and for this example it is 85.  
+The **sensor** parameter represents the detector reference which defines the spectral responsivity of 
+the optical-to-electrical conversion. Getting the available sensor list by using  
+the next command:
+
+.. code-block:: python
+
+    pd.list_sensors()
+
+The **idark** parameter defines the dark current of the photodetector and it is setted as
+**1e-12**. After defining the 'transmitter' module, the string representation of 
+the object can be realized as follows:
+
+After defining the 'photodetetor' module, the string representation of the object can be realized as follows:  
+
+.. code-block:: python
+    
+    # Print the 'transmitter' object
+    print(pd)
+    
+
+which produces an output similar to::
+
+    List of parameters for photodetector PD1: 
+    Name: PD1 
+    Position [x y z]: [1.5000e+00 1.5000e+00 8.5000e-01] 
+    Normal Vector [x y z]: [[0.0000e+00 0.0000e+00 1.0000e+00]] 
+    Active Area[m2]: 3.3333333249174757e-07 
+    FOV: 85.0 
+    Sensor: S10917-35GT
+
+
+The spectral responsivity of the photodetector can be plotted as:
+
+.. code-block:: python
+    
+    # Plot the normalized spectral power distribution 
+    pd.plot_responsivity()
+   
+The output image is:
+
+.. image:: images_example/responsivity.png
+
+Defining the VLC Indoor Environment
+-----------------------------------
+
+The indoor space for VLC is defined by using the 'IndoorEnv' module. The **size** parameter (in meters)
+specifies the length, width, and height of the rectangular room. This parameter is defined 
+as the three dimmensional array **[5, 5, 3]**. The **no_reflections** 
+parameter specifies the order of reflection to compute the lighting parameters and 
+the interchannel interference. The package support from 0-order to 10-order of reflection. 
+The reflectance  at the central wavelengths of each wall can be defined. 
+The **resolution** parameter (in meters) determines the length 
+of the smaller square areas. The accuracy of the model depends on the resolution.  
+
+.. code-block:: python
+
+    room = Indoorenv(
+        "Room",
+        size=[5, 5, 3],
+        no_reflections=10,
+        resolution=1/8,
+        ceiling=[0.82, 0.71, 0.64],
+        west=[0.82, 0.71, 0.64],
+        north=[0.82, 0.71, 0.64],
+        east=[0.82, 0.71, 0.64],
+        south=[0.82, 0.71, 0.64],
+        floor=[0.635, 0.61, 0.58]
+            )
+
+
+The 'create_environment()' method  is used to create a grid 
+of points and two pairwise parameters of the indoor environment [Article Reference].
+
+.. code-block:: python
+
+    room.create_environment()
+
+if this method computes the grid and pairwise parameters correctly, it 
+produces an output similar to ::
+
+
+    Creating parameters of indoor environment ...
+    Parameters created!
+
+
+Simulate the indoor VLC system
+------------------------------
+
+The simulation of the indoor CSK-based VLC is carried out by the 'RecursiveModel' module, which is defined as following.
+
+.. code-block:: python
+
+    # Define Channel Model
+    channel_model = Recursivemodel(
+        "ChannelModelA",
+        transmitter,
+        pd,
+        room
+        )
+
+the 'channel_model' is an object that is defined from the **transmitter**, **pd**, and **room** objects. The 
+channel simulation is executed through the 'simulate_channel()' method.
+
+
+.. code-block:: python
+    
+    # Simulate indoor channel
+    channel_model.simulate_channel()    
+
+if this method simulates succesfully, it produces an output similar to ::
+
+    Creating parameters of indoor environment ...
+    Parameters created!
+
+
+To Get the simulation results can be used the print function:
+
+.. code-block:: python
+
+    # Print results of the simualtion
+    print(channel_model)   
+
+obtaining an output similar to::
+
+    |=============== Simulation results ================|
+    Name: ChannelModelA 
+    DC-Gain with respect to 1-W [W]: 
+    [2.0109e-08 1.7362e-08 1.6087e-08] 
+    Crosstalk Matrix at 5000.0-lm: 
+    [[2.0059e-08 3.6404e-12 1.0877e-12]
+    [3.0197e-10 1.0295e-08 4.6459e-09]
+    [1.0395e-10 1.6943e-09 6.0081e-08]] 
+    Lighting Parameters at 5000.0-lm 
+    Illuminance [lx]: [[2.6779e+02]] 
+    CIExyz: [[2.5761e-01 2.0534e-01 5.3705e-01]] 
+    CCT: [[-3.8226e+06]] 
+    CRI: [[1.4296e+01]] 
+    Min-Distance: 6.914522683100047e-09 
+
+
+The VLC-RM package reports the radiometric power received at the photodetector
+when each LED radiates 1 W. The Crosstalk matrix at the luminous flux is reported.
+This matrix related the transmitted symbols represented in the luminous flux space,
+and the received symbols represented in the current space. The minimum distance 
+is reported according to the Crosstalk matrix, and the constellation 
+at the transmitter. The illuminance, the CIE color coordinates, 
+and the color rendering index. The VLR-RM uses the Luxpy Python package (https://pypi.org/project/luxpy/) 
+to computes  phometric and colorimetric indexes.
+
 
 
 Documentation
