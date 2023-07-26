@@ -77,21 +77,18 @@ You can also install the in-development version with::
     pip install https://github.com/jufgutierrezgo/python-vlc-rm/archive/main.zip
 
 
-
 An example of a VLC simulation
 ===============================
 
-This example describes the usage of the VLC-RM package for characterizing a VLC system 
-based on IEEE 16-CSK modulation within an empty rectangular space. The modulation 
+This example describes the usage of the VLC-RM package for characterizing a VLC system based on IEEE 16-CSK modulation within an empty rectangular space. The modulation 
 is defined in [2]. 
 
 Defining the VLC transmitter
 ----------------------------
 
-The VLC system is composed by three elements: the LED-based transmitter, the photodetector, 
-and the indoor environment (empty rectangular room). To defined the LED-based transmitter 
-is used the transmitter-module. The module must be imported and creating a transmitter-type object 
-as follows:
+The VLC system is composed of three elements: the LED-based transmitter, the photodetector, and the indoor environment (empty rectangular room). To define the transmitter of the VLC system
+is used the transmitter-module. The module must be imported,   and then a transmitter-type object 
+is created as follows:
 
 .. code-block:: python
 
@@ -110,12 +107,13 @@ as follows:
             luminous_flux=5000
                     )
 
-'transmitter' object is defined from seven parameters. The position and normal are defined by the 
-3D-cartesian coordinates. Three central wavelengths (in nanometers) are fixed as **[620, 530, 475]**, 
+'transmitter' object is defined from seven parameters. The **position** and **normal** are defined by the 
+3D-cartesian coordinates as a three-dimensional array. The **wavelengths** parameter defines the central wavelengths (in nanometers)  
+of the transmitter. Three central wavelengths are fixed as **[620, 530, 475]**, 
 which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The full 
-width at half maximum (in nanometers) for each color LED is fixed as **[20, 30, 20]**. The modulation 
-parameter defines the type of CSK modulation that can be simulated. Modulation parameter is 'ieee16' 
-as default. The luminous_flux (in Lumens) defines the average luminous flux emmited by the transmitter.
+width at half maximum (in nanometers) for each color LED is fixed as **[20, 30, 20]**. The **modulation** 
+parameter defines the type of CSK modulation that can be simulated. The modulation parameter is 'ieee16' 
+as default. The luminous_flux (in Lumens) defines the average luminous flux emitted by the transmitter.
 After defining the 'transmitter' module, the string representation of the object can be realized as follows:  
 
 .. code-block:: python
@@ -140,10 +138,10 @@ which produces an output similar to::
     [0.0000e+00 0.0000e+00 1.1960e-02]] 
     Average Power per Channel Color: 
     [6.3336e+00 3.0328e+00 1.9934e+01] 
-    Total Power emmited by the Transmitter [W]: 
+    Total Power emitted by the Transmitter [W]: 
     29.30032767693627 
 
-The spectral power distribution of the LED-transmitter according to the central wavelengths,
+The spectral power distribution of the LED transmitter according to the central wavelengths,
 the FWDM, and the luminous flux can be plotted with:
 
 .. code-block:: python
@@ -155,20 +153,20 @@ The output image is:
 
 .. image:: images_example/spd_norm.png
 
-'transmitter' object is defined from seven parameters. The **position** and **normal** parameters are defined by the 
-3D-cartesian coordinates. It means that the transmitter will be located in the *[x=2.5, y=2.5, z=3]*.
-Through the wavelengths parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, 
-which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The **fwhm** parameter set 
-full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation**
+'transmitter' object is defined from seven parameters.  The **position** and **normal** parameters are defined by the 
+3D-cartesian coordinates. It means that the transmitter will be located in *[x=2.5, y=2.5, z=3]*.
+Through the **wavelengths** parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, 
+which means that the transmitter uses three color red (620 nm), green (530 nm), and blue (475 nm). 
+The **fwhm** parameter set the full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation**
 parameter defines the type of CSK modulation that can be simulated. **modulation** parameter is 'ieee16' 
-as default. The **luminous_flux** (in Lumens) defines the average luminous flux emmited by the transmitter.
+as default. The **luminous_flux** (in Lumens) defines the average luminous flux emitted by the transmitter.
 After defining the 'transmitter' module, the string representation of the object can be realized as follows:  
 
 
 Defining the VLC photodetector
 ------------------------------
 
-To defined the photodetector is used the photodetector-module. The module must be imported 
+To define the photodetector is used the photodetector-module. The module must be imported 
 and creating a photodetector-type object as follows:
 
 .. code-block:: python
@@ -185,20 +183,21 @@ and creating a photodetector-type object as follows:
                 )
 
 
-'photodetector' object is defined from six parameters. The **photodetector's position**
-is defined at the 3D-cartesian coordinate equal to *[x=0.5, y=1.0, z=0.85]*, and a normal 
-vector equal to *[0, 0, 1]*. The **area** parameter is configured equal to *(1e-6)/3* 
-(square meters), and it represents the active area of the photodetector. The **field-of-view** 
-parameter defines the solid angle through which a detector is sensitive, and for this example it is 85.  
-The **sensor** parameter represents the detector reference which defines the spectral responsivity of 
-the optical-to-electrical conversion. Getting the available sensor list by using  
-the next command:
+'photodetector' object is defined from six parameters. The **position** parameter 
+is defined as a three-dimensional array that represents the 3D-cartesian coordinate. The position 
+is equal to *[x=0.5, y=1.0, z=0.85]*. The normal vector to the LED's area is configured 
+through the **normal** parameter, which is equal to *[0, 0, 1]*. 
+The **area** parameter is configured equal to *(1e-6)/3* (square meters), and it represents the 
+active area of the photodetector. The **field-of-view** parameter defines the solid angle through 
+which a detector is sensitive, and for this example, it is 85. The **sensor** parameter represents 
+the detector reference which defines the spectral responsivity of the optical-to-electrical conversion. 
+Getting the available sensor list by using the next command:
 
 .. code-block:: python
 
     pd.list_sensors()
 
-The **idark** parameter defines the dark current of the photodetector and it is setted as
+The **idark** parameter defines the dark current of the photodetector and it is set as
 **1e-12**. After defining the 'transmitter' module, the string representation of 
 the object can be realized as follows:
 
@@ -237,10 +236,10 @@ Defining the VLC Indoor Environment
 
 The indoor space for VLC is defined by using the 'IndoorEnv' module. The **size** parameter (in meters)
 specifies the length, width, and height of the rectangular room. This parameter is defined 
-as the three dimmensional array **[5, 5, 3]**. The **no_reflections** 
+as the three-dimensional array **[5, 5, 3]**. The **no_reflections** 
 parameter specifies the order of reflection to compute the lighting parameters and 
 the interchannel interference. The package support from 0-order to 10-order of reflection. 
-The reflectance  at the central wavelengths of each wall can be defined. 
+The reflectance at the central wavelengths of each wall can be defined. 
 The **resolution** parameter (in meters) determines the length 
 of the smaller square areas. The accuracy of the model depends on the resolution.  
 
@@ -278,7 +277,7 @@ produces an output similar to ::
 Simulate the indoor VLC system
 ------------------------------
 
-The simulation of the indoor CSK-based VLC is carried out by the 'RecursiveModel' module, which is defined as following.
+The simulation of the indoor CSK-based VLC is carried out by the 'RecursiveModel' module, which is defined as follows.
 
 .. code-block:: python
 
@@ -299,7 +298,7 @@ channel simulation is executed through the 'simulate_channel()' method.
     # Simulate indoor channel
     channel_model.simulate_channel()    
 
-if this method simulates succesfully, it produces an output similar to ::
+if this method simulates successfully, it produces an output similar to ::
 
     Creating parameters of indoor environment ...
     Parameters created!
@@ -309,7 +308,7 @@ To Get the simulation results can be used the print function:
 
 .. code-block:: python
 
-    # Print results of the simualtion
+    # Print results of the simulation
     print(channel_model)   
 
 obtaining an output similar to::
@@ -337,7 +336,8 @@ and the received symbols represented in the current space. The minimum distance
 is reported according to the Crosstalk matrix, and the constellation 
 at the transmitter. The illuminance, the CIE color coordinates, 
 and the color rendering index. The VLR-RM uses the Luxpy Python package (https://pypi.org/project/luxpy/) 
-to computes  phometric and colorimetric indexes.
+to compute photometric and colorimetric indexes.
+
 
 
 
