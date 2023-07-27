@@ -107,14 +107,14 @@ is created as follows:
             luminous_flux=5000
                     )
 
-'transmitter' object is defined from seven parameters. The **position** and **normal** are defined by the 
-3D-cartesian coordinates as a three-dimensional array. The **wavelengths** parameter defines the central wavelengths (in nanometers)  
-of the transmitter. Three central wavelengths are fixed as **[620, 530, 475]**, 
-which means that the transmitter uses three color LED: red, green, and blue or RGB-LED. The full 
-width at half maximum (in nanometers) for each color LED is fixed as **[20, 30, 20]**. The **modulation** 
-parameter defines the type of CSK modulation that can be simulated. The modulation parameter is 'ieee16' 
-as default. The luminous_flux (in Lumens) defines the average luminous flux emitted by the transmitter.
-After defining the 'transmitter' module, the string representation of the object can be realized as follows:  
+'transmitter' object is defined from seven parameters.  The **position** and **normal** parameters are defined by the 
+3D-cartesian coordinates. It means that the transmitter will be located in *[x=2.5, y=2.5, z=3]*.
+Through the **wavelengths** parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, 
+which means that the transmitter uses three color red (620 nm), green (530 nm), and blue (475 nm). 
+The **fwhm** parameter set the full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation**
+parameter defines the type of CSK modulation that can be simulated. **modulation** parameter is 'ieee16' 
+as default. The **luminous_flux** (in Lumens) defines the average luminous flux emitted by the transmitter.
+After defining the 'transmitter' module, the string representation of the object can be realized as follows: 
 
 .. code-block:: python
     
@@ -153,14 +153,7 @@ The output image is:
 
 .. image:: images_example/spd_norm.png
 
-'transmitter' object is defined from seven parameters.  The **position** and **normal** parameters are defined by the 
-3D-cartesian coordinates. It means that the transmitter will be located in *[x=2.5, y=2.5, z=3]*.
-Through the **wavelengths** parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, 
-which means that the transmitter uses three color red (620 nm), green (530 nm), and blue (475 nm). 
-The **fwhm** parameter set the full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation**
-parameter defines the type of CSK modulation that can be simulated. **modulation** parameter is 'ieee16' 
-as default. The **luminous_flux** (in Lumens) defines the average luminous flux emitted by the transmitter.
-After defining the 'transmitter' module, the string representation of the object can be realized as follows:  
+ 
 
 
 Defining the VLC photodetector
@@ -333,9 +326,8 @@ This matrix related the transmitted symbols represented in the luminous flux spa
 and the received symbols represented in the current space. The minimum distance 
 is reported according to the Crosstalk matrix, and the constellation 
 at the transmitter. The illuminance, the CIE color coordinates, 
-and the color rendering index are reported. The VLR-RM uses the Luxpy Python package (https://pypi.org/project/luxpy/) 
-to compute photometric and colorimetric indexes.
-
+and the color rendering index are reported. The VLR-RM uses the Luxpy Python 
+package (https://pypi.org/project/luxpy/) to compute photometric and colorimetric indexes.
 
 
 
