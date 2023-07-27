@@ -281,12 +281,11 @@ The simulation of the indoor CSK-based VLC is carried out by the 'RecursiveModel
 
 .. code-block:: python
 
-    # Define Channel Model
     channel_model = Recursivemodel(
-        "ChannelModelA",
-        transmitter,
-        pd,
-        room
+        name="ChannelModelA",
+        led=transmitter,
+        photodetector=photodetector,
+        room=indoor_env
         )
 
 the 'channel_model' is an object that is defined from the **transmitter**, **pd**, and **room** objects. The 
@@ -323,8 +322,7 @@ obtaining an output similar to::
     [1.0395e-10 1.6943e-09 6.0081e-08]] 
     Lighting Parameters at 5000.0-lm 
     Illuminance [lx]: [[2.6779e+02]] 
-    CIExyz: [[2.5761e-01 2.0534e-01 5.3705e-01]] 
-    CCT: [[-3.8226e+06]] 
+    CIExyz: [[2.5761e-01 2.0534e-01 5.3705e-01]]     
     CRI: [[1.4296e+01]] 
     Min-Distance: 6.914522683100047e-09 
 
@@ -335,7 +333,7 @@ This matrix related the transmitted symbols represented in the luminous flux spa
 and the received symbols represented in the current space. The minimum distance 
 is reported according to the Crosstalk matrix, and the constellation 
 at the transmitter. The illuminance, the CIE color coordinates, 
-and the color rendering index. The VLR-RM uses the Luxpy Python package (https://pypi.org/project/luxpy/) 
+and the color rendering index are reported. The VLR-RM uses the Luxpy Python package (https://pypi.org/project/luxpy/) 
 to compute photometric and colorimetric indexes.
 
 
