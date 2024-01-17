@@ -13,12 +13,7 @@ class Transmitter:
     This class defines the transmitter features
     """
 
-    CSK_LIST = {
-        'ieee16',
-        'ieee8',
-        'ieee4'
-        }
-
+    
     def __init__(
         self,
         name: str,
@@ -27,7 +22,7 @@ class Transmitter:
         wavelengths: np.ndarray,
         fwhm: np.ndarray,
         mlambert: float = 1,        
-        modulation: str = 'ieee16',
+        constellation: str = 'ieee16',
         luminous_flux: float = 1
             ) -> None:
 
@@ -64,19 +59,42 @@ class Transmitter:
                 "FWDM must be non-negative.")
 
 
-        self._modulation = modulation
-        # define the modulation
-        if self._modulation == 'ieee16':
-            self._constellation = Kt.IEEE_16CSK
-            self._order_csk = 16
-        elif self._modulation == 'ieee8':
-            self._constellation = Kt.IEEE_8CSK
-            self._order_csk = 8
-        elif self._modulation == 'ieee4':
-            self._constellation = Kt.IEEE_4CSK
-            self._order_csk = 4
+        if isinstance(constellation, np.ndarray):
+            
+            if len(constellation.shape) != 2:
+                raise ValueError("Constellation must be a 2d-numpy array.")
+            else:
+                shape =  constellation.shape
+                if shape[0] != Kt.NO_LEDS:
+                    raise ValueError("The number of rows must be equal to the number of LEDs.")
+                elif np.ceil(np.log2(shape[1])) != np.floor(np.log2(shape[1])):
+                    raise ValueError("The number of columns (number of symbols) must be power of 2")
+                else:
+                    self._constellation =  constellation
+                    self._order_csk = shape[1]          
+
+        elif isinstance(constellation, str):
+
+            if constellation == 'ieee16':
+                self._constellation = Kt.IEEE_16CSK
+                self._order_csk = 16
+            elif constellation == 'ieee8':
+                self._constellation = Kt.IEEE_8CSK
+                self._order_csk = 8
+            elif constellation == 'ieee4':
+                self._constellation = Kt.IEEE_4CSK
+                self._order_csk = 4
+            else:
+                raise ValueError("Constellation is not valid.")
         else:
-            raise ValueError("Modulation is not valid.")
+            raise ValueError(
+                """  
+                Format of the constellation is not valid. String or np.array.
+                Use list_csk() function from the Constant module or define correctly the 
+                constellation symbols array (3xN numpy array).
+                """
+                )
+            
 
         self._luminous_flux = np.float32(luminous_flux)        
         if self._luminous_flux <= 0:
@@ -148,24 +166,46 @@ class Transmitter:
                 "Dimension of FWHM array must be equal to the number of LEDs.") 
 
     @property
-    def modulation(self) -> str:
-        return self._modulation
+    def constellation(self) -> str:
+        return self._constellation
 
-    @modulation.setter
-    def modulation(self, modulation):
-        self._modulation = modulation
-        # define the modulation
-        if self._modulation == 'ieee16':
-            self._constellation = Kt.IEEE_16CSK
-            self._order_csk = 16
-        elif self._modulation == 'ieee8':
-            self._constellation = Kt.IEEE_8CSK
-            self._order_csk = 8
-        elif self._modulation == 'ieee4':
-            self._constellation = Kt.IEEE_4CSK
-            self._order_csk = 4
+    @constellation.setter
+    def constellation(self, constellation):
+        if isinstance(constellation, np.ndarray):
+            
+            if len(constellation.shape) != 2:
+                raise ValueError("Constellation must be a 2d-numpy array.")
+            else:
+                shape =  constellation.shape
+                if shape[0] != Kt.NO_LEDS:
+                    raise ValueError("The number of rows must be equal to the number of LEDs.")
+                elif np.ceil(np.log2(shape[1])) != np.floor(np.log2(shape[1])):
+                    raise ValueError("The number of columns (number of symbols) must be power of 2")
+                else:
+                    self._constellation =  constellation
+                    self._order_csk = shape[1]          
+
+        elif isinstance(constellation, str):
+
+            if constellation == 'ieee16':
+                self._constellation = Kt.IEEE_16CSK
+                self._order_csk = 16
+            elif constellation == 'ieee8':
+                self._constellation = Kt.IEEE_8CSK
+                self._order_csk = 8
+            elif constellation == 'ieee4':
+                self._constellation = Kt.IEEE_4CSK
+                self._order_csk = 4
+            else:
+                raise ValueError("Constellation is not valid.")
         else:
-            print("Modulation name is not valid")
+            raise ValueError(
+                """  
+                Format of the constellation is not valid. String or np.array.
+                Use list_csk() function from the Constant module or define correctly the 
+                constellation symbols array (3xN numpy array).
+                """
+                )
 
     @property
     def luminous_flux(self) -> float:
@@ -193,14 +233,7 @@ class Transmitter:
             
         )
     
-    def list_csk(self) -> None:
-        """ Function to print the list of Color Shift Keying modulation formats."""
-        
-        print("List of CSK modulations:")
-        print(self.CSK_LIST)
-
-
-
+    
     def plot_spatial_distribution(self) -> None:
         """Function to create a 3d radiation pattern of the LED source.
 

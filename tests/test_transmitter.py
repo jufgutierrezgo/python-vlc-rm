@@ -16,7 +16,7 @@ class TestTransmitter:
     MLAMBERT = 1
     WAVELENGTHS = [620, 530, 475]
     FWHM = [20, 45, 20]
-    MODULATION = 'ieee16'
+    CONSTELLATION = 'ieee16'
     LUMINOUS_FLUX = 5000
 
     ILER_REF = np.array(
@@ -38,7 +38,7 @@ class TestTransmitter:
         mlambert=MLAMBERT,
         wavelengths=WAVELENGTHS,
         fwhm=FWHM,
-        modulation=MODULATION,
+        constellation=CONSTELLATION,
         luminous_flux=LUMINOUS_FLUX
                 )        
     
@@ -61,8 +61,8 @@ class TestTransmitter:
     def test_fwhm(self):
         assert np.array_equal(self.transmitter.fwhm, np.array(self.FWHM))
 
-    def test_modulation(self):
-        assert self.transmitter.modulation == self.MODULATION
+    def test_constellation(self):
+        assert self.transmitter.constellation == self.constellation
     
     def test_luminous_flux(self):
         assert self.transmitter.luminous_flux == self.LUMINOUS_FLUX
@@ -99,7 +99,7 @@ class TestTransmitter:
                     mlambert=self.MLAMBERT,
                     wavelengths=self.WAVELENGTHS,
                     fwhm=self.FWHM,
-                    modulation=self.MODULATION,
+                    constellation=self.CONSTELLATION,
                     luminous_flux=self.LUMINOUS_FLUX
                             )        
     
@@ -115,7 +115,7 @@ class TestTransmitter:
                     mlambert=self.MLAMBERT,
                     wavelengths=self.WAVELENGTHS,
                     fwhm=self.FWHM,
-                    modulation=self.MODULATION,
+                    constellation=self.CONSTELLATION,
                     luminous_flux=self.LUMINOUS_FLUX
                             )
         
@@ -131,7 +131,7 @@ class TestTransmitter:
                     mlambert=options,
                     wavelengths=self.WAVELENGTHS,
                     fwhm=self.FWHM,
-                    modulation=self.MODULATION,
+                    constellation=self.CONSTELLATION,
                     luminous_flux=self.LUMINOUS_FLUX
                             )            
     
@@ -147,7 +147,7 @@ class TestTransmitter:
                     mlambert=self.MLAMBERT,
                     wavelengths=options,
                     fwhm=self.FWHM,
-                    modulation=self.MODULATION,
+                    constellation=self.CONSTELLATION,
                     luminous_flux=self.LUMINOUS_FLUX
                             )
                     
@@ -164,14 +164,14 @@ class TestTransmitter:
                     mlambert=self.MLAMBERT,
                     wavelengths=self.WAVELENGTHS,
                     fwhm=options,
-                    modulation=self.MODULATION,
+                    constellation=self.CONSTELLATION,
                     luminous_flux=self.LUMINOUS_FLUX
                             )
     
-    def test_modulation_error(self):
-        modulation_erorrs = ['ook', 'csk', 'ieee', 10, [10, 10]]
+    def test_constellation_error(self):
+        constellation_erorrs = ['ook', 'csk', 'ieee', 10, [10, 10]]
         
-        for options in modulation_erorrs: 
+        for options in constellation_erorrs: 
             with pytest.raises(ValueError):
                 transmitter = Transmitter(
                     "Led1",
@@ -180,7 +180,7 @@ class TestTransmitter:
                     mlambert=self.MLAMBERT,
                     wavelengths=self.WAVELENGTHS,
                     fwhm=self.FWHM,
-                    modulation=options,
+                    constellation=options,
                     luminous_flux=self.LUMINOUS_FLUX
                             )
         
@@ -196,6 +196,6 @@ class TestTransmitter:
                     mlambert=self.MLAMBERT,
                     wavelengths=self.WAVELENGTHS,
                     fwhm=self.FWHM,
-                    modulation=self.MODULATION,
+                    constellation=self.CONSTELLATION,
                     luminous_flux=options
                             )

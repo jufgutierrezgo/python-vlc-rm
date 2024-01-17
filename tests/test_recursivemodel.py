@@ -43,7 +43,7 @@ class TestRM:
             mlambert=1,
             wavelengths=[620, 530, 475],
             fwhm=[20, 45, 20],
-            modulation='ieee16',
+            constellation='ieee16',
             luminous_flux=5000
                     )
 

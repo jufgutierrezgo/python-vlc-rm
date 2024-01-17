@@ -71,3 +71,15 @@ class Constants:
             [1, 0, 0]
             ])
         )
+    
+    CSK_LIST = {
+        'ieee16',
+        'ieee8',
+        'ieee4'
+        }
+
+    def list_csk(self) -> None:
+        """ Function to print the list of Color Shift Keying modulation formats."""
+        
+        print("List of CSK modulations:")
+        print(self.CSK_LIST)
