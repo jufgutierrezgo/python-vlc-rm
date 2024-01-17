@@ -13,6 +13,11 @@ class Photodetector:
 
     """
 
+    SENSORS_LIST = {
+        'TCS3103-04',
+        'S10917-35GT'
+        }
+
     def __init__(
         self,
         name: str,
@@ -89,9 +94,9 @@ class Photodetector:
 
     @normal.setter
     def normal(self, normal):
-        self._normal = np.array(normal)
+        self._normal = np.array([normal], dtype=np.float32)
         if self._normal.size != 3:
-            raise ValueError("Normal must be a 3d-numpy array.")        
+            raise ValueError("Normal must be an 1d-numpy array [x y z].")
 
     @property
     def area(self) -> float:
@@ -155,6 +160,14 @@ class Photodetector:
             f'FOV: {self._fov} \n'
             f'Sensor: {self._sensor}'
         )
+
+    def list_sensors(self) -> None:
+        """ Function to print the list of Color Shift Keying modulation formats."""
+        
+        print("List of Sensors available:")
+        print(self.SENSORS_LIST)
+
+
 
     def plot_responsivity(self) -> None:
         plt.plot(

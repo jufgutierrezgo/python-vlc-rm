@@ -95,8 +95,7 @@ class Recursivemodel:
             f'\n|=============== Simulation results ================|\n'
             f'Name: {self.name} \n'
             f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
-            f'Crosstalk Matrix at 1-lm: \n{self._channelmatrix} \n'
-            f'Normalized Crosstalk matrix: \n{self._norm_channelmatrix} \n'
+            f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n{self._channelmatrix} \n'            
             f'Lighting Parameters at {self._led._luminous_flux}-lm \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CIExyz: {self._xyz} \n'
@@ -352,7 +351,7 @@ class Recursivemodel:
                 self._led._avg_power
             )
 
-        self._spd_total = self._led._luminous_flux*np.sum(self._spd_data, axis=1)
+        self._spd_total = np.sum(self._spd_data, axis=1)
 
     def _plot_spd(self) -> None:
         """ This function plots the SPD of QLED """

@@ -13,6 +13,12 @@ class Transmitter:
     This class defines the transmitter features
     """
 
+    CSK_LIST = {
+        'ieee16',
+        'ieee8',
+        'ieee4'
+        }
+
     def __init__(
         self,
         name: str,
@@ -186,6 +192,14 @@ class Transmitter:
             f'Total Power emmited by the Transmitter [W]: \n {self._total_power} \n'
             
         )
+    
+    def list_csk(self) -> None:
+        """ Function to print the list of Color Shift Keying modulation formats."""
+        
+        print("List of CSK modulations:")
+        print(self.CSK_LIST)
+
+
 
     def plot_spatial_distribution(self) -> None:
         """Function to create a 3d radiation pattern of the LED source.
@@ -313,14 +327,14 @@ class Transmitter:
                     self._constellation,
                     axis=1
                     )
-        self._avg_power = np.transpose(
+        self._avg_power = self._luminous_flux*np.transpose(
             np.matmul(
                 self._iler_matrix,
                 self._avg_lm
                 )
             )
 
-        self._total_power = self._luminous_flux*np.sum(self._avg_power)
+        self._total_power = np.sum(self._avg_power)
         # Manual setted of avg_power by each color channels
         #self._avg_power = np.array([1, 1, 1])
 

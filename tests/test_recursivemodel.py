@@ -73,10 +73,10 @@ class TestRM:
     indoor_env.create_environment(transmitter, photodetector)    
     
     channel_model = Recursivemodel(
-        "ChannelModelA",
-        transmitter,
-        photodetector,
-        indoor_env
+        name="ChannelModelA",
+        led=transmitter,
+        photodetector=photodetector,
+        room=indoor_env
         )
     channel_model.simulate_channel()    
     channel_model.plot_constellation()
