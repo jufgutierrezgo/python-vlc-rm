@@ -79,7 +79,7 @@ class TestRM:
         room=indoor_env
         )
     channel_model.simulate_channel()    
-    channel_model.plot_constellation()
+    # channel_model.plot_constellation()
     print(channel_model)   
 
     def test_attributes(self):

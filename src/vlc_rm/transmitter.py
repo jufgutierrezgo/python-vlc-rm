@@ -64,13 +64,13 @@ class Transmitter:
             if len(constellation.shape) != 2:
                 raise ValueError("Constellation must be a 2d-numpy array.")
             else:
-                shape =  constellation.shape
+                shape = constellation.shape
                 if shape[0] != Kt.NO_LEDS:
                     raise ValueError("The number of rows must be equal to the number of LEDs.")
                 elif np.ceil(np.log2(shape[1])) != np.floor(np.log2(shape[1])):
                     raise ValueError("The number of columns (number of symbols) must be power of 2")
                 else:
-                    self._constellation =  constellation
+                    self._constellation = constellation
                     self._order_csk = shape[1]          
 
         elif isinstance(constellation, str):
@@ -228,11 +228,9 @@ class Transmitter:
             f'FWHM [nm]: {self._fwhm}\n'
             f'Luminous Flux [lm]: {self._luminous_flux}\n'
             f'ILER [W/lm]: \n {self._iler_matrix} \n'
-            f'Average Power per Channel Color: \n {self._luminous_flux*self._avg_power} \n'
+            f'Average Power per Channel Color: \n {self._avg_power} \n'
             f'Total Power emmited by the Transmitter [W]: \n {self._total_power} \n'
-            
-        )
-    
+        )   
     
     def plot_spatial_distribution(self) -> None:
         """Function to create a 3d radiation pattern of the LED source.

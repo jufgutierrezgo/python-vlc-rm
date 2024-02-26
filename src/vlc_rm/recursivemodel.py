@@ -511,7 +511,7 @@ class Recursivemodel:
         ax.set_xlabel('R-axis')
         ax.set_ylabel('G-axis')
         ax.set_zlabel('B-axis')
-        plt.title('Constellation in Radiometric Signal Space')
+        plt.title('Constellation in Photometric Signal Space')
 
         # Display plot
         plt.show()

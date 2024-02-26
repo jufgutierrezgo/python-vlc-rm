@@ -11,6 +11,26 @@ import pytest
 
 class TestTransmitter:    
 
+    SYMBOLS_CONSTELLATION = np.transpose(
+        np.array([
+            [1/3, 1/3, 1/3],
+            [1/9, 7/9, 1/9],
+            [0, 2/3, 1/3],
+            [1/3, 2/3, 0],
+            [1/9, 4/9, 4/9],
+            [0, 1, 0],
+            [4/9, 4/9, 1/9],
+            [4/9, 1/9, 4/9],
+            [0, 1/3, 2/3],        
+            [1/9, 1/9, 7/9],
+            [0, 0, 1],
+            [1/3, 0, 2/3],
+            [2/3, 1/3, 0],
+            [7/9, 1/9, 1/9],
+            [2/3, 0, 1/3],
+            [1, 0, 0]
+            ])
+        )
     POSITION = [2.5, 2.5, 3]
     NORMAL = [0, 0, -1]
     MLAMBERT = 1
@@ -62,8 +82,11 @@ class TestTransmitter:
         assert np.array_equal(self.transmitter.fwhm, np.array(self.FWHM))
 
     def test_constellation(self):
-        assert self.transmitter.constellation == self.constellation
-    
+        assert np.allclose(
+            self.transmitter.constellation,
+            self.SYMBOLS_CONSTELLATION,
+            rtol=1e-5
+        )
     def test_luminous_flux(self):
         assert self.transmitter.luminous_flux == self.LUMINOUS_FLUX
     
@@ -76,7 +99,7 @@ class TestTransmitter:
 
     def test_avg_power(self):
         assert np.allclose(
-            self.transmitter._luminous_flux*self.transmitter._avg_power, 
+            self.transmitter._avg_power, 
             self.AVG_POWER_COLOR,
             rtol=1e-5
             )
