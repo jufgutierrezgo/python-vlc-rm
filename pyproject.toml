@@ -8,6 +8,23 @@ requires = [
     "scipy>=1.9.3"
 ]
 
+[project]
+name = "python-vlc-rm"
+authors = [
+    {name = "Juan F. Gutiérrez", email = "jufgutierrezgo@unal.edu.co"}
+] 
+maintainers = [
+    {name = "Juan F. Gutiérrez", email = "jufgutierrezgo@unal.edu.co"}
+]
+readme = "README.rst"
+license = {file = "LICENSE"}
+keywords = ["visible light communication", "color shift keying", "indoor channel model"]
+
+[project.urls]
+Homepage = ""
+Documentation = ""
+Repository = "https://github.com/jufgutierrezgo/python-vlc-rm.git"
+
 [tool.blue]
 line-length = 140
 target-version = ['py37']
