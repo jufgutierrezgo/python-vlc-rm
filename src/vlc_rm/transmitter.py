@@ -100,10 +100,8 @@ class Transmitter:
         if self._luminous_flux <= 0:
             raise ValueError("The luminous flux must be non-negative.")
 
-        # Initial function
-        self._create_led_spd()        
-        self._compute_iler(self._led_spd)
-        self._avg_power_color()
+        # Initial functions
+        self._init_function()
 
     @property
     def name(self) -> str:
@@ -122,6 +120,7 @@ class Transmitter:
         self._position = np.array(position,  dtype=np.float32)
         if self._position.size != 3:
             raise ValueError("Position must be a 3d-numpy array.")
+        self._init_function()
 
     @property
     def normal(self) -> np.ndarray:
@@ -132,6 +131,7 @@ class Transmitter:
         self._normal = np.array(normal,  dtype=np.float32)
         if self._normal.size != 3:
             raise ValueError("Normal must be a 3d-numpy array.")
+        self._init_function()
 
     @property
     def mlambert(self) -> float:
@@ -142,6 +142,7 @@ class Transmitter:
         if mlabert <= 0:
             raise ValueError("Lambert number must be greater than zero.")
         self._mlambert = mlabert
+        self._init_function()
 
     @property
     def wavelengths(self) -> np.ndarray:
@@ -153,6 +154,7 @@ class Transmitter:
         if self._wavelengths.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of wavelengths array must be equal to the number of LEDs.")
+        self._init_function()
 
     @property
     def fwhm(self) -> np.ndarray:
@@ -164,6 +166,7 @@ class Transmitter:
         if self._fwhm.size != Kt.NO_LEDS:
             raise ValueError(
                 "Dimension of FWHM array must be equal to the number of LEDs.") 
+        self._init_function()
 
     @property
     def constellation(self) -> str:
@@ -206,6 +209,7 @@ class Transmitter:
                 constellation symbols array (3xN numpy array).
                 """
                 )
+        self._init_function()
 
     @property
     def luminous_flux(self) -> float:
@@ -216,6 +220,7 @@ class Transmitter:
         if luminous_flux < 0:
             raise ValueError("The luminous flux must be non-negative.")
         self._luminous_flux = luminous_flux
+        self._init_function()
 
     def __str__(self) -> str:
         return (
@@ -227,11 +232,23 @@ class Transmitter:
             f'Central Wavelengths [nm]: {self._wavelengths} \n'
             f'FWHM [nm]: {self._fwhm}\n'
             f'Luminous Flux [lm]: {self._luminous_flux}\n'
+            f'Correlated Color Temperature: {self._cct}\n'
+            f'CIExy coordinates: {self._xyz}\n'                        
             f'ILER [W/lm]: \n {self._iler_matrix} \n'
             f'Average Power per Channel Color: \n {self._avg_power} \n'
             f'Total Power emmited by the Transmitter [W]: \n {self._total_power} \n'
         )   
     
+    def _init_function(self) -> None:
+        """
+        Funtion to run the initial funtions to define the transmitter parameters
+        """
+        # Initial functions
+        self._create_led_spd()        
+        self._compute_iler(self._led_spd)
+        self._avg_power_color()
+        self._compute_cct()
+
     def plot_spatial_distribution(self) -> None:
         """Function to create a 3d radiation pattern of the LED source.
 
@@ -286,7 +303,7 @@ class Transmitter:
     def plot_spd_at_1lm(self):
         """
         This funcion plots the spectral power distribution of the light source 
-        at 1w in each channel.
+        at 1 lm in each channel.
         """
         # plot red spd data
         for i in range(Kt.NO_LEDS):
@@ -368,6 +385,23 @@ class Transmitter:
         self._total_power = np.sum(self._avg_power)
         # Manual setted of avg_power by each color channels
         #self._avg_power = np.array([1, 1, 1])
+
+    def _compute_cct(self) -> None:
+        """ 
+        This function computes the CCT of the average radiated power by 
+        the light source.            
+        """
+        # Computing the xyz coordinates from SPD-RGBY estimated spectrum
+        self._XYZ_uppper = lx.spd_to_xyz(
+            [
+                self._array_wavelenghts,
+                np.sum(self._avg_power*self._led_spd, axis=1)
+            ])
+
+        self._xyz = self._XYZ_uppper/np.sum(self._XYZ_uppper)
+
+        # Computing the CCT coordinates from SPD-RGBY estimated spectrum
+        self._cct = lx.xyz_to_cct_ohno2014(self._xyz)
 
     def _gaussian_sprectrum(self, x, mean, std) -> np.ndarray:
         """ This function computes a normal SPD of a monochromatic LED. """

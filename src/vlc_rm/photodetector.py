@@ -167,8 +167,6 @@ class Photodetector:
         print("List of Sensors available:")
         print(self.SENSORS_LIST)
 
-
-
     def plot_responsivity(self) -> None:
         plt.plot(
             self._responsivity[:, 0],
