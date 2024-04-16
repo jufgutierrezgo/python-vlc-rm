@@ -26,7 +26,8 @@ class Photodetector:
         area: np.ndarray,
         sensor: str = " ",
         fov: float = 90,
-        idark: float = 1e-12
+        idark: float = 1e-12,
+        bandwidth: float = 1e7        
     ) -> None:
 
         self._name = name
@@ -70,6 +71,11 @@ class Photodetector:
             raise ValueError(
                 "Dark current curve must be float and non-negative.")
 
+        self._bandwidht = np.float32(bandwidth)
+        if self._bandwidht <= 0:
+            raise ValueError(
+                "Bandwidth must be float and non-negative.")
+        
     @property
     def name(self) -> str:
         return self._name
@@ -149,6 +155,17 @@ class Photodetector:
         if not (isinstance(self._idark, (float))) or self._idark <= 0:
             raise ValueError(
                 "Dark current curve must be float and non-negative.")
+
+    @property
+    def bandwidth(self) -> float:
+        return self._bandwidht
+
+    @bandwidth.setter
+    def bandwidth(self, bandwidth):
+        self._bandwidht = bandwidth
+        if not (isinstance(self._bandwidht, (float))) or self._bandwidht <= 0:
+            raise ValueError(
+                "Bandwidth must be float and non-negative.")
 
     def __str__(self) -> str:
         return (

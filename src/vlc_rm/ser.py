@@ -251,17 +251,22 @@ class SymbolErrorRate:
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
 
-    def _add_dark_current(self, flux, idark) -> None:
+    def _add_shot_thermal(self, flux, idark, bandwidth) -> None:
         """ This function adds dark current to the photodetected current """
 
         # Create an empty numpy-array equal to self._symbols_rx_1lm
         self._noise_symbols = np.empty_like(self._symbols_rx_1lm)
-
+        
         for color_channel in range(Kt.NO_DETECTORS):
+            # define gain
+            gain = 1
             # define the x_current signal to add AWGN 
             x_current = self._symbols_rx_1lm[color_channel, :]            
+            # Computes the squared standard deviation
+            thermal_sigma2 = 4 * Kt.KB * Kt.TEMP * bandwidth / gain
+            shot_sigma2 = 2 * Kt.QE * (x_current + idark) * bandwidth
             # Equal the standard deviation to dark current
-            std_deviation = idark
+            std_deviation = (gain * (thermal_sigma2 + shot_sigma2)) ** 0.5
             # Generate an sample of white noise
             mean_noise = 0
             noise_current = np.random.normal(mean_noise, std_deviation, len(x_current))
@@ -331,7 +336,11 @@ class SymbolErrorRate:
             self._ser_values = np.empty_like(self._flux_values)
 
             for flux, index in zip(self._flux_values, range(len(self._flux_values))):
-                self._add_dark_current(flux, self._recursivemodel._photodetector._idark)
+                self._add_shot_thermal(
+                    flux, 
+                    self._recursivemodel._photodetector._idark,
+                    self._recursivemodel._photodetector._bandwidht
+                    )
                 self._decode_symbols()
                 self._ser_values[index] = self._compute_error_rate()
 
