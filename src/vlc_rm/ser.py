@@ -162,7 +162,7 @@ class SymbolErrorRate:
             raise ValueError(
                 "Mode for plottig SER curve is not valid.")
 
-    def save_to_file(self, name: str = 'SER-Flux') -> None:
+    def save_to_file(self, name: str = 'ser-curve') -> None:
         """
         This function save in txt the numpy arrays with the
         symbol erro rate data.
