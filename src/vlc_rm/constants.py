@@ -28,6 +28,15 @@ class Constants:
     NO_DETECTORS = 3
     # Speed of light
     SPEED_OF_LIGHT = 299792458
+    # Boltzman's constant
+    KB = 1.380649e-23
+    # Elementary charge
+    QE = 1.602176634e-19
+    # Plank's Constant
+    H = 6.62607015e-34
+    # Temperature in Kelvin
+    TEMP = 298
+    
     # IEEE 16-CSK constellation
     IEEE_16CSK = np.transpose(
         np.array([

@@ -76,7 +76,8 @@ setup(
         'numpy>=1.23.3',
         'luxpy>=1.9.8',
         'scipy>=1.9.3',        
-        'matplotlib>=3.1.2',  # Additional dependency
+        'matplotlib>=3.1.2',  
+        'pytest>=8.0.0',  
     ],
     extras_require={
         # eg:

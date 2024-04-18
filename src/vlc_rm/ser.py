@@ -337,9 +337,9 @@ class SymbolErrorRate:
 
             for flux, index in zip(self._flux_values, range(len(self._flux_values))):
                 self._add_shot_thermal(
-                    flux, 
+                    flux,
                     self._recursivemodel._photodetector._idark,
-                    self._recursivemodel._photodetector._bandwidht
+                    self._recursivemodel._photodetector._bandwidth
                     )
                 self._decode_symbols()
                 self._ser_values[index] = self._compute_error_rate()
