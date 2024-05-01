@@ -158,6 +158,20 @@ class SymbolErrorRate:
             plt.ylabel("Error Probability")
             plt.grid()
             plt.show()
+        elif mode=='flux-snr':
+            # convert y-axis to Logarithmic scale
+            plt.yscale("log")
+            plt.plot(
+                self._snr_values,
+                self._ser_values,
+                color='b',
+                linestyle='dashed'
+            )
+            plt.title("Symbol Error Rate")
+            plt.xlabel("Luminous Flux [lm]")
+            plt.ylabel("Error Probability")
+            plt.grid()
+            plt.show()
         else:
             raise ValueError(
                 "Mode for plottig SER curve is not valid.")
@@ -212,11 +226,14 @@ class SymbolErrorRate:
 
         self._symbols_rx_1lm = np.matmul(
             np.matmul(
-                self._recursivemodel.channelmatrix,
+                self._recursivemodel._channelmatrix / self._recursivemodel._led._luminous_flux,
                 self._recursivemodel._led._iler_matrix
                 ),
             self._symbols_csk
             )
+        
+        print("Symbols received:", self._symbols_rx_1lm)
+
 
     def _add_noise(self, target_snr_db) -> None:
         """ 
@@ -254,27 +271,52 @@ class SymbolErrorRate:
     def _add_shot_thermal(self, flux, idark, bandwidth) -> None:
         """ This function adds dark current to the photodetected current """
 
+        
+        # define gain
+        gain = 1
+
+        # Computes the squared standard deviation
+        thermal_sigma2 = 4 * Kt.KB * Kt.TEMP * bandwidth / gain
+        print("Thermal noise:", thermal_sigma2**0.5)
+
         # Create an empty numpy-array equal to self._symbols_rx_1lm
         self._noise_symbols = np.empty_like(self._symbols_rx_1lm)
-        
-        for color_channel in range(Kt.NO_DETECTORS):
-            # define gain
-            gain = 1
+
+        # Define variable to compute signal-to-noise ratio
+        snr_db = 0
+
+        for color_channel in range(Kt.NO_DETECTORS):  
+                      
             # define the x_current signal to add AWGN 
-            x_current = self._symbols_rx_1lm[color_channel, :]            
-            # Computes the squared standard deviation
-            thermal_sigma2 = 4 * Kt.KB * Kt.TEMP * bandwidth / gain
-            shot_sigma2 = 2 * Kt.QE * (x_current + idark) * bandwidth
+            x_current = flux*self._symbols_rx_1lm[color_channel, :]            
+            shot_sigma2 = 2 * Kt.QE * (x_current + idark) * bandwidth            
             # Equal the standard deviation to dark current
             std_deviation = (gain * (thermal_sigma2 + shot_sigma2)) ** 0.5
             # Generate an sample of white noise
             mean_noise = 0
             noise_current = np.random.normal(mean_noise, std_deviation, len(x_current))
             # Noise up the original signal
-            signal_noise = flux*x_current + noise_current
+            signal_noise = x_current + noise_current
             # Save signal with noise in array
             self._noise_symbols[color_channel, :] = signal_noise
 
+            # Calculate the power of the signal and the power of the noise
+            power_signal = np.mean(x_current ** 2)
+            power_noise = np.mean(noise_current ** 2)
+
+            # Calculate the SNR
+            snr_linear = power_signal / power_noise
+
+            # Convert SNR to decibels (dB)
+            snr_db += 10 * np.log10(snr_linear)
+
+            print("Shot noise:", shot_sigma2)
+            print("STD deviation:",std_deviation)
+        
+        print("Received symbols:", flux*self._symbols_rx_1lm)
+
+        return snr_db / Kt.NO_DETECTORS
+        
     def _decode_symbols(self):
         """
         This funtion decodes the CSK symbols from the self._noise_symbols
@@ -334,13 +376,17 @@ class SymbolErrorRate:
         if mode == 'flux':
             self._flux_values = np.linspace(self._min_flux, self._max_flux, self._points_flux+1)
             self._ser_values = np.empty_like(self._flux_values)
+            self._snr_values = np.empty_like(self._flux_values)
+            # define the x_current signal to add AWGN 
+            # self._x_current = self._symbols_rx_1lm           
 
             for flux, index in zip(self._flux_values, range(len(self._flux_values))):
-                self._add_shot_thermal(
+                self._snr_values[index] = self._add_shot_thermal(
                     flux,
                     self._recursivemodel._photodetector._idark,
                     self._recursivemodel._photodetector._bandwidth
                     )
+                 
                 self._decode_symbols()
                 self._ser_values[index] = self._compute_error_rate()
 
