@@ -27,7 +27,8 @@ class Photodetector:
         sensor: str = " ",
         fov: float = 90,
         idark: float = 1e-12,
-        bandwidth: float = 1e7
+        bandwidth: float = 1e7,
+        gain: float = 1
     ) -> None:
 
         self._name = name
@@ -76,6 +77,13 @@ class Photodetector:
             raise ValueError(
                 "Bandwidth must be float and non-negative.")
         
+        self._gain = np.float32(gain)
+        if self._gain <= 0:
+            raise ValueError(
+                "Gain must be float and non-negative.")
+        
+
+
     @property
     def name(self) -> str:
         return self._name
@@ -166,6 +174,17 @@ class Photodetector:
         if not (isinstance(self._bandwidth, (float))) or self._bandwidth <= 0:
             raise ValueError(
                 "Bandwidth must be float and non-negative.")
+
+    @property
+    def gain(self) -> float:
+        return self._gain
+
+    @gain.setter
+    def gain(self, gain):
+        self._gain = gain
+        if not (isinstance(self._gain, (float))) or self._gain <= 0:
+            raise ValueError(
+                "Gain must be float and non-negative.")
 
     def __str__(self) -> str:
         return (
