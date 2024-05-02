@@ -55,6 +55,19 @@ class SymbolErrorRate:
             raise ValueError(
                 "No. of symbols must be greater than zero.")
 
+    @property
+    def recursivemodel(self) -> int:
+        """The number of symbols for the transmission"""
+        return self._recursivemodel
+
+    @recursivemodel.setter
+    def recursivemodel(self, recursivemodel):
+        self._recursivemodel = recursivemodel
+        if not type(self._recursivemodel) is Recursivemodel:
+            raise ValueError(
+                "Recursivemodel attribute must be an object type Recursivemodel.")        
+
+
     def compute_ser_flux(
             self,
             min_flux: float = 1,
@@ -232,7 +245,7 @@ class SymbolErrorRate:
             self._symbols_csk
             )
         
-        print("Symbols received:", self._symbols_rx_1lm)
+        # print("Symbols received:", self._symbols_rx_1lm)
 
 
     def _add_noise(self, target_snr_db) -> None:
@@ -269,15 +282,13 @@ class SymbolErrorRate:
             self._noise_symbols[color_channel, :] = signal_noise
 
     def _add_shot_thermal(self, flux, idark, bandwidth) -> None:
-        """ This function adds dark current to the photodetected current """
-
-        
+        """ This function adds dark current to the photodetected current """        
         # define gain
-        gain = 1
+        gain = self._recursivemodel._photodetector._gain
 
         # Computes the squared standard deviation
         thermal_sigma2 = 4 * Kt.KB * Kt.TEMP * bandwidth / gain
-        print("Thermal noise:", thermal_sigma2**0.5)
+        # print("Thermal noise:", thermal_sigma2**0.5)
 
         # Create an empty numpy-array equal to self._symbols_rx_1lm
         self._noise_symbols = np.empty_like(self._symbols_rx_1lm)
@@ -289,7 +300,7 @@ class SymbolErrorRate:
                       
             # define the x_current signal to add AWGN 
             x_current = flux*self._symbols_rx_1lm[color_channel, :]            
-            shot_sigma2 = 2 * Kt.QE * (x_current + idark) * bandwidth            
+            shot_sigma2 = 2 * Kt.QE * (np.mean(x_current) + idark) * bandwidth            
             # Equal the standard deviation to dark current
             std_deviation = (gain * (thermal_sigma2 + shot_sigma2)) ** 0.5
             # Generate an sample of white noise
@@ -310,10 +321,37 @@ class SymbolErrorRate:
             # Convert SNR to decibels (dB)
             snr_db += 10 * np.log10(snr_linear)
 
-            print("Shot noise:", shot_sigma2)
+            # print("Shot noise:", shot_sigma2)
             print("STD deviation:",std_deviation)
         
-        print("Received symbols:", flux*self._symbols_rx_1lm)
+        # # define the x_current signal to add AWGN 
+        # x_current = flux*self._symbols_rx_1lm        
+        # shot_sigma2 = 2 * Kt.QE * (np.mean(x_current) + idark) * bandwidth  
+        # # Equal the standard deviation to dark current
+        # std_deviation = (gain * (thermal_sigma2 + shot_sigma2)) ** 0.5
+        # # Generate an sample of white noise
+        # mean_noise = 0
+        # noise_current = np.random.normal(
+        #     mean_noise, 
+        #     std_deviation, 
+        #     size=[np.shape(x_current)[0], np.shape(x_current)[1]]
+        #           )
+        # # Noise up the original signal
+        # signal_noise = x_current + noise_current
+        # # Save signal with noise in array
+        # self._noise_symbols = signal_noise
+
+        # # Calculate the power of the signal and the power of the noise
+        # power_signal = np.mean(x_current ** 2)
+        # power_noise = np.mean(noise_current ** 2)
+
+        # # Calculate the SNR
+        # snr_linear = power_signal / power_noise
+
+        # # Convert SNR to decibels (dB)
+        # snr_db += 10 * np.log10(snr_linear)
+
+        # print("Received symbols:", flux*self._symbols_rx_1lm)
 
         return snr_db / Kt.NO_DETECTORS
         
