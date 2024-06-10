@@ -322,7 +322,7 @@ class SymbolErrorRate:
             snr_db += 10 * np.log10(snr_linear)
 
             # print("Shot noise:", shot_sigma2)
-            print("STD deviation:",std_deviation)
+            # print("STD deviation:",std_deviation)
         
         # # define the x_current signal to add AWGN 
         # x_current = flux*self._symbols_rx_1lm        
@@ -427,6 +427,7 @@ class SymbolErrorRate:
                  
                 self._decode_symbols()
                 self._ser_values[index] = self._compute_error_rate()
+                print("Symbol error rate computed for {} lumens".format(flux))
 
         elif mode == 'snr':
             self._snr_values = np.linspace(self._min_snr, self._max_snr, self._points_snr+1)

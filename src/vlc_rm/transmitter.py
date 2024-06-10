@@ -371,7 +371,7 @@ class Transmitter:
         each color channel in the defined constellation.
         """
         
-        self._avg_lm = np.mean(
+        self._avg_lm = np.amax(
                     self._constellation,
                     axis=1
                     )
