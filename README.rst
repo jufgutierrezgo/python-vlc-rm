@@ -95,17 +95,16 @@ is created as follows:
     # Import Transmitter
     from vlc_rm.transmitter import Transmitter
 
-    # Create a transmitter-type object 
     transmitter = Transmitter(
-            "Led1",
-            position=[2.5, 2.5, 3],
-            normal=[0, 0, -1],
-            mlambert=1,
-            wavelengths=[620, 530, 475],
-            fwhm=[20, 30, 20],
-            modulation='ieee16',
-            luminous_flux=5000
-                    )
+        "Led1",
+        position=[2.5, 2.5, 3],
+        normal=[0, 0, -1],
+        mlambert=1,
+        wavelengths=[620, 530, 475],
+        fwhm=[20, 30, 20],
+        constellation='ieee16',
+        luminous_flux=5000
+                )
 
 'transmitter' object is defined from seven parameters.  The **position** and **normal** parameters are defined by the 
 3D-cartesian coordinates. It means that the transmitter will be located in *[x=2.5, y=2.5, z=3]*.
@@ -132,14 +131,16 @@ which produces an output similar to::
     Central Wavelengths [nm]: [6.2000e+02 5.3000e+02 4.7500e+02] 
     FWHM [nm]: [2.0000e+01 3.0000e+01 2.0000e+01]
     Luminous Flux [lm]: 5000.0
+    Correlated Color Temperature: [[-4.3902e+06]]
+    CIExy coordinates: [[2.3633e-01 1.9580e-01 5.6787e-01]]
     ILER [W/lm]: 
     [[3.8001e-03 0.0000e+00 0.0000e+00]
     [0.0000e+00 1.8197e-03 0.0000e+00]
     [0.0000e+00 0.0000e+00 1.1960e-02]] 
     Average Power per Channel Color: 
-    [6.3336e+00 3.0328e+00 1.9934e+01] 
-    Total Power emitted by the Transmitter [W]: 
-    29.30032767693627 
+    [1.9001e+01 9.0983e+00 5.9802e+01] 
+    Total Power emmited by the Transmitter [W]: 
+    87.90098303080882  
 
 The spectral power distribution of the LED transmitter according to the central wavelengths,
 the FWDM, and the luminous flux can be plotted with:
@@ -166,25 +167,29 @@ and creating a photodetector-type object as follows:
 
     pd = Photodetector(
         "PD1",
-        position=[1.5, 1.5, 0.85],
+        position=[2.5, 2.5, 0.85],
         normal=[0, 0, 1],
-        area=(1e-6)/3,
-        #area=1e-4,
+        area=(1e-4)/3,
+    #     area=1e-4,
         fov=85,
         sensor='S10917-35GT',
-        idark=1e-12
-                )
+        # sensor='TCS3103-04',
+        idark=1e-12,
+        gain=5e5
+        )
 
 
 'photodetector' object is defined from six parameters. The **position** parameter 
 is defined as a three-dimensional array that represents the 3D-cartesian coordinate. The position 
 is equal to *[x=0.5, y=1.0, z=0.85]*. The normal vector to the LED's area is configured 
 through the **normal** parameter, which is equal to *[0, 0, 1]*. 
-The **area** parameter is configured equal to *(1e-6)/3* (square meters), and it represents the 
+The **area** parameter is configured equal to *(1e-4)/3* (square meters), and it represents the 
 active area of the photodetector. The **field-of-view** parameter defines the solid angle through 
 which a detector is sensitive, and for this example, it is 85. The **sensor** parameter represents 
 the detector reference which defines the spectral responsivity of the optical-to-electrical conversion. 
-Getting the available sensor list by using the next command:
+The **idark** parameter represents the dark current of photodetector. The **gain** parameter represents 
+transconductance amplifier gain used to digitalize the received signal. Getting the available sensor 
+list by using the next command:
 
 .. code-block:: python
 
@@ -308,16 +313,17 @@ obtaining an output similar to::
     |=============== Simulation results ================|
     Name: ChannelModelA 
     DC-Gain with respect to 1-W [W]: 
-    [2.0109e-08 1.7362e-08 1.6087e-08] 
+    [1.2142e-06 9.3655e-07 8.0775e-07] 
     Crosstalk Matrix at 5000.0-lm: 
-    [[2.0059e-08 3.6404e-12 1.0877e-12]
-    [3.0197e-10 1.0295e-08 4.6459e-09]
-    [1.0395e-10 1.6943e-09 6.0081e-08]] 
+    [[1.8167e+00 2.9456e-04 8.1922e-05]
+    [2.7349e-02 8.3303e-01 3.4992e-01]
+    [9.4146e-03 1.3709e-01 4.5251e+00]] 
     Lighting Parameters at 5000.0-lm 
-    Illuminance [lx]: [[2.6779e+02]] 
-    CIExyz: [[2.5761e-01 2.0534e-01 5.3705e-01]]     
-    CRI: [[1.4296e+01]] 
-    Min-Distance: 6.914522683100047e-09 
+    Illuminance [lx]: [[4.4377e+02]] 
+    CIExyz: [[2.7689e-01 2.1399e-01 5.0912e-01]] 
+    CCT: [[-8.3461e+04]] 
+    CRI: [[1.4394e+01]] 
+    Min-Distance: 0.5341463408213712 
 
 
 The VLC-RM package reports the radiometric power received at the photodetector
