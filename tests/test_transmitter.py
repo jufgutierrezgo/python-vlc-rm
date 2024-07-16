@@ -1,7 +1,7 @@
-# Import Transmitter module
-from vlc_rm.transmitter import Transmitter
 # Import Constant module
 from vlc_rm.constants import Constants as Kt
+# Import Transmitter module
+from vlc_rm.transmitter import Transmitter
 # Import Numpy
 import numpy as np
 # Import Pytest
