@@ -95,7 +95,9 @@ class Recursivemodel:
             f'\n|=============== Simulation results ================|\n'
             f'Name: {self.name} \n'
             f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
-            f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n{self._channelmatrix} \n'            
+            f'Crosstalk Matrix at 1-lm: \n{self._channelmatrix} \n'            
+            f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n {self._channelmatrix_flux_nogain} \n'
+            f'Crosstalk Matrix with photodetector gain of {self._photodetector._gain}: \n {self._channelmatrix_flux_gain} \n'            
             f'Lighting Parameters at {self._led._luminous_flux}-lm \n'
             f'Illuminance [lx]: {self._illuminance} \n'
             f'CIExyz: {self._xyz} \n'
@@ -346,18 +348,23 @@ class Recursivemodel:
                     )             
                 )
 
-        self._spd_data = np.multiply(
+        self._spd_data_for_lighting = np.multiply(
                 spd_data_dcgain,
                 self._led._avg_power
             )
 
-        self._spd_total = np.sum(self._spd_data, axis=1)
+        self._spd_data_for_h = np.multiply(
+                spd_data_dcgain,
+                self._led._iler_vector
+            )
+        
+        self._spd_total = np.sum(self._spd_data_for_lighting, axis=1)
 
     def _plot_spd(self) -> None:
         """ This function plots the SPD of QLED """
         # plot red spd data
         for i in range(Kt.NO_LEDS):
-            plt.plot(self.wavelenght, self._spd_data[:, i])
+            plt.plot(self.wavelenght, self._spd_data_for_lighting[:, i])
         
         plt.title("Spectral Power Distribution")
         plt.xlabel("Wavelength [nm]")
@@ -423,8 +430,11 @@ class Recursivemodel:
 
         for j in range(Kt.NO_LEDS):
             for i in range(Kt.NO_DETECTORS):
-                self._channelmatrix[i][j] = self._photodetector._gain*np.dot(
-                    self._spd_data[:, j], self._photodetector._responsivity[:, i+1])
+                self._channelmatrix[i][j] = np.dot(
+                    self._spd_data_for_h[:, j], self._photodetector._responsivity[:, i+1])
+        
+        self._channelmatrix_flux_nogain = self._led._luminous_flux * self._channelmatrix
+        self._channelmatrix_flux_gain = self._photodetector._gain * self._channelmatrix_flux_nogain
     
     def _compute_normalized_channelmatrix(self) -> None:
         """ This function computes channel matrix normalized between 0 and 1."""

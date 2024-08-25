@@ -237,12 +237,9 @@ class SymbolErrorRate:
         original symbols.
         """
 
-        self._symbols_rx_1lm = np.matmul(
-            np.matmul(
-                self._recursivemodel._channelmatrix / self._recursivemodel._led._luminous_flux,
-                self._recursivemodel._led._iler_matrix
-                ),
-            self._symbols_csk
+        self._symbols_rx_1lm = np.matmul(            
+                self._recursivemodel._channelmatrix,
+                self._symbols_csk
             )
         
         # print("Symbols received:", self._symbols_rx_1lm)
@@ -359,6 +356,9 @@ class SymbolErrorRate:
         """
         This funtion decodes the CSK symbols from the self._noise_symbols
         """
+
+        # apply photodetector gain to received symbols
+        self._noise_symbols = self._recursivemodel._photodetector._gain * self._noise_symbols
 
         # get the header and payload of the noisy received symbols
         self._rx_header = self._noise_symbols[:, 0:Kt.NO_DETECTORS*self._delimiter_set]

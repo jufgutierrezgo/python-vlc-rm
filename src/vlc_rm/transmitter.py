@@ -355,6 +355,7 @@ class Transmitter:
             'ru'
         )
         self._iler_matrix = np.zeros((Kt.NO_LEDS, Kt.NO_LEDS))
+        self._iler_vector = np.zeros((Kt.NO_LEDS))
 
         for i in range(Kt.NO_LEDS):
             self._iler_matrix[i, i] = 1/lx.spd_to_ler(
@@ -364,6 +365,7 @@ class Transmitter:
                         spd_data[:, i]
                     ])
                 )
+            self._iler_vector[i] = self._iler_matrix[i, i]
 
     def _avg_power_color(self) -> None:
         """
