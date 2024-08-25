@@ -95,6 +95,7 @@ is created as follows:
     # Import Transmitter
     from vlc_rm.transmitter import Transmitter
 
+    # Create a transmitter-type object
     transmitter = Transmitter(
         "Led1",
         position=[2.5, 2.5, 3],
@@ -138,9 +139,10 @@ which produces an output similar to::
     [0.0000e+00 1.8197e-03 0.0000e+00]
     [0.0000e+00 0.0000e+00 1.1960e-02]] 
     Average Power per Channel Color: 
-    [1.9001e+01 9.0983e+00 5.9802e+01] 
+    [6.3336e+00 3.0328e+00 1.9934e+01] 
     Total Power emmited by the Transmitter [W]: 
-    87.90098303080882  
+    29.30032767693627 
+ 
 
 The spectral power distribution of the LED transmitter according to the central wavelengths,
 the FWDM, and the luminous flux can be plotted with:
@@ -167,16 +169,14 @@ and creating a photodetector-type object as follows:
 
     pd = Photodetector(
         "PD1",
-        position=[2.5, 2.5, 0.85],
+        position=position6,
         normal=[0, 0, 1],
         area=(1e-4)/3,
-    #     area=1e-4,
         fov=85,
-        sensor='S10917-35GT',
-        # sensor='TCS3103-04',
+        sensor='S10917-35GT',        
         idark=1e-12,
-        gain=5e5
-        )
+        gain=3e5
+                )
 
 
 'photodetector' object is defined from six parameters. The **position** parameter 
@@ -211,9 +211,9 @@ which produces an output similar to::
 
     List of parameters for photodetector PD1: 
     Name: PD1 
-    Position [x y z]: [1.5000e+00 1.5000e+00 8.5000e-01] 
+    Position [x y z]: [5.0000e-01 5.0000e-01 8.5000e-01] 
     Normal Vector [x y z]: [[0.0000e+00 0.0000e+00 1.0000e+00]] 
-    Active Area[m2]: 3.3333333249174757e-07 
+    Active Area[m2]: 3.333333370392211e-05 
     FOV: 85.0 
     Sensor: S10917-35GT
 
@@ -247,7 +247,7 @@ of the smaller square areas. The accuracy of the model depends on the resolution
         "Room",
         size=[5, 5, 3],
         no_reflections=10,
-        resolution=1/8,
+        resolution=1/10,
         ceiling=[0.82, 0.71, 0.64],
         west=[0.82, 0.71, 0.64],
         north=[0.82, 0.71, 0.64],
@@ -279,11 +279,12 @@ The simulation of the indoor CSK-based VLC is carried out by the 'RecursiveModel
 
 .. code-block:: python
 
+    # Define Channel Model
     channel_model = Recursivemodel(
-        name="ChannelModelA",
-        led=transmitter,
-        photodetector=photodetector,
-        room=indoor_env
+        "ChannelModelA",
+        transmitter,
+        pd,
+        room
         )
 
 the 'channel_model' is an object that is defined from the **transmitter**, **pd**, and **room** objects. The 
@@ -313,17 +314,25 @@ obtaining an output similar to::
     |=============== Simulation results ================|
     Name: ChannelModelA 
     DC-Gain with respect to 1-W [W]: 
-    [1.2142e-06 9.3655e-07 8.0775e-07] 
+    [1.6055e-06 1.3262e-06 1.1948e-06] 
+    Crosstalk Matrix at 1-lm: 
+    [[9.6084e-10 1.6685e-13 4.8472e-14]
+    [1.4465e-11 4.7186e-10 2.0704e-10]
+    [4.9794e-12 7.7653e-11 2.6775e-09]] 
     Crosstalk Matrix at 5000.0-lm: 
-    [[1.8167e+00 2.9456e-04 8.1922e-05]
-    [2.7349e-02 8.3303e-01 3.4992e-01]
-    [9.4146e-03 1.3709e-01 4.5251e+00]] 
+    [[4.8042e-06 8.3424e-10 2.4236e-10]
+    [7.2324e-08 2.3593e-06 1.0352e-06]
+    [2.4897e-08 3.8826e-07 1.3387e-05]] 
+    Crosstalk Matrix with photodetector gain of 300000.0: 
+    [[1.4413e+00 2.5027e-04 7.2709e-05]
+    [2.1697e-02 7.0779e-01 3.1056e-01]
+    [7.4691e-03 1.1648e-01 4.0162e+00]] 
     Lighting Parameters at 5000.0-lm 
-    Illuminance [lx]: [[4.4377e+02]] 
-    CIExyz: [[2.7689e-01 2.1399e-01 5.0912e-01]] 
-    CCT: [[-8.3461e+04]] 
-    CRI: [[1.4394e+01]] 
-    Min-Distance: 0.5341463408213712 
+    Illuminance [lx]: [[2.0633e+02]] 
+    CIExyz: [[2.6498e-01 2.0869e-01 5.2632e-01]] 
+    CCT: [[-3.2745e+06]] 
+    CRI: [[1.4219e+01]] 
+    Min-Distance: 3.1092800940853775e-10 
 
 
 The VLC-RM package reports the radiometric power received at the photodetector
@@ -337,11 +346,11 @@ package (https://pypi.org/project/luxpy/) to compute photometric and colorimetri
 
 
 
-Documentation
-=============
+.. Documentation
+.. =============
 
 
-https://python-vlc-rm.readthedocs.io/
+.. https://python-vlc-rm.readthedocs.io/
 
 
 Development
