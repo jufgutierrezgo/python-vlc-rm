@@ -314,25 +314,25 @@ obtaining an output similar to::
     |=============== Simulation results ================|
     Name: ChannelModelA 
     DC-Gain with respect to 1-W [W]: 
-    [1.6055e-06 1.3262e-06 1.1948e-06] 
+    [2.0031e-06 1.7320e-06 1.6059e-06] 
     Crosstalk Matrix at 1-lm: 
-    [[9.6084e-10 1.6685e-13 4.8472e-14]
-    [1.4465e-11 4.7186e-10 2.0704e-10]
-    [4.9794e-12 7.7653e-11 2.6775e-09]] 
+    [[1.1988e-09 2.1790e-13 6.5149e-14]
+    [1.8048e-11 6.1623e-10 2.7827e-10]
+    [6.2127e-12 1.0141e-10 3.5986e-09]] 
     Crosstalk Matrix at 5000.0-lm: 
-    [[4.8042e-06 8.3424e-10 2.4236e-10]
-    [7.2324e-08 2.3593e-06 1.0352e-06]
-    [2.4897e-08 3.8826e-07 1.3387e-05]] 
+    [[5.9941e-06 1.0895e-09 3.2574e-10]
+    [9.0238e-08 3.0812e-06 1.3914e-06]
+    [3.1064e-08 5.0706e-07 1.7993e-05]] 
     Crosstalk Matrix with photodetector gain of 300000.0: 
-    [[1.4413e+00 2.5027e-04 7.2709e-05]
-    [2.1697e-02 7.0779e-01 3.1056e-01]
-    [7.4691e-03 1.1648e-01 4.0162e+00]] 
+    [[1.7982e+00 3.2685e-04 9.7723e-05]
+    [2.7071e-02 9.2435e-01 4.1741e-01]
+    [9.3191e-03 1.5212e-01 5.3979e+00]] 
     Lighting Parameters at 5000.0-lm 
-    Illuminance [lx]: [[2.0633e+02]] 
-    CIExyz: [[2.6498e-01 2.0869e-01 5.2632e-01]] 
-    CCT: [[-3.2745e+06]] 
-    CRI: [[1.4219e+01]] 
-    Min-Distance: 3.1092800940853775e-10 
+    Illuminance [lx]: [[2.6705e+02]] 
+    CIExyz: [[2.5739e-01 2.0525e-01 5.3736e-01]] 
+    CCT: [[-3.8330e+06]] 
+    CRI: [[1.4302e+01]] 
+    Min-Distance: 4.140491133537268e-10  
 
 
 The VLC-RM package reports the radiometric power received at the photodetector
