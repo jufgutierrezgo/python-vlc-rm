@@ -50,7 +50,7 @@ class Recursivemodel:
                 "Indoor environment attribute must be an object type IndoorEnv.")
 
         self._channel_dcgain = np.zeros((1, Kt.NO_LEDS))
-        self._channelmatrix = np.zeros(
+        self._channelmatrix_noflux_nogain = np.zeros(
             (Kt.NO_DETECTORS, Kt.NO_LEDS),
             dtype=np.float32
             )
@@ -68,7 +68,7 @@ class Recursivemodel:
 
     @property
     def channelmatrix(self):
-        return self._channelmatrix
+        return self._channelmatrix_noflux_nogain
 
     @property
     def illuminance(self):
@@ -95,7 +95,7 @@ class Recursivemodel:
             f'\n|=============== Simulation results ================|\n'
             f'Name: {self.name} \n'
             f'DC-Gain with respect to 1-W [W]: \n {self._channel_dcgain} \n'
-            f'Crosstalk Matrix at 1-lm: \n{self._channelmatrix} \n'            
+            f'Crosstalk Matrix at 1-lm: \n{self._channelmatrix_noflux_nogain} \n'            
             f'Crosstalk Matrix at {self._led._luminous_flux}-lm: \n {self._channelmatrix_flux_nogain} \n'
             f'Crosstalk Matrix with photodetector gain of {self._photodetector._gain}: \n {self._channelmatrix_flux_gain} \n'            
             f'Lighting Parameters at {self._led._luminous_flux}-lm \n'
@@ -103,7 +103,7 @@ class Recursivemodel:
             f'CIExyz: {self._xyz} \n'
             f'CCT: {self._cct} \n'
             f'CRI: {self._cri} \n'
-            f'Min-Distance: {self._min_distance} \n'
+            f'Min-Distance at {self._led._luminous_flux}-lm and photo-gain of {self._photodetector._gain}: \n {self._min_distance} \n'
         )
 
     def simulate_channel(self) -> None:
@@ -430,16 +430,16 @@ class Recursivemodel:
 
         for j in range(Kt.NO_LEDS):
             for i in range(Kt.NO_DETECTORS):
-                self._channelmatrix[i][j] = np.dot(
+                self._channelmatrix_noflux_nogain[i][j] = np.dot(
                     self._spd_data_for_h[:, j], self._photodetector._responsivity[:, i+1])
         
-        self._channelmatrix_flux_nogain = self._led._luminous_flux * self._channelmatrix
+        self._channelmatrix_flux_nogain = self._led._luminous_flux * self._channelmatrix_noflux_nogain
         self._channelmatrix_flux_gain = self._photodetector._gain * self._channelmatrix_flux_nogain
     
     def _compute_normalized_channelmatrix(self) -> None:
         """ This function computes channel matrix normalized between 0 and 1."""
 
-        self._norm_channelmatrix = self._channelmatrix/np.max(self._channelmatrix)
+        self._norm_channelmatrix = self._channelmatrix_noflux_nogain/np.max(self._channelmatrix_noflux_nogain)
 
     def _gaussian_sprectrum(self, x, mean, std) -> np.ndarray:
         return (1 / (std * np.sqrt(2*np.pi))) * np.exp(-((x-mean)**2) / (2*std**2))
@@ -448,7 +448,7 @@ class Recursivemodel:
         """ This function computes the received constellation using the channel matrix """
 
         self._rx_constellation = np.dot(
-            self._channelmatrix,
+            self._channelmatrix_flux_gain,
             self._led._constellation
             )
         # print(self._led._constellation)
