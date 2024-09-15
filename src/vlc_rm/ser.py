@@ -238,7 +238,7 @@ class SymbolErrorRate:
         """
 
         self._symbols_rx_1lm = np.matmul(            
-                self._recursivemodel._channelmatrix,
+                self._recursivemodel._channelmatrix_noflux_nogain,
                 self._symbols_csk
             )
         
@@ -352,7 +352,7 @@ class SymbolErrorRate:
 
         return snr_db / Kt.NO_DETECTORS
         
-    def _decode_symbols(self):
+    def _decode_symbols(self, flux):
         """
         This funtion decodes the CSK symbols from the self._noise_symbols
         """
@@ -380,7 +380,11 @@ class SymbolErrorRate:
             )
         
         # computes the inverse channel matrix from transmitted header
-        self._rx_channel_inverse = np.linalg.inv(avg_bases)
+        # self._rx_channel_inverse = np.linalg.inv(avg_bases)
+
+        # compute the inverse channel matrix using the estimated matrix
+        photogain = self._recursivemodel._photodetector._gain        
+        self._rx_channel_inverse = np.linalg.inv(flux * photogain * self._recursivemodel._channelmatrix_noflux_nogain)
 
         # apply the inverse matrix for decoding
         self._inverse_rx_symbols = np.matmul(
@@ -425,7 +429,7 @@ class SymbolErrorRate:
                     self._recursivemodel._photodetector._bandwidth
                     )
                  
-                self._decode_symbols()
+                self._decode_symbols(flux)
                 self._ser_values[index] = self._compute_error_rate()
                 print("Symbol error rate computed for {} lumens".format(flux))
 
