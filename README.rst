@@ -169,7 +169,7 @@ and creating a photodetector-type object as follows:
 
     pd = Photodetector(
         "PD1",
-        position=position6,
+        position=[0.5, 0.5, 0.85],
         normal=[0, 0, 1],
         area=(1e-4)/3,
         fov=85,
