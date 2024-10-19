@@ -17,16 +17,32 @@ class Transmitter:
     def __init__(
         self,
         name: str,
+        led_type: str,
+        reference: str,
         position: np.ndarray,
         normal: np.ndarray,
-        wavelengths: np.ndarray,
-        fwhm: np.ndarray,
+        wavelengths: np.ndarray=[400, 500, 600],
+        fwhm: np.ndarray=[10, 10, 10],
         mlambert: float = 1,        
         constellation: str = 'ieee16',
         luminous_flux: float = 1
             ) -> None:
 
         self._name = name
+
+        if isinstance(led_type, str):
+            self._led_type = led_type
+            if isinstance(reference, str):
+                self._reference = reference                
+                if self._reference == 'RGB-Phosphor':                            
+                    self._rgb_led_spectrum = np.loadtxt(
+                        Kt.LED_PATH+"rgb-phosphor-spectrum.txt")
+                else: 
+                    raise ValueError("reference must be 'RGB-Phosphor'")
+            else:
+                raise ValueError("reference must be a string")
+        else:
+            raise ValueError("type must be string either 'gaussian' or 'custom'")    
 
         self._position = np.array(position, dtype=np.float32)
         if self._position.size != 3:
@@ -283,22 +299,25 @@ class Transmitter:
         from central wavelengths and FWHM.
         """
         # Array for wavelenght points from 380nm to (782-2)nm with 1nm steps
-        self._array_wavelenghts = np.arange(380, 781, 1)
-
+        self._array_wavelenghts = np.arange(380, 781, 1) 
+        
         # Numpy Array to save the spectral power distribution of each color channel
         self._led_spd = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
         self._spd_normalized = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
 
-        
-        for i in range(Kt.NO_LEDS):
-            # Arrays to estimates the normalized spectrum of LEDs
-            self._led_spd[:, i] = self._gaussian_sprectrum(
-                self._array_wavelenghts,
-                self._wavelengths[i],
-                self._fwhm[i]/2
-                )
-            
-            self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
+        if self._led_type == 'gaussian':                     
+            for i in range(Kt.NO_LEDS):
+                # Arrays to estimates the normalized spectrum of LEDs
+                self._led_spd[:, i] = self._gaussian_sprectrum(
+                    self._array_wavelenghts,
+                    self._wavelengths[i],
+                    self._fwhm[i]/2
+                    )                
+                self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
+        elif self._led_type == 'custom':
+            self._led_spd = self._rgb_led_spectrum[:, 1:]
+            self._spd_normalized = self._led_spd/np.max(self._led_spd)
+
         
     def plot_spd_at_1lm(self):
         """
