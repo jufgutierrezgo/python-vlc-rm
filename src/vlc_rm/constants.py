@@ -16,8 +16,10 @@ class Constants:
         ]
     # directory root of the project
     ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    # directory to save channel impulse response raw data
+    # directory with sensor spectral response
     SENSOR_PATH = ROOT_DIR + "/sensors/"
+    # directory with LED spectrum data
+    LED_PATH = ROOT_DIR + "/led/"
     # directory to save histograms and graphs
     REPORT_PATH = ROOT_DIR + "/report/"
     # directory of tests
