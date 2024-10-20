@@ -316,9 +316,11 @@ class Transmitter:
                 self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
         elif self._led_type == 'custom':
             self._led_spd = self._rgb_led_spectrum[:, 1:]
-            self._spd_normalized = self._led_spd/np.max(self._led_spd)
 
-        
+            for i in range(Kt.NO_LEDS):
+                self._spd_normalized[:, i] = self._led_spd[:, i]/np.max(self._led_spd[:, i])
+
+
     def plot_spd_at_1lm(self):
         """
         This funcion plots the spectral power distribution of the light source 
