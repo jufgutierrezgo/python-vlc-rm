@@ -293,6 +293,33 @@ class Transmitter:
         plt.title("Spatial Power Disstribution of the LED")
         plt.show()
 
+    def plot_spatial_distibution_planec0_c180(self) -> None:
+
+        # Define the angular range for PHI (C0-C360)
+        phi = np.linspace(-np.pi/2, np.pi/2, 360)  # C0 to C360 in radians (0 to 2 * pi)
+
+        # Calculate the LED spatial distribution based on the Lambertian model
+        R = (self._mlambert + 1) / (2 * np.pi) * np.cos(phi) ** self._mlambert
+
+        # Normalize the intensity (R values) by dividing by the maximum value
+        R_normalized = R / np.max(R)
+
+        # Rotate by 180 degrees by shifting phi
+        phi_rotated = phi + np.pi
+
+        # Plot the distribution in polar coordinates
+        fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+        ax.plot(phi_rotated, R_normalized, label=f'Lambertian order: {self._mlambert}')
+        ax.set_title('LED Spatial Distribution (Rotated by 180°)')
+
+        # Customizing the plot
+        ax.set_theta_zero_location('N')  # Zero angle at the top (C0 direction)
+        ax.set_theta_direction(-1)  # Clockwise direction
+        ax.set_thetagrids(angles=np.arange(0, 360, 10))  # Add more polar grid angles
+
+        plt.legend()
+        plt.show()
+
     def _create_led_spd(self):
         """
         This function creates the normilized spectrum of the LEDs 
