@@ -51,16 +51,7 @@ modulation within indoor environments. The package calculates the propagation of
 in a rectangular empty room. Building upon a modified version of the Recursive Model (RM) presented in [1], 
 this package provides the DC gain at each central wavelength. In order to compute this propagation, VLC-RM 
 takes into account the spectral power distribution of multiple LEDs, the spectral response of the multiple 
-color detectors, and the reflectance of the room's walls at central wavelengths. The spectral power distribution 
-emitted by the LED-based transmitter is assumed to have a Gaussian shape, and the spatial intensity distribution 
-is assumed to be a Lambertian radiator. A grid of points is used to discretize the room's walls into smaller square areas.
-
-The package executes a recursive algorithm to obtain the DC gain at each central wavelength and the minimum 
-distance of the constellation. Based on the computation of the DC gain, the interchannel interference of the CSK-VLC 
-system is estimated, along with the lighting parameters. The recursive algorithm assumes that the room's walls are 
-perfect diffuse reflectors and that the transmitter is a point light source. The package simulates the transmission 
-of CSK symbols through an Additive White Gaussian Noise (AWGN) channel. The received symbols are computed in the 
-photodetected current space using the interchannel interference matrix and adding a gaussian noise.     
+color detectors, and the reflectance of the room's walls at central wavelengths. The spectral power distribution emitted by the LED-based transmitter is assumed to have a Gaussian shape, and the spatial intensity distribution is assumed to be a Lambertian radiator. A grid of points is used to discretize the room's walls into smaller square areas. The package executes a recursive algorithm to obtain the DC gain at each central wavelength and the minimum distance of the constellation. Based on the computation of the DC gain, the interchannel interference of the CSK-VLC system is estimated, along with the lighting parameters. The recursive algorithm assumes that the room's walls are perfect diffuse reflectors and that the transmitter is a point light source. The package simulates the transmission of CSK symbols through an Additive White Gaussian Noise (AWGN) channel. The received symbols are computed in the photodetected current space using the interchannel interference matrix and adding a gaussian noise.     
 
 
 * Free software: BSD 3-Clause License
@@ -86,8 +77,7 @@ is defined in [2].
 Defining the VLC transmitter
 ----------------------------
 
-The VLC system is composed of three elements: the LED-based transmitter, the photodetector, and the indoor environment (empty rectangular room). To define the transmitter of the VLC system
-is used the transmitter-module. The module must be imported,   and then a transmitter-type object 
+The VLC system is composed of three elements: the LED-based transmitter, the photodetector, and the indoor environment (empty rectangular room). To define the transmitter of the VLC system is used the transmitter-module. The module must be imported,   and then a transmitter-type object 
 is created as follows:
 
 .. code-block:: python
@@ -97,23 +87,19 @@ is created as follows:
 
     # Create a transmitter-type object
     transmitter = Transmitter(
-        "Led1",
-        position=[2.5, 2.5, 3],
+        name="Led1",
+        led_type='gaussian',
+        reference='RGB-Phosphor',
+        position=[1.34, 0.8, 2.30],
         normal=[0, 0, -1],
-        mlambert=1,
+        mlambert=1.3,
         wavelengths=[620, 530, 475],
         fwhm=[20, 30, 20],
-        constellation='ieee16',
+        constellation=constellation_white,
         luminous_flux=5000
                 )
-
-'transmitter' object is defined from seven parameters.  The **position** and **normal** parameters are defined by the 
-3D-cartesian coordinates. It means that the transmitter will be located in *[x=2.5, y=2.5, z=3]*.
-Through the **wavelengths** parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, 
-which means that the transmitter uses three color red (620 nm), green (530 nm), and blue (475 nm). 
-The **fwhm** parameter set the full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation**
-parameter defines the type of CSK modulation that can be simulated. **modulation** parameter is 'ieee16' 
-as default. The **luminous_flux** (in Lumens) defines the average luminous flux emitted by the transmitter.
+   
+'transmitter' object is defined from seven parameters. The **led_type** parameter could are defined as 'gaussian' or 'custom'. When 'gaussian' is used the LED spectral emission is model as a gaussian shape. When 'custom' is used the LED spectral emission is model accordning with the data in `src/vlc_rm/led` folder. The **reference** parameter define the name of the .txt file when the custom mode is used. The **position** and **normal** parameters are defined by the 3D-cartesian coordinates. It means that the transmitter will be located in *[x=2.5, y=2.5, z=3]*. Through the **wavelengths** parameter, three central wavelengths (in nanometers) are fixed as *[620, 530, 475]*, which means that the transmitter uses three color red (620 nm), green (530 nm), and blue (475 nm). The **fwhm** parameter set the full width at half maximum (in nanometers) for each color LED as *[20, 30, 20]*. The **modulation** parameter defines the type of CSK modulation that can be simulated. **modulation** parameter is 'ieee16' as default. The **luminous_flux** (in Lumens) defines the average luminous flux emitted by the transmitter.
 After defining the 'transmitter' module, the string representation of the object can be realized as follows: 
 
 .. code-block:: python
@@ -344,6 +330,10 @@ at the transmitter. The illuminance, the CIE color coordinates,
 and the color rendering index are reported. The VLR-RM uses the Luxpy Python 
 package (https://pypi.org/project/luxpy/) to compute photometric and colorimetric indexes.
 
+Notebooks with practical examples
+=================================
+
+The **examples** folder contains some useful Jupyter python examples for a basic usage of the VLC-RM package. 
 
 
 .. Documentation
