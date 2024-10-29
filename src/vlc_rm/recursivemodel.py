@@ -341,13 +341,17 @@ class Recursivemodel:
             # Arrays to estimate the RGBY gain spectrum
             spd_data_dcgain[:, i] = (
                 self._channel_dcgain[i] *
-                self._gaussian_sprectrum(
-                    self.wavelenght, 
-                    self._led._wavelengths[i], 
-                    self._led._fwhm[i]/2
-                    )             
+                self._led._led_spd[:, i]
                 )
-
+            # spd_data_dcgain[:, i] = (
+            #     self._channel_dcgain[i] *
+            #     self._gaussian_sprectrum(
+            #         self.wavelenght, 
+            #         self._led._wavelengths[i], 
+            #         self._led._fwhm[i]/2
+            #         )             
+            #     )          
+            
         self._spd_data_for_lighting = np.multiply(
                 spd_data_dcgain,
                 self._led._avg_power
@@ -360,13 +364,25 @@ class Recursivemodel:
         
         self._spd_total = np.sum(self._spd_data_for_lighting, axis=1)
 
-    def _plot_spd(self) -> None:
-        """ This function plots the SPD of QLED """
+    def plot_spd_channel(self) -> None:
+        """ This function plots the SPD """
         # plot red spd data
         for i in range(Kt.NO_LEDS):
             plt.plot(self.wavelenght, self._spd_data_for_lighting[:, i])
         
-        plt.title("Spectral Power Distribution")
+        plt.title("Spectral Power Distribution per Channel")
+        plt.xlabel("Wavelength [nm]")
+        plt.ylabel("Radiometric Power [W]")
+        plt.grid()
+        plt.show()
+    
+    def plot_spd_total(self) -> None:
+        """ This function plots the SPD """
+        # plot red spd data
+        for i in range(Kt.NO_LEDS):
+            plt.plot(self.wavelenght, self._spd_total, color='black',)
+        
+        plt.title("Total Received Spectral Power Distribution")
         plt.xlabel("Wavelength [nm]")
         plt.ylabel("Radiometric Power [W]")
         plt.grid()
