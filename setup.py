@@ -23,7 +23,7 @@ setup(
     use_scm_version={
         'local_scheme': 'dirty-tag',
         'write_to': 'src/vlc_rm/_version.py',
-        'fallback_version': '1.1.1',
+        'fallback_version': '1.2.0',
     },
     license='BSD-3-Clause',
     description='The package implements a recursive model to simulate a VLC system inside of rectangular empty room.',
