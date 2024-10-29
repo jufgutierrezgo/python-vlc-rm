@@ -32,17 +32,22 @@ class Transmitter:
 
         if isinstance(led_type, str):
             self._led_type = led_type
-            if isinstance(reference, str):
-                self._reference = reference                
-                if self._reference == 'RGB-Phosphor':                            
-                    self._rgb_led_spectrum = np.loadtxt(
-                        Kt.LED_PATH+"rgb-phosphor-spectrum.txt")
-                else: 
-                    raise ValueError("reference must be 'RGB-Phosphor'")
+            if self._led_type == 'custom':
+                if isinstance(reference, str):
+                    self._reference = reference                
+                    if self._reference == 'RGB-Phosphor':                            
+                        self._rgb_led_spectrum = np.loadtxt(
+                            Kt.LED_PATH+"rgb-phosphor-spectrum.txt")
+                    else: 
+                        raise ValueError("reference must be 'RGB-Phosphor'")
+                else:
+                    raise ValueError("reference must be a string")
+            elif self._led_type == 'gaussian':
+                pass
             else:
-                raise ValueError("reference must be a string")
+                raise ValueError("type must be string either 'gaussian' or 'custom'")    
         else:
-            raise ValueError("type must be string either 'gaussian' or 'custom'")    
+            raise ValueError("type must be string either 'gaussian' or 'custom'")
 
         self._position = np.array(position, dtype=np.float32)
         if self._position.size != 3:
