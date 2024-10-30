@@ -56,34 +56,34 @@ class Indoorenv:
                 "Resolution of points must be a real number greater than zero.")
 
         self._ceiling = np.array(ceiling)
-        if self._ceiling.size != Kt.NO_LEDS:
+        if self._ceiling.size != Kt.NO_WAVELENGTHS:
             raise ValueError(
-                "Dimension of ceiling reflectance array must be equal to the number of LEDs.")
+                "Dimension of ceiling reflectance array must be equal to the number of wavelengths.")
 
         self._west = np.array(west)
-        if self._west.size != Kt.NO_LEDS:
+        if self._west.size != Kt.NO_WAVELENGTHS:
             raise ValueError(
-                "Dimension of north reflectance array must be equal to the number of LEDs.")
+                "Dimension of north reflectance array must be equal to the number of wavelengths.")
                         
         self._north = np.array(north)
-        if self._north.size != Kt.NO_LEDS:
+        if self._north.size != Kt.NO_WAVELENGTHS:
             raise ValueError(
-                "Dimension of north reflectance array must be equal to the number of LEDs.")
+                "Dimension of north reflectance array must be equal to the number of wavelengths.")
         
         self._east = np.array(east)
-        if self._east.size != Kt.NO_LEDS:
+        if self._east.size != Kt.NO_WAVELENGTHS:
             raise ValueError(
-                "Dimension of east reflectance array must be equal to the number of LEDs.")
+                "Dimension of east reflectance array must be equal to the number of wavelengths.")
 
         self._south = np.array(south)
-        if self._south.size != Kt.NO_LEDS:
+        if self._south.size != Kt.NO_WAVELENGTHS:
             raise ValueError(
-                "Dimension of south reflectance array must be equal to the number of LEDs.")
+                "Dimension of south reflectance array must be equal to the number of wavelengths.")
 
         self._floor = np.array(floor)
-        if self._floor.size != Kt.NO_LEDS:
+        if self._floor.size != Kt.NO_WAVELENGTHS:
             raise ValueError(
-                "Dimension of floor reflectance array must be equal to the number of LEDs.")
+                "Dimension of floor reflectance array must be equal to the number of wavelengths.")
 
     @property
     def name(self):
@@ -357,8 +357,8 @@ class Indoorenv:
             west_reflectance,
             north_reflectance,
             floor_reflectance,
-            np.zeros((1, Kt.NO_LEDS)),
-            np.zeros((1, Kt.NO_LEDS))),
+            np.zeros((1, Kt.NO_WAVELENGTHS)),
+            np.zeros((1, Kt.NO_WAVELENGTHS))),
             axis=0, dtype=np.float16)
 
         self.deltaA = (
