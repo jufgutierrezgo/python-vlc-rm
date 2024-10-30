@@ -28,6 +28,10 @@ class Constants:
     NO_LEDS = 3
     # Numbers of Photodetector Channels
     NO_DETECTORS = 3
+    # Numbers of Wavelenghts for Gain estimation
+    NO_WAVELENGTHS = 3
+    # Numbers of Wavelenghts for Gain estimation
+    SIZE_ARRAY_WAVELENGTHS = 401
     # Speed of light
     SPEED_OF_LIGHT = 299792458
     # Boltzman's constant
