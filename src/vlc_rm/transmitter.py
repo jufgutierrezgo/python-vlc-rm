@@ -331,7 +331,7 @@ class Transmitter:
         from central wavelengths and FWHM.
         """
         # Array for wavelenght points from 380nm to (782-2)nm with 1nm steps
-        self._array_wavelenghts = np.arange(380, 781, 1) 
+        self._array_wavelenghts = np.linspace(380, 780, Kt.SIZE_ARRAY_WAVELENGTHS)
         
         # Numpy Array to save the spectral power distribution of each color channel
         self._led_spd = np.zeros((self._array_wavelenghts.size, Kt.NO_LEDS))
