@@ -159,7 +159,7 @@ class Recursivemodel:
         dis2 = np.zeros((
             self._room.no_points, self._room.no_points), dtype=np.float32)
 
-        h0_se = np.zeros((self._room.no_points, Kt.NO_LEDS), dtype=np.float32)
+        h0_se = np.zeros((self._room.no_points, Kt.NO_WAVELENGTHS), dtype=np.float32)
         h0_er = np.zeros((self._room.no_points, 1), dtype=np.float32)
 
         # Time delay between source and each cells
@@ -221,8 +221,8 @@ class Recursivemodel:
 
             # Creates the array to save h_k reflections response
             # and last h_er response
-            self.h_k.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float32))
-            hlast_er.append(np.zeros((self._room.no_points, Kt.NO_LEDS), np.float32))
+            self.h_k.append(np.zeros((self._room.no_points, Kt.NO_WAVELENGTHS), np.float32))
+            hlast_er.append(np.zeros((self._room.no_points, Kt.NO_WAVELENGTHS), np.float32))
 
             # Creates the array to save time-delay reflections
             # response and last h_er
@@ -273,7 +273,7 @@ class Recursivemodel:
                 # print("h0_er array->:",h0_er[:,0])
 
                 # Previous h_er RGBY vectors of magnitude for LoS
-                hlast_er[i] = np.repeat(h0_er, repeats=Kt.NO_LEDS, axis=1)
+                hlast_er[i] = np.repeat(h0_er, repeats=Kt.NO_WAVELENGTHS, axis=1)
 
                 # Current vector for h1 impulse response for RGBY
                 # Red-Green-Blue-Yellow
@@ -297,7 +297,7 @@ class Recursivemodel:
                     int(tx_index_point), :] + delay_hlast_er[i]
 
                 # Computes the last h_er to compute h_k
-                for color in range(Kt.NO_LEDS):
+                for color in range(Kt.NO_WAVELENGTHS):
 
                     hlast_er[i][:, color] = np.sum(
                         np.multiply(
@@ -318,10 +318,10 @@ class Recursivemodel:
         from LoS and h_k reflections
         """
 
-        self.h_dcgain = np.zeros((self._room.no_reflections+1, Kt.NO_LEDS), np.float32)
+        self.h_dcgain = np.zeros((self._room.no_reflections+1, Kt.NO_WAVELENGTHS), np.float32)
 
         for i in range(0, self._room.no_reflections+1):
-            self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:Kt.NO_LEDS], axis=0)
+            self.h_dcgain[i, :] = np.sum(self.h_k[i][0:-2, 0:Kt.NO_WAVELENGTHS], axis=0)
 
         self._channel_dcgain = np.sum(self.h_dcgain, axis=0)
         
@@ -329,28 +329,27 @@ class Recursivemodel:
         """
         This function creates a SPD of LED from central wavelengths,
         FWHM and DC gain of channel
-        """
+        """               
 
-        # Array for wavelenght points from 380nm to (782-2)nm with 2nm steps
-        self.wavelenght = np.arange(380, 781, 1)
+        # Array for wavelenght points from 380nm to  780nm with 1nm steps         
+        self.wavelenght = np.linspace(380, 780, Kt.SIZE_ARRAY_WAVELENGTHS)
 
         # Numpy Array to save the spectral power distribution of each color channel
-        spd_data_dcgain = np.zeros((self.wavelenght.size, Kt.NO_LEDS))
+        spd_data_dcgain = np.zeros((self.wavelenght.size, Kt.NO_WAVELENGTHS))
 
-        for i in range(Kt.NO_LEDS):
-            # Arrays to estimate the RGBY gain spectrum
-            spd_data_dcgain[:, i] = (
-                self._channel_dcgain[i] *
-                self._led._led_spd[:, i]
-                )
-            # spd_data_dcgain[:, i] = (
-            #     self._channel_dcgain[i] *
-            #     self._gaussian_sprectrum(
-            #         self.wavelenght, 
-            #         self._led._wavelengths[i], 
-            #         self._led._fwhm[i]/2
-            #         )             
-            #     )          
+        if(Kt.NO_WAVELENGTHS == Kt.NO_LEDS):
+            for i in range(Kt.NO_LEDS):
+                # Arrays to estimate the RGBY gain spectrum
+                spd_data_dcgain[:, i] = (
+                    self._channel_dcgain[i] *
+                    self._led._led_spd[:, i]
+                    )
+        elif(Kt.NO_WAVELENGTHS == Kt.SIZE_ARRAY_WAVELENGTHS):
+                # Arrays to estimate the LED gain spectrum
+                spd_data_dcgain = self._channel_dcgain[::-1].reshape(-1,1) * self._led._led_spd
+        else:
+            raise ValueError(
+                "Number of wavelengths must be equal to NO_LED or SIZE_WAVELENGTHS ARRAY. See Constant module.")
             
         self._spd_data_for_lighting = np.multiply(
                 spd_data_dcgain,
