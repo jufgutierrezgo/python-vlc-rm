@@ -43,7 +43,7 @@ class Indoorenv:
         if not isinstance(self._no_reflections, int):
             raise ValueError(
                 "No of reflections must be a positive integer between 0 and 10.")
-        if self._no_reflections < 0 or self._no_reflections > 10:
+        if self._no_reflections < 0 or self._no_reflections > 20:
             raise ValueError(
                 "No of reflections must be a real integer between 0 and 10.")
         
