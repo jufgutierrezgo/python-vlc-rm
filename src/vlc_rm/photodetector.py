@@ -61,6 +61,9 @@ class Photodetector:
         elif self.sensor == 'S10917-35GT':
             self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
+        elif self.sensor == 'TCS34725':
+            self._responsivity = np.loadtxt(
+                Kt.SENSOR_PATH+"ResponsivityTCS34725.txt")
             # print("Responsivity loaded succesfully")
         elif self.sensor == '':
             raise ValueError("Specify sensor reference")
@@ -150,6 +153,9 @@ class Photodetector:
         elif self.sensor == 'S10917-35GT':
             self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityS10917-35GT.txt")
+        elif self.sensor == 'TCS34725':
+            self._responsivity = np.loadtxt(
+                Kt.SENSOR_PATH+"ResponsivityTCS34725.txt")
         else:
             raise ValueError(f"Unknown value for sensor reference{sensor}.")
 
