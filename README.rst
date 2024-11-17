@@ -59,11 +59,13 @@ color detectors, and the reflectance of the room's walls at central wavelengths.
 Installation
 ============
 
-::
+.. ::
 
-    pip install vlc-rm
+..    pip install vlc-rm
 
-You can also install the in-development version with::
+.. You can also install the in-development version with::
+
+You can install the in-development version with::
 
     pip install https://github.com/jufgutierrezgo/python-vlc-rm/archive/main.zip
 
