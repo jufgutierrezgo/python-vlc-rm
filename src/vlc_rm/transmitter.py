@@ -16,11 +16,11 @@ class Transmitter:
     
     def __init__(
         self,
-        name: str,
-        led_type: str,
-        reference: str,
-        position: np.ndarray,
-        normal: np.ndarray,
+        name: str = "LED",
+        led_type: str = "gaussian",
+        reference: str = "None",
+        position: np.ndarray = [1, 1, 1],
+        normal: np.ndarray = [0, -1, 0],
         wavelengths: np.ndarray=[400, 500, 600],
         fwhm: np.ndarray=[10, 10, 10],
         mlambert: float = 1,        
