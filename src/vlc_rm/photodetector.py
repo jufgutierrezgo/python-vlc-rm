@@ -12,24 +12,25 @@ class Photodetector:
     This class defines the photodetector features
 
     """
-
-    SENSORS_LIST = {
-        'TCS3103-04',
-        'S10917-35GT'
-        }
-
+    
     def __init__(
         self,
-        name: str,
-        position: np.ndarray,
-        normal: np.ndarray,
-        area: np.ndarray,
+        name: str = "PD",
+        position: np.ndarray = [1, 1, 0],
+        normal: np.ndarray = [0, 1, 0],
+        area: np.ndarray = "1e-4",
         sensor: str = " ",
         fov: float = 90,
         idark: float = 1e-12,
         bandwidth: float = 1e7,
         gain: float = 1
     ) -> None:
+
+        SENSORS_LIST = {
+        'TCS3103-04',
+        'S10917-35GT',
+        'TCS34725'
+        }
 
         self._name = name
 
@@ -65,11 +66,9 @@ class Photodetector:
             self._responsivity = np.loadtxt(
                 Kt.SENSOR_PATH+"ResponsivityTCS34725.txt")
             # print("Responsivity loaded succesfully")
-        elif self.sensor == '':
-            raise ValueError("Specify sensor reference")
         else:
-            raise ValueError("Sensor reference not valid")
-
+            raise ValueError(f"Specify sensor one of the avalable references {SENSORS_LIST}.")
+        
         self._idark = np.float32(idark)
         if self._idark <= 0:
             raise ValueError(
