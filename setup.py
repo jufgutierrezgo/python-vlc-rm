@@ -71,9 +71,9 @@ setup(
     keywords=[
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.10',
     install_requires=[
-        'numpy>=1.23.3',
+        'numpy>=2.0.0',
         'luxpy>=1.9.8',
         'scipy>=1.9.3',        
         'matplotlib>=3.1.2',  
