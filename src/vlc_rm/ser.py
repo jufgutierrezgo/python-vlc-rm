@@ -8,6 +8,8 @@ import numpy as np
 import luxpy as lx
 # Library to plot SER
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
 
 
 
@@ -72,7 +74,8 @@ class SymbolErrorRate:
             self,
             min_flux: float = 1,
             max_flux: float = 50,
-            points_flux: int = 10        
+            points_flux: int = 10,
+            plot_constellation: bool = False
             ) -> None:
         """
         This function simulates the transmission of the CSK by changing 
@@ -102,7 +105,7 @@ class SymbolErrorRate:
         
         self._create_symbols()
         self._transmit_symbols()
-        self._compute_ser_curve(mode="flux")
+        self._compute_ser_curve(mode='flux', plot_on=plot_constellation)
 
         print("SER computation done!\n")
 
@@ -110,7 +113,7 @@ class SymbolErrorRate:
             self,
             min_snr: float = 0,
             max_snr: float = 50,
-            points_snr: int = 10
+            points_snr: int = 10            
             ) -> None:
         """
         This function simulates the transmission of the CSK by changing 
@@ -137,7 +140,7 @@ class SymbolErrorRate:
         
         self._create_symbols()
         self._transmit_symbols()
-        self._compute_ser_curve("snr")
+        self._compute_ser_curve('snr')
 
     def plot_ser(self, mode) -> None:
         """
@@ -201,6 +204,65 @@ class SymbolErrorRate:
             delimiter=' '
             )
 
+    def plot_noisy_rx_constellation(self, flux):
+        """ This function plots the noisy-received symbols """    
+        # Create 3D scatter plot
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        
+        ax.view_init(45, 45)
+        
+        # Plot noise symbols first (background)
+        ax.scatter(
+            self._noise_symbols[0, Kt.NO_DETECTORS*self._delimiter_set:],
+            self._noise_symbols[1, Kt.NO_DETECTORS*self._delimiter_set:],
+            self._noise_symbols[2, Kt.NO_DETECTORS*self._delimiter_set:],
+            s=0.1,            
+            color='gray',            
+            label='Noise Symbols'
+        )
+
+        # Plot received symbols last (foreground)
+        ax.scatter(
+            flux * self._symbols_rx_1lm[0, Kt.NO_DETECTORS*self._delimiter_set:],
+            flux * self._symbols_rx_1lm[1, Kt.NO_DETECTORS*self._delimiter_set:],
+            flux * self._symbols_rx_1lm[2, Kt.NO_DETECTORS*self._delimiter_set:],
+            s=10,            
+            color='gray',
+            alpha=0.5,  # Make noise symbols semi-transparent
+            label='Received Symbols'
+        )
+
+        # Set font size for axis labels and title
+        plt.rcParams['font.size'] = 14
+
+        # Set limits for the axes
+        x_lim = np.max(self._noise_symbols[0, Kt.NO_DETECTORS*self._delimiter_set:])
+        y_lim = np.max(self._noise_symbols[1, Kt.NO_DETECTORS*self._delimiter_set:])
+        z_lim = np.max(self._noise_symbols[2, Kt.NO_DETECTORS*self._delimiter_set:])
+        
+        # Draw 3D axis
+        ax.quiver([0], [0], [0], [x_lim], [0], [0], color='r')
+        ax.quiver([0], [0], [0], [0], [y_lim], [0], color='g')
+        ax.quiver([0], [0], [0], [0], [0], [z_lim], color='b')
+        
+        # Set axis limits
+        ax.set_xlim3d([0.0, x_lim])
+        ax.set_ylim3d([0.0, y_lim])
+        ax.set_zlim3d([0.0, z_lim])
+
+        # Add labels and title
+        ax.set_xlabel('R-axis')
+        ax.set_ylabel('G-axis')
+        ax.set_zlabel('B-axis')
+        plt.title("Received Constellation in Signal Space at {} lm".format(flux))
+
+        # Add a legend
+        ax.legend()
+
+        # Display plot
+        plt.show()
+
     def _create_symbols(self) -> None:
         """
         This function creates the symbols array to transmit.
@@ -208,7 +270,7 @@ class SymbolErrorRate:
         # create a random symbols identifier (decimal) for payload
         self._symbols_decimal = np.random.randint(
                 0,
-                self._recursivemodel._led._order_csk-1,
+                self._recursivemodel._led._order_csk,
                 (self._no_symbols),
                 dtype='int16'
             )
@@ -365,7 +427,7 @@ class SymbolErrorRate:
         self._rx_payload = self._noise_symbols[:, Kt.NO_DETECTORS*self._delimiter_set:]
 
         # split the header into base-set
-        bases_split = np.array(
+        bases_split = np.array(        
             np.array_split(
                 self._rx_header,
                 self._delimiter_set,
@@ -384,7 +446,9 @@ class SymbolErrorRate:
 
         # compute the inverse channel matrix using the estimated matrix
         photogain = self._recursivemodel._photodetector._gain        
-        self._rx_channel_inverse = np.linalg.inv(flux * photogain * self._recursivemodel._channelmatrix_noflux_nogain)
+        self._rx_channel_inverse = np.linalg.inv(
+            flux * photogain * self._recursivemodel._channelmatrix_noflux_nogain
+            )
 
         # apply the inverse matrix for decoding
         self._inverse_rx_symbols = np.matmul(
@@ -411,7 +475,7 @@ class SymbolErrorRate:
         # count different values and divide above the number of symbols        
         return np.count_nonzero(self._symbols_decimal != self._index_min)/self._no_symbols
 
-    def _compute_ser_curve(self, mode) -> None:
+    def _compute_ser_curve(self, mode, plot_on=False) -> None:
         """
         This function create a symbol error rate curve  
         """
@@ -431,7 +495,12 @@ class SymbolErrorRate:
                  
                 self._decode_symbols(flux)
                 self._ser_values[index] = self._compute_error_rate()
+
+                if plot_on == True:
+                    self.plot_noisy_rx_constellation(flux=flux)
+
                 print("Symbol error rate computed for {} lumens".format(flux))
+
 
         elif mode == 'snr':
             self._snr_values = np.linspace(self._min_snr, self._max_snr, self._points_snr+1)
