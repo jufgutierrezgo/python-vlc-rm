@@ -204,7 +204,7 @@ class SymbolErrorRate:
             delimiter=' '
             )
 
-    def plot_noisy_rx_constellation(self, flux):
+    def plot_noisy_rx_symbols(self, flux):
         """ This function plots the noisy-received symbols """    
         # Create 3D scatter plot
         fig = plt.figure()
@@ -232,7 +232,7 @@ class SymbolErrorRate:
             alpha=0.5,  # Make noise symbols semi-transparent
             label='Received Symbols'
         )
-
+        
         # Set font size for axis labels and title
         plt.rcParams['font.size'] = 14
 
@@ -241,6 +241,73 @@ class SymbolErrorRate:
         y_lim = np.max(self._noise_symbols[1, Kt.NO_DETECTORS*self._delimiter_set:])
         z_lim = np.max(self._noise_symbols[2, Kt.NO_DETECTORS*self._delimiter_set:])
         
+        # Draw 3D axis
+        ax.quiver([0], [0], [0], [np.max([x_lim, y_lim, z_lim])], [0], [0], color='r')
+        ax.quiver([0], [0], [0], [0], [np.max([x_lim, y_lim, z_lim])], [0], color='g')
+        ax.quiver([0], [0], [0], [0], [0], [np.max([x_lim, y_lim, z_lim])], color='b')
+        
+        # # Set axis limits
+        # ax.set_xlim3d([0.0, x_lim])
+        # ax.set_ylim3d([0.0, y_lim])
+        # ax.set_zlim3d([0.0, z_lim])
+
+        ax.set_xlim3d([0.0, np.max([x_lim, y_lim, z_lim])])
+        ax.set_ylim3d([0.0, np.max([x_lim, y_lim, z_lim])])
+        ax.set_zlim3d([0.0, np.max([x_lim, y_lim, z_lim])])
+
+        # Add labels and title
+        ax.set_xlabel('R-axis')
+        ax.set_ylabel('G-axis')
+        ax.set_zlabel('B-axis')
+        plt.title("Received Constellation in Signal Space at {} lm".format(flux))
+        
+        # Add a legend
+        ax.legend()
+
+        # Display plot
+        plt.show()
+    
+    def plot_decoded_symbols(self, flux):
+        """ This function plots the noisy-received symbols """    
+        # Create 3D scatter plot
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        
+        ax.view_init(45, 45)
+        
+        # Plot received symbols last (foreground)
+        ax.scatter(
+            self._inverse_rx_symbols[0, :],
+            self._inverse_rx_symbols[1, :],
+            self._inverse_rx_symbols[2, :],
+            s=0.2,            
+            color='red',
+            alpha=0.5,  # Make noise symbols semi-transparent
+            label='Received symbols'
+        )
+
+        ax.scatter(
+            self._constellation[0, :],
+            self._constellation[1, :],
+            self._constellation[2, :],
+            s=10,            
+            color='blue',
+            alpha=0.5,  # Make noise symbols semi-transparent
+            label='Reference symbols'
+        )
+        
+        # Set font size for axis labels and title
+        plt.rcParams['font.size'] = 14
+
+        # Set limits for the axes
+        # x_lim = np.max(self._inverse_rx_symbols[0, :])
+        # y_lim = np.max(self._inverse_rx_symbols[1, :])
+        # z_lim = np.max(self._inverse_rx_symbols[2, :])
+
+        x_lim = 1
+        y_lim = 1
+        z_lim = 1
+                
         # Draw 3D axis
         ax.quiver([0], [0], [0], [x_lim], [0], [0], color='r')
         ax.quiver([0], [0], [0], [0], [y_lim], [0], color='g')
@@ -255,8 +322,8 @@ class SymbolErrorRate:
         ax.set_xlabel('R-axis')
         ax.set_ylabel('G-axis')
         ax.set_zlabel('B-axis')
-        plt.title("Received Constellation in Signal Space at {} lm".format(flux))
-
+        plt.title("Decode symbols at {} lm".format(flux))
+        
         # Add a legend
         ax.legend()
 
@@ -380,6 +447,11 @@ class SymbolErrorRate:
             # Convert SNR to decibels (dB)
             snr_db += 10 * np.log10(snr_linear)
 
+            # Print the noise levels
+            print("Thermal noise VAR: {}\n Shot noise VAR: {}".format(thermal_sigma2 ** 0.5, shot_sigma2 ** 0.5))
+            print("Total noise: {}".format(std_deviation))
+            print("Signal noiseless: {}".format(x_current))
+            print("Signal noise: {}".format(signal_noise))
             # print("Shot noise:", shot_sigma2)
             # print("STD deviation:",std_deviation)
         
