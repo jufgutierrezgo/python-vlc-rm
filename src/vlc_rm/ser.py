@@ -204,7 +204,7 @@ class SymbolErrorRate:
             delimiter=' '
             )
 
-    def plot_noisy_rx_symbols(self, flux):
+    def plot_noisy_rx_symbols(self, flux, gain):
         """ This function plots the noisy-received symbols """    
         # Create 3D scatter plot
         fig = plt.figure()
@@ -224,11 +224,11 @@ class SymbolErrorRate:
 
         # Plot received symbols last (foreground)
         ax.scatter(
-            flux * self._symbols_rx_1lm[0, Kt.NO_DETECTORS*self._delimiter_set:],
-            flux * self._symbols_rx_1lm[1, Kt.NO_DETECTORS*self._delimiter_set:],
-            flux * self._symbols_rx_1lm[2, Kt.NO_DETECTORS*self._delimiter_set:],
+            gain * flux * self._symbols_rx_1lm[0, Kt.NO_DETECTORS*self._delimiter_set:],
+            gain * flux * self._symbols_rx_1lm[1, Kt.NO_DETECTORS*self._delimiter_set:],
+            gain * flux * self._symbols_rx_1lm[2, Kt.NO_DETECTORS*self._delimiter_set:],
             s=10,            
-            color='gray',
+            color='black',
             alpha=0.5,  # Make noise symbols semi-transparent
             label='Received Symbols'
         )
@@ -267,7 +267,7 @@ class SymbolErrorRate:
         # Display plot
         plt.show()
     
-    def plot_decoded_symbols(self, flux):
+    def plot_decoded_symbols(self, flux, gain):
         """ This function plots the noisy-received symbols """    
         # Create 3D scatter plot
         fig = plt.figure()
@@ -422,11 +422,11 @@ class SymbolErrorRate:
         # Define variable to compute signal-to-noise ratio
         snr_db = 0
 
-        for color_channel in range(Kt.NO_DETECTORS):  
+        for color_channel in range(Kt.NO_DETECTORS):
                       
             # define the x_current signal to add AWGN 
-            x_current = flux*self._symbols_rx_1lm[color_channel, :]            
-            shot_sigma2 = 2 * Kt.QE * (np.mean(x_current) + idark) * bandwidth            
+            x_current = flux*self._symbols_rx_1lm[color_channel, :]
+            shot_sigma2 = 2 * Kt.QE * (np.mean(x_current) + idark) * bandwidth
             # Equal the standard deviation to dark current
             std_deviation = (gain * (thermal_sigma2 + shot_sigma2)) ** 0.5
             # Generate an sample of white noise
@@ -448,41 +448,10 @@ class SymbolErrorRate:
             snr_db += 10 * np.log10(snr_linear)
 
             # Print the noise levels
-            print("Thermal noise VAR: {}\n Shot noise VAR: {}".format(thermal_sigma2 ** 0.5, shot_sigma2 ** 0.5))
-            print("Total noise: {}".format(std_deviation))
-            print("Signal noiseless: {}".format(x_current))
-            print("Signal noise: {}".format(signal_noise))
-            # print("Shot noise:", shot_sigma2)
-            # print("STD deviation:",std_deviation)
-        
-        # # define the x_current signal to add AWGN 
-        # x_current = flux*self._symbols_rx_1lm        
-        # shot_sigma2 = 2 * Kt.QE * (np.mean(x_current) + idark) * bandwidth  
-        # # Equal the standard deviation to dark current
-        # std_deviation = (gain * (thermal_sigma2 + shot_sigma2)) ** 0.5
-        # # Generate an sample of white noise
-        # mean_noise = 0
-        # noise_current = np.random.normal(
-        #     mean_noise, 
-        #     std_deviation, 
-        #     size=[np.shape(x_current)[0], np.shape(x_current)[1]]
-        #           )
-        # # Noise up the original signal
-        # signal_noise = x_current + noise_current
-        # # Save signal with noise in array
-        # self._noise_symbols = signal_noise
-
-        # # Calculate the power of the signal and the power of the noise
-        # power_signal = np.mean(x_current ** 2)
-        # power_noise = np.mean(noise_current ** 2)
-
-        # # Calculate the SNR
-        # snr_linear = power_signal / power_noise
-
-        # # Convert SNR to decibels (dB)
-        # snr_db += 10 * np.log10(snr_linear)
-
-        # print("Received symbols:", flux*self._symbols_rx_1lm)
+            # print("Std Thermal noise: {}\n Std Shot noise: {}".format(thermal_sigma2 ** 0.5, shot_sigma2 ** 0.5))
+            # print("Std Total noise: {}".format(std_deviation))
+            # print("Signal noiseless: {}".format(x_current))
+            # print("Signal noise: {}".format(signal_noise))
 
         return snr_db / Kt.NO_DETECTORS
         
@@ -525,14 +494,24 @@ class SymbolErrorRate:
         # apply the inverse matrix for decoding
         self._inverse_rx_symbols = np.matmul(
                 self._rx_channel_inverse,
-                self._rx_payload
+                self._rx_payload    
             )
 
+        self._reference_rx_symbols = np.matmul(
+                flux * photogain * self._recursivemodel._channelmatrix_noflux_nogain,
+                self._constellation
+            )
+            
+
         # Distance between constellation and received                        
+        # self._distance = self._cdist(
+        #         np.transpose(self._inverse_rx_symbols),
+        #         np.transpose(self._constellation)
+        #         )        
         self._distance = self._cdist(
-                np.transpose(self._inverse_rx_symbols),
-                np.transpose(self._constellation)
-                )        
+                np.transpose(self._rx_payload),
+                np.transpose(self._reference_rx_symbols)
+                )
 
         self._index_min = np.empty_like(self._symbols_decimal)
 
@@ -569,7 +548,7 @@ class SymbolErrorRate:
                 self._ser_values[index] = self._compute_error_rate()
 
                 if plot_on == True:
-                    self.plot_noisy_rx_constellation(flux=flux)
+                    self.plot_noisy_rx_symbols(flux=flux, gain=self._recursivemodel._photodetector.gain)
 
                 print("Symbol error rate computed for {} lumens".format(flux))
 
